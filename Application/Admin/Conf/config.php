@@ -18,14 +18,7 @@ return array(
      
 	),	
 	
-    // 数据库配置
-    'DB_TYPE'                   =>  'mysql',
-    'DB_PORT'                   =>  '3306',
-    'DB_PREFIX'                 =>  'wytch_',
-    
-	
-	
-	 /* 图片上传相关配置 */
+	/* 图片上传相关配置 */
     'PICTURE_UPLOAD' => array(
 		'mimes'    => '', //允许上传的文件MiMe类型
 		'maxSize'  => 2*1024*1024, //上传的文件大小限制 (0-不做限制)

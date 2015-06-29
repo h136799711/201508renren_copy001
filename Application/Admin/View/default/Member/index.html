@@ -54,12 +54,6 @@
 					登录次数
 				</th>
 				<th>
-					最后登录时间
-				</th>
-				<th>
-					最后登录IP
-				</th>
-				<th>
 					状态
 				</th>
 				<th>
@@ -86,10 +80,6 @@
 							{$vo.score}</td>
 						<td>
 							{$vo.login}</td>
-						<td>
-							{$vo.last_login_time|date='Y-m-d H:i:s',###}</td>
-						<td>
-							{$vo.last_login_ip|long2ip}</td>
 
 						<td>{$vo.status|getStatus}</td>
 						<td>

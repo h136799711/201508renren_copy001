@@ -125,14 +125,19 @@ class PublicController extends BaseController {
 				
 				
 				if ($result['status'] && is_array($result['info'])) {
+					$user = $result['info'];
+					$user['_username'] = $username;
 					
 					//存入 session
-					session('global_user_sign', data_auth_sign($result['info']));
-					session('global_user', $result['info']);
-					session("uid", $result['info']['id']);
+					session('global_user_sign', data_auth_sign($user));
+					session('global_user', $user);
+					session("uid", $user['id']);
 					
 					//登录模块
 					session("LOGIN_MOD", MODULE_NAME);
+					
+					//登录日志
+					action_log(\Admin\Model\ActionModel::UserLogin,"member",$user['id'],$user['id']);
 
 					$this -> success(L('SUC_LOGIN'), U('Admin/Index/index'));
 

@@ -8,6 +8,8 @@
 
 
 return array(
+	
+	'BAIDU_MAP_KEY'=>'2004885a6610482ffccffbff3f9307ec',
 	'DATATREE'=>array(
 		'STORE_TYPE'=>2,//店铺类别
 		'WXPRODUCTGROUP'=>13, //商品分组

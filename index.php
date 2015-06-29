@@ -8,24 +8,31 @@
 // | Copyright (c) 2012-2014, http://www.gooraye.net. All Rights Reserved.
 // |-----------------------------------------------------------------------------------
 
-if(version_compare(PHP_VERSION,'5.3.0','<'))  die('require PHP > 5.3.0 !');
+if (version_compare(PHP_VERSION, '5.3.0', '<')) die('require PHP > 5.3.0 !');
+
+define("PROJECT_NAME","20150606renren");
+
+define('BOYE_SYS_NAME', true);
 
 // 是否调试模式
-define('APP_DEBUG',true);
+define('APP_DEBUG', true);
 
-require_once('./auth.php');
-
-// 运行时文件
-define("APP_PATH","./Application/");
-
-// 框架目录
-define("THINK_PATH",realpath("./Core/").'/');
 
 // 运行时文件
-define("RUNTIME_PATH","./Runtime/");
+define("APP_PATH", "./Application/");
+
+require_once(APP_PATH . '/Common/Conf/appmeta.php');
+
+define('HTML_PATH', './Html/'); // 应用静态目录
+
 
 // 第三方类库目录
 //define("VENDOR_PATH","./Vendor/");
 
+// 运行时文件
+define("RUNTIME_PATH","../../Runtime/".PROJECT_NAME."/");
+
+// 框架目录
+define("THINK_PATH",realpath("../../thinkphp/thinkphp_clone/").'/');
 // 加载
-require "./Core/ThinkPHP.php";
+require "../../thinkphp/thinkphp_clone/ThinkPHP.php";

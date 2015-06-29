@@ -60,6 +60,12 @@ class AdminController extends CheckLoginController {
 
 	//===================权限相关START=======================
 	
+	protected function exitIfError($result){
+		if(!$result['status']){
+			$this->error($result['info']);
+		}
+	}
+	
 	/**
 	 * 获取当前用户的菜单列表ID
 	 */

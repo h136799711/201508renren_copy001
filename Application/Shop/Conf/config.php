@@ -10,10 +10,6 @@ return array(
 	),	
 	'DEFAULT_THEME'=>'default',
 	'SESSION_PREFIX'=>'Shop_',
-    // 数据库配置
-    'DB_TYPE'                   =>  'mysql',
-    'DB_PORT'                   =>  '3306',
-    'DB_PREFIX'                 =>  'wytch_',
     
      //token，TODO: 一套系统对应一个公众号的商城
     'SHOP_TOKEN'=>'eotprkjn1426473619',
