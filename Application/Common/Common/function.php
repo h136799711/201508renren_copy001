@@ -34,7 +34,7 @@ function is_administrator($uid = null) {
  * @param $url
  * @param array $vars
  * @param string $layer
- * @return
+ * @return mixed
  */
 function apiCall($url, $vars=array(), $layer = 'Api') {
 	//TODO:考虑使用func_get_args 获取参数数组
@@ -180,26 +180,54 @@ function getStatus($status) {
  * 获得皮肤的字符串表示
  */
 function getSkin($skin) {
-	$desc = '';
 
-	switch($skin) {
-		case 0 :
-			$desc = "simplex";
-			break;
-		case 1 :
-			$desc = "flatly";
-			break;
-		case 2 :
-			$desc = "darkly";
-			break;
-		case 3 :
-			$desc = "cosmo";
-			break;
-		default :
-			$desc = "simplex";
-			break;
-	}
-	return $desc;
+    $desc = '';
+
+    switch($skin) {
+        case 0 :
+            $desc = "simplex";
+            break;
+        case 1 :
+            $desc = "flatly";
+            break;
+        case 2 :
+            $desc = "darkly";
+            break;
+        case 3 :
+            $desc = "cosmo";
+            break;
+        case 4 :
+            $desc = "paper";
+            break;
+        case 5 :
+            $desc = "slate";
+            break;
+        case 6 :
+            $desc = "superhero";
+            break;
+        case 7 :
+            $desc = "united";
+            break;
+        case 8 :
+            $desc = "yeti";
+            break;
+        case 9 :
+            $desc = "spruce";
+            break;
+        case 10 :
+            $desc = "readable";
+            break;
+        case 11 :
+            $desc = "cyborg";
+            break;
+        case 12 :
+            $desc = "cerulean";
+            break;
+        default :
+            $desc = "simplex";
+            break;
+    }
+    return $desc;
 }
 
 /**

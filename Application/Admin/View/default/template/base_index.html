@@ -2,6 +2,8 @@
 <html lang="zh">
 
 	<head>
+        <base href="{:C('SITE_URL')}/" />
+
 		<meta charset="utf-8">
 		<title>{$seo.title|default=L('TITLE')}-{:C('WEBSITE_TITLE')}</title>
 		<meta name="viewport" content="target-densitydpi=device-dpi,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
@@ -44,7 +46,9 @@
 			<p>&copy;2013-{:date('Y')} Version {:C('APP_VERSION')}</p>
 			<p>{__RUNTIME__}</p>
 		</div>
-		
+
+    {:tag('pageFooter')}
+
 	</body>
 
 </html>

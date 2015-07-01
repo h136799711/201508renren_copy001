@@ -89,9 +89,13 @@
 		function refresh_verify(verify){
 				verify = verify || ".verify";
 				var verifySrc = $(verify).attr("src");
+                if(!verifySrc){
+                    return ;
+                }
 				if (verifySrc && verifySrc.indexOf('?') > 0) {
 					$(verify).attr("src", verifySrc + '&r=' + Math.random());
 				} else {
+
 					$(verify).attr("src", verifySrc.replace(/\?.*$/, '') + '?' + Math.random());
 				}
 

@@ -14,11 +14,9 @@ define("PROJECT_NAME","20150606renren");
 
 // 是否调试模式
 define('APP_DEBUG', true);
-// 插件目录
-define('ADDON_PATH', '../../Addons/');
 
 // 插件目录
-//define('ADDON_PATH', './Addons/');
+define('ADDON_PATH', './Addons/');
 
 // 应用目录
 define("APP_PATH", "./Application/");

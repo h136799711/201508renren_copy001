@@ -5,6 +5,10 @@
  
 
 return array(
+    //开启数据库session
+    'SESSION_TYPE'=>'Db',
+    //指定session数据库表
+    'SESSION_TABLE'=>'common_session',
 
 	'LOAD_EXT_CONFIG' => 'datatree,appmeta,express', 
 	
