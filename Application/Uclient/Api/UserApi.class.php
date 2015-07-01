@@ -18,13 +18,13 @@ class UserApi extends Api{
     protected function _init(){
         $this->model = new UcenterMemberModel();
     }
-	
-	/**
-	 * 获取用户信息
-	 * @param  string  $uid         用户ID或用户名
-	 * @param  boolean $is_username 是否使用用户名查询
-	 * @return array                用户信息
-	 */
+
+    /**
+     * 获取用户信息
+     * @param  string $uid 用户ID或用户名
+     * @return array 用户信息
+     * @internal param bool $is_username 是否使用用户名查询
+     */
 	public function getInfo($uid){
 		$map = array();
 		$map['id'] = $uid;
@@ -37,25 +37,24 @@ class UserApi extends Api{
 		}
 	
 	}
-	
-	
-	
-	
+
+
     /**
      * 注册一个新用户
      * @param  string $username 用户名
      * @param  string $password 用户密码
-     * @param  string $email    用户邮箱
-     * @param  string $mobile   用户手机号码
-     * @return array(true,uid)  注册失败-错误信息
+     * @param  string $email 用户邮箱
+     * @param  string $mobile 用户手机号码
+     * @param int $from 第三方Oauth2登录\注册来源
+     * @return array 注册失败-错误信息
      */
-    public function register($username, $password, $email, $mobile = ''){
-        $result = $this->model->register($username, $password, $email, $mobile);
-	    	if($result > 0){//成功
-	    		return array('status'=>true,'info'=>$result);
-	    	}else{
-	    		return array('status'=>false,'info'=>$this->getRegisterError($result));
-	    	}
+    public function register($username, $password, $email, $mobile = '',$from=0){
+        $result = $this->model->register($username, $password, $email, $mobile,$from);
+        if($result > 0){//成功
+            return array('status'=>true,'info'=>$result);
+        }else{
+            return array('status'=>false,'info'=>$this->getRegisterError($result));
+        }
 	}
 
     /**

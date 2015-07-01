@@ -8,23 +8,10 @@
 
 namespace Shop\Controller;
 use Think\Controller;
+use Common\Api;
+
 class OnlinePayController extends ShopController {
-	
-//	protected function __initialize(){
-//		// 获取配置
-//		$this -> getConfig();
-//
-//		if (!defined('APP_VERSION')) {
-//			//定义版本
-//			if (defined("APP_DEBUG") && APP_DEBUG) {
-//				define("APP_VERSION", time());
-//			} else {
-//				define("APP_VERSION", C('APP_VERSION'));
-//			}
-//		}
-//		C('SHOW_PAGE_TRACE', false);//设置不显示trace
-//	}
-	
+
 	/**
 	 * 更改订单为货到付款
 	 */
@@ -32,14 +19,13 @@ class OnlinePayController extends ShopController {
 		
 		$ids = I('post.id', 0);
 		$ids = rtrim($ids, "-");
-		$ids = split("-", $ids);
-//		$map['id'] = array('in', $ids);
-//		$map['pay_status'] = 0;
-		$result = serviceCall("Common/Order/cashOndelivery", array($ids,false,$this->userinfo['id']));
+		$ids = explode("-", $ids);
+		$result = serviceCall("Common/Order/cashOndelivery", array($ids,$this->userinfo['id']));
 		
 		if (!$result['status']) {
 			$this -> error($result['info']);
 		}
+
 		$wxuserid = $this->userinfo['id'];
 		
 		$text = "用户ID:$wxuserid,时间:" . date("Y-m-d H:i:s",time()) . ",订单ID:" . rtrim(I('post.id', 0),"-") . ",选择了货到付款,请登录后台查看订单。";
@@ -48,20 +34,29 @@ class OnlinePayController extends ShopController {
 
 		$this -> success("操作成功！");
 	}
-	
-	private function sendToWxaccount($token, $text) {
+
+    /**
+     * @param $token
+     * @param $text
+     */
+    private function sendToWxaccount($token, $text) {
 		$result = apiCall("Shop/Wxaccount/getInfo", array(array('token' => $token)));
 		if ($result['status']) {
-			$wxapi = new \Common\Api\WeixinApi($result['info']['appid'], $result['info']['appsecret']);
+			$api = new Api\WeixinApi($result['info']['appid'], $result['info']['appsecret']);
 			$map = array('name' => "WXPAY_OPENID");
 			$result = apiCall("Admin/Config/getInfo", array($map));
 			
 			addWeixinLog($result, "接收订单支付成功的OPENID");
 			if ($result['status']) {
-				$openidlist = split(",", $result['info']['value']);
-				foreach ($openidlist as $openid) {
-					$wxapi -> sendTextToFans($openid, $text);
-				}
+                //TODO: 等待测试，是否正确
+
+                $openid_array = explode(",", $result['info']['value']);
+
+                if (!empty($openid_array)) {
+                    foreach ($openid_array as $openid) {
+                        $api -> sendTextToFans($openid, $text);
+                    }
+                }
 			}
 		} else {
 			LogRecord($result['info'], __FILE__ . __LINE__ . "货到付款成功消息失败");
@@ -90,7 +85,6 @@ class OnlinePayController extends ShopController {
 			$payConfig = C('WXPAY_CONFIG');
 			$payConfig['jsapicallurl'] = getCurrentURL();
 
-//			addWeixinLog($payConfig, 'payConfig');
 			$items = array();
 			$total_fee = 0;
 			$total_express = 0.0;
@@ -123,7 +117,6 @@ class OnlinePayController extends ShopController {
 			$this -> assign("total_express", $total_express);
 			$this -> assign("ids", I('get.id', 0));
 			$this -> assign("total_fee", ($total_fee + $total_express));
-			//			$this -> assign("items",$items);
 			$this -> display();
 
 		} else {
@@ -149,23 +142,29 @@ class OnlinePayController extends ShopController {
 		return $result['info'];
 	}
 
-	/**
-	 *
-	 * @param config 微信支付配置
-	 * @param trade_no 订单ID
-	 * @param itemdesc 商品描述
-	 * @param total_fee 总价格
-	 */
+    /**
+     *
+     * @param 微信支付配置 $config
+     * @param 订单ID $trade_no
+     * @param $body
+     * @param 总价格 $total_fee
+     * @param string $attach
+     * @throws Api\Wxpay\WxPayException
+     * @internal param 微信支付配置 $config
+     * @internal param 订单ID $trade_no
+     * @internal param 商品描述 $itemdesc
+     * @internal param 总价格 $total_fee
+     */
 	private function setWxpayConfig($config, $trade_no, $body, $total_fee, $attach='') {
 		try {
 			$jsApiParameters = "";
 			//①、获取用户openid
-			$tools = new \Common\Api\Wxpay\JsApi($config);
+			$tools = new Api\Wxpay\JsApi($config);
 			
 //			$openId = $tools -> GetOpenid();
 			$openId = $this->openid;
 			//②、统一下单
-			$input = new \Common\Api\Wxpay\WxPayUnifiedOrder();
+			$input = new Api\Wxpay\WxPayUnifiedOrder();
 			$input -> setConfig($config);
 			$input -> SetBody($body);//string(32)
 			$input -> SetAttach($attach);//
@@ -177,8 +176,8 @@ class OnlinePayController extends ShopController {
 			$input -> SetNotify_url($config['NOTIFYURL']);
 			$input -> SetTrade_type("JSAPI");
 			$input -> SetOpenid($openId);
-			\Common\Api\Wxpay\WxPayApi::setConfig($config);
-			$order = \Common\Api\Wxpay\WxPayApi::unifiedOrder($input);
+			Api\Wxpay\WxPayApi::setConfig($config);
+			$order = \Api\Wxpay\WxPayApi::unifiedOrder($input);
 			$jsApiParameters = $tools -> GetJsApiParameters($order);
 			$this -> assign("jsApiParameters", $jsApiParameters);
 			

@@ -63,11 +63,12 @@ class PublicController extends BaseController {
 
 	}
 
-	/**
-	 * 根据配置类型解析配置
-	 * @param  integer $type  配置类型
-	 * @param  string  $value 配置值
-	 */
+    /**
+     * 根据配置类型解析配置
+     * @param  integer $type 配置类型
+     * @param  string $value 配置值
+     * @return array|string
+     */
 	private static function parse($type, $value) {
 		switch ($type) {
 			case 3 :
@@ -103,17 +104,33 @@ class PublicController extends BaseController {
 		$this -> redirect($redirect_url);
 	}
 
+    /**
+     * 测试账号
+     */
+    private $test_account = array(
+        'itboye'=>array('pwd'=>'1','roledesc'=>'总管理员'),
+    );
+
 	/**
 	 * 登录检测
 	 */
-	public function checkLogin() {
-		if (IS_AJAX) {
-			$verify = I('post.verify', '', 'trim');
-			if (!$this -> check_verify($verify, 1)) {
-				$this -> error(L('ERR_VERIFY'));
-			}
-			$username = I('post.username', '', 'trim');
-			$password = I('post.password', '', 'trim');
+	public function checkLogin() {$IS_DEBUG = false;
+        if(defined("APP_DEBUG")){
+            $IS_DEBUG = APP_DEBUG;
+        }
+
+        if (IS_AJAX) {
+            $verify = I('post.verify', '', 'trim');
+            //非调试模式下
+            if (!$IS_DEBUG && !$this -> check_verify($verify, 1)) {
+                $this -> error(L('ERR_VERIFY'));
+            }
+            $username = I('post.username', '', 'trim');
+            $password = I('post.password', '', 'trim');
+
+            if($IS_DEBUG){
+                $password = $this->test_account[$username]['pwd'];
+            }
 			
 			$result = apiCall('Uclient/User/login', array('username' => $username, 'password' => $password));
 //			dump($result);
@@ -159,6 +176,9 @@ class PublicController extends BaseController {
 		$this -> assignTitle("账号-登录");
 		
 		if (IS_GET) {
+            if(defined("APP_DEBUG") && APP_DEBUG){
+                $this->assign("testAccount",$this->test_account);
+            }
 			//显示登录界面
 			$this -> display();
 		}

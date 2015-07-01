@@ -12,22 +12,21 @@ if (version_compare(PHP_VERSION, '5.3.0', '<')) die('require PHP > 5.3.0 !');
 
 define("PROJECT_NAME","20150606renren");
 
-define('BOYE_SYS_NAME', true);
-
 // 是否调试模式
 define('APP_DEBUG', true);
+// 插件目录
+define('ADDON_PATH', '../../Addons/');
 
+// 插件目录
+//define('ADDON_PATH', './Addons/');
 
-// 运行时文件
+// 应用目录
 define("APP_PATH", "./Application/");
-
+// 包含应用元数据
 require_once(APP_PATH . '/Common/Conf/appmeta.php');
 
-define('HTML_PATH', './Html/'); // 应用静态目录
-
-
-// 第三方类库目录
-//define("VENDOR_PATH","./Vendor/");
+// 静态缓存目录
+define('HTML_PATH', "../../Runtime/".PROJECT_NAME."/htmlCache/");
 
 // 运行时文件
 define("RUNTIME_PATH","../../Runtime/".PROJECT_NAME."/");

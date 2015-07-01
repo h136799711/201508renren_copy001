@@ -31,8 +31,12 @@ function is_administrator($uid = null) {
 
 /**
  * apiCall
+ * @param $url
+ * @param array $vars
+ * @param string $layer
+ * @return
  */
-function apiCall($url, $vars, $layer = 'Api') {
+function apiCall($url, $vars=array(), $layer = 'Api') {
 	//TODO:考虑使用func_get_args 获取参数数组
 	return R($url, $vars, $layer);
 }
@@ -201,9 +205,12 @@ function getSkin($skin) {
 /**
  * 把返回的数据集转换成Tree
  * @param array $list 要转换的数据集
+ * @param string $pk
  * @param string $pid parent标记字段
- * @param string $level level标记字段
+ * @param string $child
+ * @param int $root
  * @return array
+ * @internal param string $level level标记字段
  */
 function list_to_tree($list, $pk = 'id', $pid = 'pid', $child = '_child', $root = 0) {
 	// 创建Tree
@@ -340,6 +347,7 @@ function getDatatree($code) {
  * @param $post_data 请求参数，数组形式
  * @param $cookie
  * @param $repeat TODO: 重复次数
+ * @return int
  */
 function fsockopenRequest($url,$post_data = array(),$method="POST", $cookie = array(), $repeat = 1) {
 	if($method == "POST"){
@@ -578,11 +586,11 @@ function parse_action($action = null, $self){
 
 /**
  * 执行行为
- * @param array $rules 解析后的规则数组
+ * @param array|bool $rules 解析后的规则数组
  * @param int $action_id 行为id
  * @param array $user_id 执行的用户id
- * @return boolean false 失败 ， true 成功
- * 
+ * @return bool false 失败 ， true 成功
+ *
  */
 function execute_action($rules = false, $action_id = null, $user_id = null){
 	
@@ -675,7 +683,7 @@ function get_nickname($uid = 0){
  * 获取行为数据
  * @param string $id 行为id
  * @param string $field 需要获取的字段
- * @author huajie <banhuajie@163.com>
+ * @return bool
  */
 function get_action($id = null, $field = null){
 	
@@ -696,4 +704,68 @@ function get_action($id = null, $field = null){
     $ret = empty($field) ? $list[$id] : $list[$id][$field];
 	
     return $ret;
+}
+
+/**
+ * 获取插件类的类名
+ * @var string $name 插件名
+ * @return string
+ */
+function get_addon_class($name){
+    $class = "Addons\\{$name}\\{$name}Addon";
+    return $class;
+}
+/**
+ * 获取插件类的配置文件数组
+ * @param string $name 插件名
+ * @return array
+ */
+function get_addon_config($name){
+    $class = get_addon_class($name);
+    if(class_exists($class)) {
+        $addon = new $class();
+        return $addon->getConfig();
+    }else {
+        return array();
+    }
+}
+
+/**
+ * 插件显示内容里生成访问插件的url
+ * @param string $url url
+ * @param array $param 参数
+ * @return string
+ */
+function addons_url($url, $param = array()){
+    $url        = parse_url($url);
+    $case       = C('URL_CASE_INSENSITIVE');
+    $addons     = $case ? parse_name($url['scheme']) : $url['scheme'];
+    $controller = $case ? parse_name($url['host']) : $url['host'];
+    $action     = trim($case ? strtolower($url['path']) : $url['path'], '/');
+    /* 解析URL带的参数 */
+    if(isset($url['query'])){
+        parse_str($url['query'], $query);
+        $param = array_merge($query, $param);
+    }
+    /* 基础参数 */
+    $params = array(
+        '_addons'     => $addons,
+        '_controller' => $controller,
+        '_action'     => $action,
+    );
+    $params = array_merge($params, $param); //添加额外参数
+    return U('Addons/execute', $params);
+}
+/**
+ * 基于数组创建目录和文件
+ *
+ */
+function create_dir_or_files($files){
+    foreach ($files as $key => $value) {
+        if(substr($value, -1) == '/'){
+            mkdir($value);
+        }else{
+            @file_put_contents($value, '');
+        }
+    }
 }

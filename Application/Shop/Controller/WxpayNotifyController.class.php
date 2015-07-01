@@ -7,29 +7,24 @@
 // |-----------------------------------------------------------------------------------
 
 namespace Shop\Controller;
+use Common\Model\OrdersModel;
 use Think\Controller;
+use Common\Api;
+use Common\Api\Wxpay;
 
 class WxpayNotifyController extends Controller {
 
 	protected function _initialize() {
-
 		header("X-AUTHOR:HEBIDU");
 	}
-	
-//	public function test(){
-//		$config = C('WXPAY_CONFIG');
-//		
-//		$notify = new \Common\Api\Wxpay\PayNotifyCallback($config);
-//		dump($notify);
-//	}
-	
+
 	/**
 	 * 2015 0428最新接口
 	 */
 	public function index() {
 		$xml = $GLOBALS['HTTP_RAW_POST_DATA'];
 		$config = C('WXPAY_CONFIG');
-		
+
 		$notify = new \Common\Api\Wxpay\PayNotifyCallback($config);
 		$notify -> Handle(false);
 	}
@@ -71,27 +66,26 @@ class WxpayNotifyController extends Controller {
 //		fsockopenRequest($url, array('id' => 1,'test'=>'test'));
 //		echo "test";
 //	}
-	
 
-	/**
-	 * 支付成功通知
-	 * @param $entity array(
-	 * 			'out_trade_no'=>'', 
-	 * 			'attach'=>'',  
-	 * 			'appid'=>'',  
-	 * 			'openid'=>'',  
-	 * 			'time_end'=>'',
-	 * );
-	 */
+
+    /**
+     * 支付成功通知
+     * @param $entity array(
+     *            'out_trade_no'=>'',
+     *            'attach'=>'',
+     *            'appid'=>'',
+     *            'openid'=>'',
+     *            'time_end'=>'',
+     * );
+     * @return int
+     */
 	public function whenSuccess($entity) {
 		try{
-		$addedResult = apiCall("Shop/OrderHistory/add", array($entity));
+		    $addedResult = apiCall("Shop/OrderHistory/add", array($entity));
 		}catch(Exception $ex){
 			//不处理
 		}
-		
 
-		
 		$orderids = $entity['attach'];
 		$orderids = rtrim($orderids,"_");
 		addWeixinLog($orderids, "[完成支付的订单ID]");
@@ -99,12 +93,12 @@ class WxpayNotifyController extends Controller {
 		$fanskey = "appid_" . $entity['appid'] . "_" . $entity['openid'];
 		S($fanskey, null);
 		//2. 获取订单信息
-		$orderids = split("_", $orderids);
+		$orderids = explode("_", $orderids);
 		if(count($orderids) == 0){
 			$orderids = array(-1);
 		}
 		addWeixinLog($orderids, "[orderids]");
-		$map = array('pay_status' => \Common\Model\OrdersModel::ORDER_TOBE_PAID, 'id' => array('in', $orderids));
+		$map = array('pay_status' => OrdersModel::ORDER_TOBE_PAID, 'id' => array('in', $orderids));
 		//只查询待支付的订单信息
 		$result = apiCall("Shop/Orders/queryNoPaging", array($map));
 		addWeixinLog($result, "[通知支付完成的订单]");
@@ -115,10 +109,14 @@ class WxpayNotifyController extends Controller {
 			$orders = $result['info'];
 			$wxuserid = $orders[0]['wxuser_id'];
 			$wxaccountid = $orders[0]['wxaccountid'];
-			
+			//
+            $parms = array('userid'=>$wxuserid,'$wxaccountid'=>$wxaccountid,"orders"=>$result['info']) ;
+            //
+            \Think\Hook::listen('WXPAY_COMPLETED',$parms);
+
 			addWeixinLog($wxuserid.$wxaccountid, "wxuserid,wxaccountid");
 			//改变订单的状态为已支付
-			$paidStatus = \Common\Model\OrdersModel::ORDER_PAID;
+			$paidStatus = OrdersModel::ORDER_PAID;
 			$result = apiCall("Shop/Orders/savePayStatus", array($map, $paidStatus));
 
 			if (!$result['status']) {

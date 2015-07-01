@@ -12,7 +12,8 @@ return array(
 	'UPGRADE_AUTH_KEY'=>'[APP_KEY]',//授权码，用于在线升级
 	'UPGRADE_URL'=>'http://appcenter.itboye.com/index.php/Home/Index/upgrade_check/app_id/[APP_ID]/2.json',
 	'UPGRADE_AUTH_DOMAIN'=>'[AUTH_DOMAIN]',//授权域名
-	
+    //自动载入
+	'AUTOLOAD_NAMESPACE'=>array('Addons' => ADDON_PATH),
 	//唯一管理员用户配置	
    'USER_ADMINISTRATOR' => 1, //管理员用户ID
    'MODULE_DENY_LIST'      =>  array('Common','Runtime','Ucenter','Uclient'),
@@ -20,10 +21,10 @@ return array(
 	// 程序版本
 	// DONE:移到数据库中
 	// 显示运行时间
-	'SHOW_RUN_TIME'=>true,
+	'SHOW_RUN_TIME'=>false,
 //	'SHOW_ADV_TIME'=>true,
 	// 显示数据库操作次数
-	'SHOW_DB_TIMES'=>true,
+	'SHOW_DB_TIMES'=>false,
 	// 显示操作缓存次数
 //	'SHOW_CACHE_TIMES'=>true,
 	// 显示使用内存

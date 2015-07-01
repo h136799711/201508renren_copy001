@@ -1,31 +1,31 @@
 <?php
-// +----------------------------------------------------------------------
-// | OneThink [ WE CAN DO IT JUST THINK IT ]
-// +----------------------------------------------------------------------
-// | Copyright (c) 2013 http://www.onethink.cn All rights reserved.
-// +----------------------------------------------------------------------
-// | Author: 麦当苗儿 <zuojiazi@vip.qq.com> <http://www.zjzit.cn>
-// +----------------------------------------------------------------------
+/**
+ *
+ *
+ * @author hebidu <hebiduhebi@126.com>
+ * @date  15/6/29 20:17
+ * @copyright by itboye.com
+ */
 
-if(version_compare(PHP_VERSION,'5.3.0','<'))  die('require PHP > 5.3.0 !');
+if (version_compare(PHP_VERSION, '5.3.0', '<')) die('require PHP > 5.3.0 !');
+
+//绑定安装模块
+define('BIND_MODULE','Install');
 
 define("PROJECT_NAME","20150606renren");
-define('BOYE_SYS_NAME',true);
 
-define('BIND_MODULE','Install');
-/**
- * 系统调试设置
- * 项目正式部署后请设置为false
- */
-define ( 'APP_DEBUG', true );
+// 是否调试模式
+define('APP_DEBUG', true);
+// 插件目录
+define('ADDON_PATH', './Addons/');
 
-/**
- * 应用目录设置
- * 安全期间，建议安装调试完成后移动到非WEB目录
- */
-define ( 'APP_PATH', './Application/' );
+// 应用目录
+define("APP_PATH", "./Application/");
+// 包含应用元数据
+require_once(APP_PATH . '/Common/Conf/appmeta.php');
 
-
+// 静态缓存目录
+define('HTML_PATH', "../../Runtime/".PROJECT_NAME."/htmlCache/");
 
 // 运行时文件
 define("RUNTIME_PATH","../../Runtime/".PROJECT_NAME."/");

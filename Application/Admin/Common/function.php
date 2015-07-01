@@ -46,7 +46,8 @@ function isActiveMenuURL($id) {
 /**
  * 判断链接是否激活
  * 根据session来检测
- * @return ''|'active'
+ * @param $id
+ * @return string ''|'active'
  */
 function isActiveSubMenuURL($id) {
 	$activesubmenuid = session('activesubmenuid');
@@ -166,4 +167,36 @@ function show_status_op($status) {
         case 2  : return    '审核';       break;
         default : return    false;      break;
     }
+}
+
+/**
+ *
+ * @param $list         数据集合
+ * @param $field        集合中一个对象的字段
+ * @param $status_text  数组字段对应的文字描述
+ * @example
+ *  $list = array(array('status'=>-2),array('status'=>2),array('status'=>1),array('status'=>-1));
+ *  $field = "status";
+ *  $status_text = array(-2=>'被删除',2=>'已禁用');
+ *  $result = int_to_string($list,$field,$status_text);
+ *  //转换后
+ *  $result = array(array('status'=>-2,'_status_text'=>'被删除'),array('status'=>2,'_status_text'=>'已禁用'),array('status'=>1),array('status'=>-1));
+ * @return 数据集合
+ */
+function int_to_string($list,$field,$status_text){
+    foreach($list as &$vo){
+        if(isset($vo[$field])){
+            foreach($status_text as $key=>$text){
+                if($key == $vo[$field]){
+                    $vo['_'.$field.'_text'] = $text;
+                }
+            }
+
+            //无法识别，设置为Unknown
+            if(!isset($vo['_'.$field.'_text'])){
+                $vo['_'.$field.'_text'] = "Unknown";
+            }
+        }
+    }
+    return $list;
 }

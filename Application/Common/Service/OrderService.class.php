@@ -7,22 +7,29 @@
 // |-----------------------------------------------------------------------------------
 
 namespace Common\Service;
+use Common\Model;
 
+/**
+ * 订单状态变更的实现
+ * Class OrderService
+ * @package Common\Service
+ */
 class OrderService extends Service{
 	
 	/**
 	 * 
 	 */
 	protected function _initialize(){
-		$this->model = new \Common\Model\OrdersModel();
+		$this->model = new Model\OrdersModel();
 	}
-	
-	/**
-	 * 订单支付－货到付款操作
-	 * @param ids 订单id数组
-	 */
+
+    /**
+     * 订单支付－货到付款操作
+     * @param $ids  订单id数组
+     * @return array
+     */
 	public function cashOndelivery($ids,$isauto,$uid){
-		$orderStatusHistoryModel = new \Common\Model\OrderStatusHistoryModel();
+		$orderStatusHistoryModel = new Model\OrderStatusHistoryModel();
 		//
 		foreach($ids as  $id){
 		
@@ -36,7 +43,7 @@ class OrderService extends Service{
 				return $this->returnErr("订单ID错误!");			
 			}
 			
-			if($result['pay_status'] != \Common\Model\OrdersModel::ORDER_TOBE_PAID){
+			if($result['pay_status'] !=  Model\OrdersModel::ORDER_TOBE_PAID){
 				return $this->returnErr("当前订单状态无法变更！");
 			}
 			
@@ -46,14 +53,15 @@ class OrderService extends Service{
 				'operator'=>$uid,
 				'status_type'=>'PAY',
 				'cur_status'=>$result['pay_status'],
-				'next_status'=>\Common\Model\OrdersModel::ORDER_CASH_ON_DELIVERY,
+				'next_status'=> Model\OrdersModel::ORDER_CASH_ON_DELIVERY,
 			);
 			
 			$this->model->startTrans();
 			$flag = true;
 			$return = "";
-			
-			$result = $this->model->where(array('id'=>$id))->save(array('pay_status'=>\Common\Model\OrdersModel::ORDER_CASH_ON_DELIVERY));
+
+			//设置订单状态为货到付款
+			$result = $this->model->where(array('id'=>$id))->save(array('pay_status'=> Model\OrdersModel::ORDER_CASH_ON_DELIVERY));
 			if($result === false){
 				$flag = false;
 				$return = $this->model->getDbError();
@@ -85,11 +93,16 @@ class OrderService extends Service{
 		}
 		
 	}
-	/**
-	 * 订单发货操作
-	 */
-	public function shipped($id,$isauto,$uid){
-		$orderStatusHistoryModel = new \Common\Model\OrderStatusHistoryModel();
+
+    /**
+     * 订单发货操作
+     * @param $id
+     * @param $uid
+     * @return array
+     * @internal param $isauto
+     */
+	public function shipped($id,$uid){
+		$orderStatusHistoryModel = new Model\OrderStatusHistoryModel();
 		$result = $this->model->where(array('id'=>$id))->find();
 		
 		if($result == false){
@@ -100,7 +113,7 @@ class OrderService extends Service{
 			return $this->returnErr("订单ID错误!");			
 		}
 		
-		if($result['order_status'] != \Common\Model\OrdersModel::ORDER_TOBE_SHIPPED){
+		if($result['order_status'] != Model\OrdersModel::ORDER_TOBE_SHIPPED){
 			return $this->returnErr("当前订单状态无法变更！");
 		}
 		
@@ -110,14 +123,14 @@ class OrderService extends Service{
 			'operator'=>$uid,
 			'status_type'=>'ORDER',
 			'cur_status'=>$result['order_status'],
-			'next_status'=>\Common\Model\OrdersModel::ORDER_SHIPPED,
+			'next_status'=> Model\OrdersModel::ORDER_SHIPPED,
 		);
 		
 		$this->model->startTrans();
 		$flag = true;
 		$return = "";
 		
-		$result = $this->model->where(array('id'=>$id))->save(array('order_status'=>\Common\Model\OrdersModel::ORDER_SHIPPED));
+		$result = $this->model->where(array('id'=>$id))->save(array('order_status'=> Model\OrdersModel::ORDER_SHIPPED));
 		if($result === false){
 			$flag = false;
 			$return = $this->model->getDbError();
@@ -166,7 +179,7 @@ class OrderService extends Service{
 			return $this->returnErr("订单ID错误!");			
 		}
 		
-		if($result['order_status'] != \Common\Model\OrdersModel::ORDER_TOBE_CONFIRMED){
+		if($result['order_status'] != Model\OrdersModel::ORDER_TOBE_CONFIRMED){
 			return $this->returnErr("当前订单状态无法变更！");
 		}
 		
@@ -176,14 +189,14 @@ class OrderService extends Service{
 			'operator'=>$uid,
 			'status_type'=>'ORDER',
 			'cur_status'=>$result['order_status'],
-			'next_status'=>\Common\Model\OrdersModel::ORDER_TOBE_SHIPPED,
+			'next_status'=> Model\OrdersModel::ORDER_TOBE_SHIPPED,
 		);
 		
 		$this->model->startTrans();
 		$flag = true;
 		$return = "";
 		
-		$result = $this->model->where(array('id'=>$id))->save(array('order_status'=>\Common\Model\OrdersModel::ORDER_TOBE_SHIPPED));
+		$result = $this->model->where(array('id'=>$id))->save(array('order_status'=> Model\OrdersModel::ORDER_TOBE_SHIPPED));
 		if($result === false){
 			$flag = false;
 			$return = $this->model->getDbError();
@@ -221,7 +234,7 @@ class OrderService extends Service{
 	 */
 	public function backOrder($id,$reason,$isauto,$uid){
 		
-		$orderStatusHistoryModel = new \Common\Model\OrderStatusHistoryModel();
+		$orderStatusHistoryModel = new Model\OrderStatusHistoryModel();
 		$result = $this->model->where(array('id'=>$id))->find();
 		
 		if($result == false){			
@@ -232,7 +245,7 @@ class OrderService extends Service{
 			return $this->returnErr("订单ID错误!");			
 		}
 //		dump($result);
-		if($result['order_status'] != \Common\Model\OrdersModel::ORDER_TOBE_CONFIRMED){
+		if($result['order_status'] != Model\OrdersModel::ORDER_TOBE_CONFIRMED){
 			return $this->returnErr("当前订单状态无法变更！");
 		}
 		
@@ -242,14 +255,14 @@ class OrderService extends Service{
 			'operator'=>$uid,
 			'status_type'=>'ORDER',
 			'cur_status'=>$result['order_status'],
-			'next_status'=>\Common\Model\OrdersModel::ORDER_BACK,
+			'next_status'=>Model\OrdersModel::ORDER_BACK,
 		);
 		
 		$this->model->startTrans();
 		$flag = true;
 		$return = "";
 		
-		$result = $this->model->where(array('id'=>$id))->save(array('order_status'=>\Common\Model\OrdersModel::ORDER_BACK));
+		$result = $this->model->where(array('id'=>$id))->save(array('order_status'=>Model\OrdersModel::ORDER_BACK));
 		if($result === false){
 			$flag = false;
 			$return = $this->model->getDbError();
@@ -287,7 +300,7 @@ class OrderService extends Service{
 	 * 确认收货操作
 	 */
 	public function confirmReceive($id,$isauto,$uid){
-		$orderStatusHistoryModel = new \Common\Model\OrderStatusHistoryModel();
+		$orderStatusHistoryModel = new Model\OrderStatusHistoryModel();
 		$result = $this->model->where(array('id'=>$id))->find();
 		
 		if($result == false){
@@ -298,7 +311,7 @@ class OrderService extends Service{
 			return $this->returnErr("订单ID错误!");			
 		}
 		
-		if($result['order_status'] != \Common\Model\OrdersModel::ORDER_SHIPPED){
+		if($result['order_status'] != Model\OrdersModel::ORDER_SHIPPED){
 			return $this->returnErr("当前订单状态出错!");
 		}
 		
@@ -308,14 +321,14 @@ class OrderService extends Service{
 			'operator'=>$uid,
 			'status_type'=>'ORDER',
 			'cur_status'=>$result['order_status'],
-			'next_status'=>\Common\Model\OrdersModel::ORDER_RECEIPT_OF_GOODS,
+			'next_status'=>Model\OrdersModel::ORDER_RECEIPT_OF_GOODS,
 		);
 		
 		$this->model->startTrans();
 		$flag = true;
 		$return = "";
 		
-		$result = $this->model->where(array('id'=>$id))->save(array('order_status'=>\Common\Model\OrdersModel::ORDER_RECEIPT_OF_GOODS));
+		$result = $this->model->where(array('id'=>$id))->save(array('order_status'=>Model\OrdersModel::ORDER_RECEIPT_OF_GOODS));
 		if($result === false){
 			$flag = false;
 			$return = $this->model->getDbError();
@@ -352,7 +365,7 @@ class OrderService extends Service{
 	 * 退货操作
 	 */
 	public function returned($id,$isauto,$uid){
-		$orderStatusHistoryModel = new \Common\Model\OrderStatusHistoryModel();
+		$orderStatusHistoryModel = new Model\OrderStatusHistoryModel();
 		$result = $this->model->where(array('id'=>$id))->find();
 		
 		if($result == false){
@@ -363,7 +376,7 @@ class OrderService extends Service{
 			return $this->returnErr("订单ID错误!");			
 		}
 		
-		if($result['order_status'] == \Common\Model\OrdersModel::ORDER_RECEIPT_OF_GOODS ){
+		if($result['order_status'] == Model\OrdersModel::ORDER_RECEIPT_OF_GOODS ){
 			return $this->returnErr("当前订单状态出错!");
 		}
 		
@@ -373,14 +386,14 @@ class OrderService extends Service{
 			'operator'=>$uid,
 			'status_type'=>'ORDER',
 			'cur_status'=>$result['order_status'],
-			'next_status'=>\Common\Model\OrdersModel::ORDER_RETURNED,
+			'next_status'=>Model\OrdersModel::ORDER_RETURNED,
 		);
 		
 		$this->model->startTrans();
 		$flag = true;
 		$return = "";
 		
-		$result = $this->model->where(array('id'=>$id))->save(array('order_status'=>\Common\Model\OrdersModel::ORDER_RETURNED));
+		$result = $this->model->where(array('id'=>$id))->save(array('order_status'=>Model\OrdersModel::ORDER_RETURNED));
 		if($result === false){
 			$flag = false;
 			$return = $this->model->getDbError();
@@ -418,7 +431,7 @@ class OrderService extends Service{
 	 * 订单评价操作
 	 */
 	public function evaluation($id,$isauto,$uid){
-		$orderStatusHistoryModel = new \Common\Model\OrderStatusHistoryModel();
+		$orderStatusHistoryModel = new Model\OrderStatusHistoryModel();
 		$result = $this->model->where(array('id'=>$id))->find();
 		
 		if($result == false){
@@ -429,7 +442,7 @@ class OrderService extends Service{
 			return $this->returnErr("订单ID错误!");			
 		}
 		
-		if($result['order_status'] != \Common\Model\OrdersModel::ORDER_RECEIPT_OF_GOODS ){
+		if($result['order_status'] != Model\OrdersModel::ORDER_RECEIPT_OF_GOODS ){
 			return $this->returnErr("当前订单状态出错!");
 		}
 		
@@ -439,14 +452,14 @@ class OrderService extends Service{
 			'operator'=>$uid,
 			'status_type'=>'COMMENT',
 			'cur_status'=>$result['order_status'],
-			'next_status'=>\Common\Model\OrdersModel::ORDER_COMPLETED,
+			'next_status'=>Model\OrdersModel::ORDER_COMPLETED,
 		);
 		
 		$this->model->startTrans();
 		$flag = true;
 		$return = "";
 		
-		$result = $this->model->where(array('id'=>$id))->save(array('comment_status'=>\Common\Model\OrdersModel::ORDER_HUMAN_EVALUATED,'order_status'=>\Common\Model\OrdersModel::ORDER_COMPLETED));
+		$result = $this->model->where(array('id'=>$id))->save(array('comment_status'=>Model\OrdersModel::ORDER_HUMAN_EVALUATED,'order_status'=>\Common\Model\OrdersModel::ORDER_COMPLETED));
 		if($result === false){
 			$flag = false;
 			$return = $this->model->getDbError();
