@@ -7,7 +7,7 @@
 // |-----------------------------------------------------------------------------------
 namespace Shop\Api;
 use Common\Api\Api;
-use Common\Model\CategoryPropModel;
+use Shop\Model\CategoryPropModel;
 
 class CategoryPropApi extends Api{
 
@@ -38,6 +38,12 @@ class CategoryPropApi extends Api{
      * 查询一条数据
      */
     const GET_INFO = "Shop/CategoryProp/getInfo";
+    /**
+     * 查询类目属性的值表
+     */
+    const QUERY_PROP_TABLE = "Shop/CategoryProp/queryPropTable";
+
+
 
 	protected function _init(){
 		$this->model = new CategoryPropModel();	

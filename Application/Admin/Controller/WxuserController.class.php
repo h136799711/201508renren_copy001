@@ -8,6 +8,7 @@
 
 namespace Admin\Controller;
 
+use Admin\Api\WxuserGroupApi;
 use Common\Api\WeixinApi;
 use Weixin\Api\WxaccountApi;
 use Weixin\Api\WxuserApi;
@@ -18,6 +19,70 @@ class WxuserController extends AdminController {
 	protected function _initialize() {
 		parent::_initialize();
 	}
+
+    /**
+     * 分销商管理
+     */
+    public  function  distribution(){
+
+        $nickname = I('post.nickname','');
+
+        $startdatetime = I('startdatetime', date('Y-m-d', time() - 30*24 * 3600), 'urldecode');
+        $enddatetime = I('enddatetime', date('Y-m-d', time()+24*3600), 'urldecode');
+
+        //分页时带参数get参数
+        $params = array('startdatetime' => $startdatetime, 'enddatetime' => $enddatetime);
+
+        $startdatetime = strtotime($startdatetime);
+        $enddatetime = strtotime($enddatetime);
+
+        if ($startdatetime === FALSE || $enddatetime === FALSE) {
+            LogRecord('INFO:' . $result['info'], '[FILE] ' . __FILE__ . ' [LINE] ' . __LINE__);
+            $this -> error(L('ERR_DATE_INVALID'));
+        }
+
+        $where = array('groupid'=>array('gt',1));
+
+        $where['subscribe_time'] = array( array('EGT', $startdatetime), array('elt', $enddatetime), 'and');
+        if(!empty($nickname)){
+            $where['nickname'] = array('like','%'.$nickname.'%');
+        }
+        $params = array();
+        $page = array('curpage'=>I('get.p',0),'size'=>10);
+        $order = "  create_time desc ";
+        $fields = false;
+
+        $result = apiCall(WxuserApi::QUERY,array($where,$page,$order,$fields,$params));
+
+        $group = apiCall(WxuserGroupApi::QUERY_NO_PAGING);
+
+        $this->exitIfError($group);
+
+        if(!$result['status']){
+            $this->error($result['info']);
+        }
+
+        $list = $result['info']['list'];
+        //2次循环处理 ， 用户组名称
+        foreach($list as &$vo){
+            foreach($group['info'] as $gp){
+                if($gp['id'] == $vo['groupid']){
+                    $vo['_group_name'] = $gp['name'];
+                }
+            }
+        }
+
+//        dump($list);
+
+
+        $this -> assign('startdatetime', $startdatetime);
+        $this -> assign('enddatetime', $enddatetime);
+        $this->assign("nickname",$nickname);
+        $this->assign("list",$list);
+        $this->assign("show",$result['info']['show']);
+
+        $this->display();
+    }
 	
 	/**
 	 * 查看
@@ -142,6 +207,9 @@ class WxuserController extends AdminController {
 	}
 
 	public function viewFamily() {
+
+        $level = I('post.level',1);
+
 		//get.startdatetime
 		$startdatetime = I('startdatetime', date('Y/m/d', time() - 24 * 3600), 'urldecode');
 		$enddatetime = I('enddatetime', date('Y/m/d', time()), 'urldecode');
@@ -165,13 +233,15 @@ class WxuserController extends AdminController {
 		$order = " subscribe_time desc ";
 		
 		$wxuserid = I('get.id',0);
+        
 
 		//
-		$result = apiCall(WxuserApi::QUERY_SUB_MEMBER, array($wxuserid, $page, $params));
+		$result = apiCall(WxuserApi::QUERY_SUB_MEMBER, array($wxuserid,$level, $page, $params));
 		
 		//
 		if ($result['status']) {
-			$this -> assign('startdatetime', $startdatetime);
+            $this -> assign("level",$level);
+            $this -> assign('startdatetime', $startdatetime);
 			$this -> assign('enddatetime', $enddatetime);
 			$this -> assign('show', $result['info']['show']);
 			$this -> assign('list', $result['info']['list']);
@@ -324,7 +394,12 @@ class WxuserController extends AdminController {
 	public function sendText(){
 		if(IS_GET){
 			$id = I('get.id',0);
-			$this->assign("uid",$id);
+            $result = apiCall(WxuserApi::GET_INFO,array(array('id'=>$id)));
+            $this->exitIfError($result);
+
+            $this->assign("vo",$result['info']);
+//			$this->assign("uid",$id);
+
 			$this->display();
 		}elseif(IS_POST){
 			$qf = I('get.qf','');

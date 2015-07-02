@@ -7,7 +7,7 @@
 // |-----------------------------------------------------------------------------------
 namespace Shop\Api;
 use Common\Api\Api;
-use Common\Model\BannersModel;
+use Shop\Model\BannersModel;
 use Think\Page;
 
 class BannersApi extends Api{

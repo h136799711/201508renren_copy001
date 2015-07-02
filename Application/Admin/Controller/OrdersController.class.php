@@ -9,13 +9,13 @@
 namespace Admin\Controller;
 
 use Common\Api\WeixinApi;
-use Common\Model\OrdersModel;
 use Shop\Api\OrdersApi;
 use Shop\Api\OrdersExpressApi;
 use Shop\Api\OrdersInfoViewApi;
 use Shop\Api\OrdersItemApi;
 use Shop\Api\OrderStatusApi;
 use Shop\Api\OrderStatusHistoryApi;
+use Shop\Model\OrdersModel;
 use Weixin\Api\WxaccountApi;
 use Weixin\Api\WxuserApi;
 

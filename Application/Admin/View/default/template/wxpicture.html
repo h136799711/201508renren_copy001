@@ -1,3 +1,4 @@
+
 <!-- Modal -->
 <div class="modal " id="wxuploadimg" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
 	<div class="modal-dialog">
@@ -8,6 +9,12 @@
 				<h4 class="modal-title" id="myModalLabel">选择图片</h4>
 			</div>
 			<div class="modal-body clearfix">
+
+                <div class="col-lg-12 col-md-12 form-inline">
+                    <input type="date" name="time" class="time form-control" placeholder="默认全部">
+                    <input type="text" name="q"  class="form-control" placeholder="输入文件名查找" />
+                    <button class="btn btn-sm btn-primary js_search" type="button" ><i class="fa fa-search"></i>查找</button>
+                </div>
 				<!--<div class="col-lg-2 col-md-2">
 								
 							</div>-->
@@ -111,11 +118,15 @@
 		 * 向服务器请求数据
 		 */
 		function queryImgList() {
+
+            var q = $("#wxuploadimg input[name='q']").val();
+            var time = $("#wxuploadimg input[name='time']").val();
 			$.ajax({
 				type: "post",
-				url: "{:U('Admin/Wxshop/picturelist')}",
+				url: "{:U('Admin/File/picturelist')}?p="+wxuploadimg.pager.index,
 				data: {
-					p: wxuploadimg.pager.index,
+                    time:time,
+                    q:q,
 					size: wxuploadimg.pager.size
 				},
 				dataType: "json",
@@ -138,6 +149,7 @@
 		function clearSelected(){			
 			$("#wxuploadimg .img-item.img-selected").removeClass("img-selected");			
 		}
+
 		/**
 		 * callback
 		 * @param {Object} cont 触发模态框的选择器
@@ -203,7 +215,13 @@
 					}
 					ev.preventDefault();
 					ev.stopPropagation();
-				})
+				});
+
+                //查找
+                $(".js_search").click(function(){
+                    queryImgList();
+                });//END 查找
+
 			}
 			hadBind = true;
 		}
@@ -249,7 +267,7 @@
 		"swf": "__CDN__/jquery-uploadify/3.2.1/uploadify.swf",
 		"fileObjName": "wxshop", //wxshop
 		"buttonText": "<i class='fa fa-upload'></i>本地上传",
-		"uploader": "{:U('Admin/Wxshop/uploadPicture',array('session_id'=>session_id()))}",
+		"uploader": "{:U('Admin/File/uploadWxshopPicture',array('session_id'=>session_id()))}",
 		"width": 120,
 		'removeTimeout': 1,
 		'fileTypeExts': '*.jpg; *.png; *.gif;*.jpeg',
@@ -275,7 +293,17 @@
 	$(function(){			
 		var init = '[autoinit]';
 		if(init == 'true'){
+
 			wxuploadimg.init({cont:".wxuploaderimg"});
 		}
+        if($.fn.datetimepicker){
+            $("#wxuploadimg input.time").datetimepicker({
+                lang: 'ch',
+                timepicker:false,
+                format:'Y-m-d',
+                formatDate:'Y-m-d'
+            });
+            console.log("日期初始化成功！");
+        }
 	})
 </script>

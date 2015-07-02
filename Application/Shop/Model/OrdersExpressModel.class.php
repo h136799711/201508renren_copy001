@@ -7,7 +7,7 @@
 // |-----------------------------------------------------------------------------------
 
 
-namespace Common\Model;
+namespace Shop\Model;
 use Think\Model;
 /**
  * CREATE TABLE IF NOT EXISTS `boye_2015cjfx`.`cjfx_orders_express` (

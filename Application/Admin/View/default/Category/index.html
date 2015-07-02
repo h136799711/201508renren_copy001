@@ -16,13 +16,16 @@
 			<notempty name="parent_vo">
 			<div class="text-center"><h4>上级类目: {$parent_vo.name} </h4></div>
 			</notempty>
+            <div class="alert alert-info">
+                 注意:点击类目名称进入子类目
+            </div>
 			<!-- 过滤\查询按钮 -->
 				<div class="filter-controls">
 					<!-- 日期查询 -->
 					<form action="{:U('Admin/Category/index',array('parent'=>$parent,'preparent'=>$preparent))}" method="post" class="form-inline">
 						<div class="form-group">
 							<label>类目名称</label>
-							<input type="text" name="name" value="{$name}" class="form-control"/>
+							<input type="text" name="name" placeholder="请输入类目名称" value="{$name}" class="form-control"/>
 						</div>
 						<button type="submit" class="btn btn-default btn-sm"><i class="fa fa-search"></i>{:L('BTN_SEARCH')}</button>
 					</form>
@@ -67,9 +70,13 @@
 										<a href="{:U('Admin/Category/index',array('level'=>$vo['level'],'parent'=>$vo['id'],'preparent'=>$vo['parent']))}">{$vo.name}</a>
 									</td>
 									<td>
+                                        <if condition="$vo['level'] gt 1">
 										<a href="{:U('Admin/CategoryProp/index',array('cate_id'=>$vo['id']))}" > 属性管理</a>	
-										<a href="{:U('Admin/CategorySku/index',array('cate_id'=>$vo['id'],'parent'=>$parent,'preparent'=>$preparent,'level'=>($level)))}" > SKU管理</a>	
-									</td>
+										<a href="{:U('Admin/CategorySku/index',array('cate_id'=>$vo['id'],'parent'=>$parent,'preparent'=>$preparent,'level'=>($level)))}" > SKU管理</a>
+                                        <else/>
+                                            此一级类目不能操作，必须添加二级类目
+                                        </if>
+                                    </td>
 									<td>
 										<a href="{:U('Admin/Category/edit',array('id'=>$vo['id'],'parent'=>$vo['parent'],'preparent'=>$preparent))}" class="btn btn-sm btn-default"><i class="fa fa-edit"></i>编辑</a>
 										<a href="{:U('Admin/Category/delete',array('id'=>$vo['id']))}" class="btn btn-sm btn-danger ajax-get confirm"><i class="fa fa-trash"></i>删除</a>

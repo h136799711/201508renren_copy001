@@ -8,7 +8,15 @@
 
 namespace Admin\Controller;
 
+use Admin\Api\DatatreeApi;
 use Admin\Api\WxstoreApi;
+use Common\Model\ProductSkuModel;
+use Shop\Api\CategoryApi;
+use Shop\Api\CategoryPropApi;
+use Shop\Api\ProductApi;
+use Shop\Api\ProductGroupApi;
+use Shop\Api\ProductSkuApi;
+use Shop\Api\StoreApi;
 
 class WxshopProductController extends AdminController {
 	
@@ -18,8 +26,8 @@ class WxshopProductController extends AdminController {
 
 			$storeid = I('get.storeid',0);
 			$map = array('parentid'=>C('DATATREE.WXPRODUCTGROUP'));
-			$result = apiCall("Admin/Datatree/queryNoPaging",array($map));
-			if(!$result['status']){
+			$result = apiCall(DatatreeApi::QUERY_NO_PAGING,array($map));
+            if(!$result['status']){
 				$this->error($result['info']);
 			}
 			
@@ -27,7 +35,7 @@ class WxshopProductController extends AdminController {
 			$this->assign("groups",$result['info']);
 			$this->assign("storeid",$storeid);
 			
-			$result = apiCall("Admin/ProductGroup/queryNoPaging",array(array('p_id'=>$id)));
+			$result = apiCall(ProductGroupApi::QUERY_NO_PAGING,array(array('p_id'=>$id)));
 			if(!$result['status']){
 				$this->error($result['info']);
 			}
@@ -61,7 +69,7 @@ class WxshopProductController extends AdminController {
 			$productid = I('get.productid','');
 			$id = I('get.id',0);
 			
-			$result = apiCall("Admin/Product/getInfo", array(array('product_id'=>$productid) ));
+			$result = apiCall(ProductApi::GET_INFO, array(array('product_id'=>$productid) ));
 			
 			if(!$result['status']){
 				$this->error($result['info']);
@@ -261,9 +269,10 @@ class WxshopProductController extends AdminController {
 			
 			$sku_info = json_decode(htmlspecialchars_decode($sku_info),JSON_UNESCAPED_UNICODE);
 			$sku_list = json_decode(htmlspecialchars_decode($sku_list),JSON_UNESCAPED_UNICODE);	
-			
-			$result = apiCall("Admin/ProductSku/addSkuList", array($id,$sku_info,$sku_list));
-			
+
+
+			$result = apiCall(ProductSkuApi::ADD_SKU_LIST, array($id,$sku_info,$sku_list));
+
 			if(!$result['status']){				
 				$this->error($result['info']);
 				
@@ -307,7 +316,7 @@ class WxshopProductController extends AdminController {
 				$this->error("缺少店铺ID");
 			}
 			$map['product_id'] = $productid;
-			$result = apiCall("Admin/Product/getInfo",array($map));
+			$result = apiCall(ProductApi::GET_INFO,array($map));
 			if($result['status']){
 				$detail = $result['info']['detail'];
 				
@@ -335,7 +344,7 @@ class WxshopProductController extends AdminController {
 			}
 			
 			$map['product_id'] = $productid;
-			$result = apiCall("Admin/Product/save",array($map,array('detail'=>$detail)));
+			$result = apiCall(ProductApi::SAVE,array($map,array('detail'=>$detail)));
 			if($result['status']){
 				$this->success("修改成功！");
 			}else{
@@ -357,10 +366,12 @@ class WxshopProductController extends AdminController {
 		}
 
         //检测storeid 是否合法
-        $result = apiCall(WxstoreApi::GET_INFO,array(array('id'=>$storeid,'uid'=>UID)));
+        $result = apiCall(StoreApi::GET_INFO,array(array('id'=>$storeid,'uid'=>UID)));
+
         if(!$result['status']){
             $this -> error($result['info']);
         }
+
         if(is_null($result['info'])){
             $this -> error("店铺ID不合法!");
         }
@@ -377,7 +388,7 @@ class WxshopProductController extends AdminController {
         $page = array('curpage' => I('get.p', 0), 'size' => C('LIST_ROWS'));
         $order = " createtime desc ";
 
-        $result = apiCall('Admin/Product/query', array($map, $page, $order, $params));
+        $result = apiCall(ProductApi::QUERY, array($map, $page, $order, $params));
 
 		//
 		if ($result['status']) {
@@ -388,7 +399,7 @@ class WxshopProductController extends AdminController {
 			$this -> assign('show', $result['info']['show']);
 			$this -> assign('list', $result['info']['list']);
 			
-			$store = apiCall('Admin/Wxstore/getInfo', array(array('id'=>$storeid)));
+			$store = apiCall(StoreApi::GET_INFO, array(array('id'=>$storeid)));
 			if(!$store['status']){
 				$this->error($store['info']);
 			}
@@ -410,7 +421,7 @@ class WxshopProductController extends AdminController {
 		$map = array('id' => I('get.id', -1));
 		
 		$entity['onshelf'] = $status;
-		$result = apiCall('Admin/Product/save', array($map,$entity));
+		$result = apiCall(ProductApi::SAVE, array($map,$entity));
 		
 		if ($result['status'] === false) {
 			LogRecord('[INFO]' . $result['info'], '[FILE] ' . __FILE__ . ' [LINE] ' . __LINE__);
@@ -434,7 +445,7 @@ class WxshopProductController extends AdminController {
 		//TODO: 检测商品的其它数据是否存在
 		$map = array('id' => I('id', -1));
 		
-		$result = apiCall('Admin/Product/delete', array($map));
+		$result = apiCall(ProductApi::DELETE, array($map));
 		
 		if ($result['status'] === false) {
 			LogRecord('[INFO]' . $result['info'], '[FILE] ' . __FILE__ . ' [LINE] ' . __LINE__);
@@ -444,8 +455,6 @@ class WxshopProductController extends AdminController {
 		}
 
 	}
-	
-	
 
 	/**
 	 * 商品预创建－选择类目
@@ -457,7 +466,7 @@ class WxshopProductController extends AdminController {
 		} else {
 			
 			$map = array('parent'=>0);
-			$result = apiCall("Admin/Category/queryNoPaging", array($map));
+			$result = apiCall(CategoryApi::QUERY_NO_PAGING, array($map));
 			
 			$storeid = I('get.storeid', 0);
 			
@@ -528,11 +537,10 @@ class WxshopProductController extends AdminController {
 		if(IS_GET){
 			
 			$id = I('get.id',0);
-			$result = apiCall("Admin/Product/getInfo", array(array('id'=>$id)));
+			$result = apiCall(ProductApi::GET_INFO, array(array('id'=>$id)));
 			
 			if($result['status']){
 				$imgs = explode(",",$result['info']['img']);
-				
 				array_pop($imgs);
 				$this->assign("imgs",$imgs);
 				$this->assign("vo",$result['info']);
@@ -561,7 +569,7 @@ class WxshopProductController extends AdminController {
 				'attrext_isunderguaranty'=>I('isunderguaranty',0),
 				'attrext_issupportreplace'=>I('issupportreplace',0),
 			);
-			$result = apiCall("Admin/Product/saveByID",array($id,$entity));
+			$result = apiCall(ProductApi::SAVE_BY_ID,array($id,$entity));
 			if(!$result['status']){
 				$this->error($result['info']);
 			}
@@ -579,7 +587,7 @@ class WxshopProductController extends AdminController {
 		if (IS_AJAX) {
 			$cate_id = I('cate_id', 0);
 			$map = array('cate_id'=>$cate_id);
-			$result = apiCall("Admin/CategoryProp/queryPropTable", array($map));
+			$result = apiCall(CategoryPropApi::QUERY_PROP_TABLE, array($map));
 			
 			if ($result['status']) {
 				$this -> success($result['info']);
@@ -633,24 +641,9 @@ class WxshopProductController extends AdminController {
 			$entity['product_code'] = $product['sku_list'][0]['product_code'];
 		}
 		
-		$result = apiCall("Admin/Product/add", array($entity));
+		$result = apiCall(ProductApi::ADD, array($entity));
 
 		return $result;
-	}
-
-	/**
-	 * 产品与分组进行关联
-	 */
-	private function productToGroup($wxshopapi, $productid) {
-		
-		$groups = I('groups', '');
-		if ($groups) {
-//			foreach ($groups as $vo) {
-//				$product_list = array('product_id' => $productid, 'mod_action' => 1);
-//				$result = $wxshopapi -> groupModProduct($vo, array($product_list));
-//			}
-		}
-
 	}
 	
 	private function getBaseAttr() {
@@ -724,127 +717,9 @@ class WxshopProductController extends AdminController {
 		}
 		return array($sku);
 	}
-	
-	
-	/**
-	 * 将本地数据库存储的商品信息转换为微信商品信息
-	 * @param $localproduct wxproduct表的一条信息
-	 */
-	private function toWeixinproduct($localproduct){
-		$imglist = array();
-		$img = explode(",", $localproduct['img']);
-		//		dump($img);
-		foreach ($img as $vo) {
-			if ($vo) {
-				$imglist[] = $vo;
-			}
-		}
-		//处理SKU_INFO
-		
-		$sku_info = json_decode($localproduct['sku_info']);
-		
-		
-		//处理商品属性
-		$property = $localproduct['properties'];
-		$property = explode(";", $property);
-		$properties = array();
-		foreach ($property as $vo) {
-			$prop = explode(",", $vo);
-			if (count($prop) == 2) {
-				$properties[] = array('id' => $prop[0], 'vid' => $prop[1]);
-			}
-		}
-		
-		//商品基本信息
-		$base_attr = array(
-			'name' => $localproduct['name'],
-		 	'category_id' => array($localproduct['cate_id']), 
-		 	'img' => $imglist, 
-		 	'main_img' => $localproduct['main_img'], 
-			'property' => $properties, 
-			'sku_info' => $sku_info, 
-			'buy_limit' => intval($localproduct['buy_limit']), 
-			'detail'=>array(),
-		);
-		
-		//商品详情
-		if(!empty($localproduct['detail'])){
-			$detail_arr = json_decode(htmlspecialchars_decode($localproduct['detail']),JSON_UNESCAPED_UNICODE);
-			for($i=0;$i<count($detail_arr);$i++){
-				if($detail_arr[$i]['type'] == 'text'){
-					array_push($base_attr['detail'],array('text'=>$detail_arr[$i]['ct']));
-				}else{
-					array_push($base_attr['detail'],array('img'=>$detail_arr[$i]['ct']));
-				}
-			}
-		}
-		
-		
-		//属性
-		$attrext = array(
-			'isPostFree' => intval($localproduct['attrext_ispostfree']) , 
-			'isHasReceipt' =>intval($localproduct['attrext_ishasreceipt']) , 
-			'isUnderGuaranty' => intval($localproduct['attrext_isunderguaranty']) , 
-			'isSupportReplace' => intval($localproduct['attrext_issupportreplace']) , 
-			'location' => array(
-				'country' => $localproduct['loc_country'], 
-				'province' => $localproduct['loc_province'], 
-				'city' => $localproduct['loc_city'], 
-				'address' => $localproduct['loc_address'], 
-			)			
-		);
-		
-		$sku_list = array();
-		
-		if($localproduct['has_sku'] == 0){
-			array_push($sku_list,array(			
-			'sku_id'=>''	,	
-			'ori_price'=>floatval($localproduct['ori_price']),
-			'price' => floatval($localproduct['price']),
-			'quantity' => intval($localproduct['quantity']),
-			'product_code' => $localproduct['product_code'],
-			'icon_url'=>$localproduct['main_img']
-			));
-		}else{
-			//多规格情况下处理
-			//去wxproduct_sku 查询
-			$skulist = apiCall("Admin/ProductSku/queryNoPaging", array(array('product_id'=>$localproduct['product_id'])));
-			$sku_list = $skulist['info'];
-			foreach($sku_list as &$vo){
-				unset($vo['id']);
-				unset($vo['product_id']);
-				unset($vo['createtime']);
-			}
-		}
-		
-		$delivery_info = [];
-		
-		if($localproduct['attr_ispostfree'] == 0){
-			if($localproduct['delivery_type'] == 1){
-				$delivery_info['delivery_type'] = 1;
-				$delivery_info['template_id'] = intval($localproduct['template_id']);
-				$delivery_info['express'] = [];
-			}else{
-				$delivery_info['delivery_type'] = 0;
-				$delivery_info['template_id'] = 0;
-				$delivery_info['express'] = json_decode($localproduct['express']);
-			}
-		}
-		
-		$return = array(
-			'product_base' => $base_attr, 
-			'attrext' => $attrext, 
-			'sku_list' => $sku_list
-		);
-		
-		if(count($delivery_info) > 0){
-			$return['delivery_info'] = $delivery_info;
-		}
-		
-		return $return;
-	}
-	
-	/**
+
+
+    /**
 	 * 将颜色SKU 放在最前面
 	 */
 	private function color2First($skulist){

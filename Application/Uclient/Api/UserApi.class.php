@@ -12,6 +12,40 @@ use Uclient\Api\Api;
 use Uclient\Model\UcenterMemberModel;
 
 class UserApi extends Api{
+
+    /**
+     * Get info
+     * @param  string $uid 用户ID或用户名
+     * @return array 用户信息
+     * @internal param bool $is_username 是否使用用户名查询
+     */
+    const GET_INFO = "Uclient/User/getInfo";
+    /**
+     * 注册接口
+     * @param  string $username 用户名
+     * @param  string $password 用户密码
+     * @param  string $email 用户邮箱
+     * @param  string $mobile 用户手机号码
+     * @param int $from 第三方Oauth2登录\注册来源
+     * @return array 注册失败-错误信息
+     */
+    const REGISTER = "Uclient/User/register";
+    /**
+     * 登录接口
+     * @param  string  $username 用户名
+     * @param  string  $password 用户密码
+     * @param  integer $type     用户名类型 （1-用户名，2-邮箱，3-手机，4-UID）
+     * @return integer           登录成功-用户ID，登录失败-错误编号
+     */
+    const LOGIN = "Uclient/User/login";
+    /**
+     * 获取用户信息
+     * @param  string  $uid         用户ID或用户名
+     * @param  boolean $is_username 是否使用用户名查询
+     * @return array                用户信息
+     */
+    const INFO = "Uclient/User/info";
+
     /**
      * 构造方法，实例化操作模型
      */
@@ -105,8 +139,9 @@ class UserApi extends Api{
 
     /**
      * 检测用户名
-     * @param  string  $field  用户名
-     * @return integer         错误编号
+     * @param $username
+     * @return int 错误编号
+     * @internal param string $field 用户名
      */
     public function checkUsername($username){
         $result =  $this->model->checkField($username, 1);
@@ -199,7 +234,8 @@ class UserApi extends Api{
         return $return;
 		
 	}
-	/**
+
+    /**
 	 * 获取注册错误代码的描述信息
 	 * 
 	 */
@@ -247,6 +283,5 @@ class UserApi extends Api{
 		
 		return $errDesc;
 	}
-	
 
 }

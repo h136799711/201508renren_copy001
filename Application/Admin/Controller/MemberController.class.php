@@ -7,6 +7,10 @@
 // |-----------------------------------------------------------------------------------
 namespace Admin\Controller;
 
+use Admin\Api\AuthGroupAccessApi;
+use Admin\Api\MemberApi;
+use Uclient\Api\UserApi;
+
 class MemberController extends AdminController {
 
 	public function index() {
@@ -146,5 +150,31 @@ class MemberController extends AdminController {
 		}	
 	
 	}
-	
+
+    public function view(){
+        $id = I('get.id',0);
+
+        $result = apiCall(MemberApi::GET_INFO, array(array("uid"=>$id)));
+        if(!$result['status']){
+            $this->error($result['info']);
+        }
+
+        $this->assign("userinfo",$result['info']);
+
+        $result = apiCall(UserApi::GET_INFO, array($id));
+
+        if(!$result['status']){
+            $this->error($result['info']);
+        }
+
+        $this->assign("useraccount",$result['info']);
+
+        $result = apiCall(AuthGroupAccessApi::QUERY_GROUP_INFO, array($id));
+        if(!$result['status']){
+            $this->error($result['info']);
+        }
+
+        $this->assign("userroles",$result['info']);
+        $this->display();
+    }
 }

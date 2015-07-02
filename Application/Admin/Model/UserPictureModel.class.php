@@ -16,14 +16,14 @@ use Think\Upload;
  * 负责图片的上传
  */
 
-class WxshopPictureModel extends Model{
+class UserPictureModel extends Model{
     /**
      * 自动完成
      * @var array
      */
     protected $_auto = array(
         array('status', 1, self::MODEL_INSERT),
-        array('createtime', NOW_TIME, self::MODEL_INSERT),
+        array('create_time', NOW_TIME, self::MODEL_INSERT),
     );
 
     /**
@@ -98,8 +98,9 @@ class WxshopPictureModel extends Model{
 
     /**
      * 检测当前上传的文件是否已经存在
-     * @param  array   $file 文件上传数组
-     * @return boolean       文件信息， false - 不存在该文件
+     * @param  array $file 文件上传数组
+     * @return bool 文件信息， false - 不存在该文件
+     * @throws \Exception
      */
     public function isFile($file){
         if(empty($file['md5'])){

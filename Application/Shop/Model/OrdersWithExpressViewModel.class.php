@@ -6,17 +6,14 @@
 // | Copyright (c) 2013-2016, http://www.itboye.com. All Rights Reserved.
 // |-----------------------------------------------------------------------------------
 
-namespace Common\Model;
-use Think\Model;
+namespace Shop\Model;
 
-/**
- * 商品类目模型
- */
-class CategoryModel extends Model{
-		
-	protected $_validate = array(
-		array('name','require','类目名称必须',self::MODEL_INSERT)
-	);
+use Think\Model\ViewModel;
+
+class OrdersWithExpressViewModel extends ViewModel{
 	
+	public $viewFields = array(
+		"Orders"=>array('_table'=>'__ORDERS__','id',	'_type'=>'LEFT','orderid','createtime','updatetime','wxuser_id','price','items','status','pay_status','order_status'),
+		"OrdersExpress"=>array("_on"=>"Orders.orderid=OrdersExpress.orderid","_table"=>"__ORDERS_EXPRESS__",'expressname','expresscode','expressno')
+	);
 }
-

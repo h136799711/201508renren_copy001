@@ -6,14 +6,10 @@
 // | Copyright (c) 2013-2016, http://www.itboye.com. All Rights Reserved.
 // |-----------------------------------------------------------------------------------
 
-namespace Common\Model;
-use Think\Model;
+namespace Shop\Model;
 
-class OrderStatusHistoryModel extends Model{
-	
-	protected $_auto = array(
-		array('create_time',NOW_TIME,self::MODEL_INSERT)
-	);
+class OrdersContactinfoModel extends \Think\Model{
 	
 }
+
 

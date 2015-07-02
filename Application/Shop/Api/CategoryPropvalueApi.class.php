@@ -7,7 +7,7 @@
 // |-----------------------------------------------------------------------------------
 namespace Shop\Api;
 use Common\Api\Api;
-use Common\Model\CategoryPropvalueModel;
+use Shop\Model\CategoryPropvalueModel;
 
 class CategoryPropvalueApi extends Api{
 

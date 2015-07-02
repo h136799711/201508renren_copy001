@@ -6,14 +6,19 @@
 // | Copyright (c) 2013-2016, http://www.itboye.com. All Rights Reserved.
 // |-----------------------------------------------------------------------------------
 
-namespace Common\Model;
-use Think\Model;
+namespace Shop\Model;
 
-class OrderCommentModel extends Model{
-	
+use Think\Model;
+use Think\Model\ViewModel;
+
+class BannersModel extends Model{
 	protected $_auto = array(
 		array('createtime',NOW_TIME,self::MODEL_INSERT)
 	);
+//
+// public $viewFields = array(
+//   'Banners'=>array('id','name','title'),
+//   'Datatree'=>array('title'=>'category_name', '_on'=>'Banners.position=Datatree.id'),
+// );
 	
 }
-

@@ -1,19 +1,22 @@
 <?php
 // .-----------------------------------------------------------------------------------
-// | WE TRY THE BEST WAY
+// | WE TRY THE BEST WAY 杭州博也网络科技有限公司
 // |-----------------------------------------------------------------------------------
 // | Author: 贝贝 <hebiduhebi@163.com>
-// | Copyright (c) 2013-2016 杭州博也网络科技, http://www.itboye.com. All Rights Reserved.
+// | Copyright (c) 2013-2016, http://www.itboye.com. All Rights Reserved.
 // |-----------------------------------------------------------------------------------
 
-namespace Common\Model;
-
+namespace Shop\Model;
 use Think\Model;
 
- 
-class OrdersItemModel extends Model{
-	
-	protected $_auto = array(
-//		array('createtime',NOW_TIME,self::MODEL_INSERT),
+/**
+ * 商品类目模型
+ */
+class CategoryModel extends Model{
+		
+	protected $_validate = array(
+		array('name','require','类目名称必须',self::MODEL_INSERT)
 	);
+	
 }
+

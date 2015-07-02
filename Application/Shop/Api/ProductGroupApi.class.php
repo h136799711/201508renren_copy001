@@ -9,7 +9,7 @@ namespace Shop\Api;
 
 use Common\Api\Api;
 
-use Common\Model\ProductGroupModel;
+use Shop\Model\ProductGroupModel;
 
 class ProductGroupApi extends  Api{
 

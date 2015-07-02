@@ -7,7 +7,7 @@
 // |-----------------------------------------------------------------------------------
 namespace Shop\Api;
 use Common\Api\Api;
-use Common\Model\CategoryModel;
+use Shop\Model\CategoryModel;
 
 
 class CategoryApi extends Api{
@@ -34,6 +34,10 @@ class CategoryApi extends Api{
      * 查询
      */
     const QUERY = "Shop/Category/query";
+    /**
+     * 不分页，查询
+     */
+    const QUERY_NO_PAGING = "Shop/Category/queryNoPaging";
     /**
      * 查询一条数据
      */

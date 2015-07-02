@@ -6,14 +6,20 @@
 // | Copyright (c) 2013-2016, http://www.itboye.com. All Rights Reserved.
 // |-----------------------------------------------------------------------------------
 
-namespace Admin\Api;
-use Common\Api\Api;
-use Admin\Model\WxshopPictureModel;
+namespace Shop\Model;
+use Think\Model;
 
-class WxshopPictureApi extends Api{
+/**
+ * 店铺
+ * Class StoreModel
+ * @package Common\Model
+ */
+class StoreModel extends Model{
 	
-	protected function _init(){
-		$this->model = new WxshopPictureModel();
-	}
+	protected $_auto = array(
+        array('status', 1, self::MODEL_INSERT),
+        array('create_time', NOW_TIME, self::MODEL_INSERT),
+        array('update_time', NOW_TIME, self::MODEL_BOTH),
+	);
 	
 }

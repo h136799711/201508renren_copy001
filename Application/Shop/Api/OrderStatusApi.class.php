@@ -8,8 +8,8 @@
 
 namespace Shop\Api;
 
-use Common\Model\OrdersModel;
-use Common\Model\OrderStatusHistoryModel;
+use Shop\Model\OrdersModel;
+use Shop\Model\OrderStatusHistoryModel;
 
 /**
  * 订单状态变更接口

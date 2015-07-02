@@ -11,6 +11,7 @@ namespace Weixin\Api;
 
 use Common\Api\Api;
 use Common\Model\WxuserModel;
+use Think\Page;
 
 class WxuserApi extends Api{
 
@@ -191,19 +192,23 @@ class WxuserApi extends Api{
      * @param $params
      * @return array
      */
-    public function querySubMember($wxuserid,$page,$params){
-        $countsql = "SELECT count(openid) as cnt FROM  __WXUSER_FAMILY__
-where parent_1 = $wxuserid or parent_2 = $wxuserid or parent_3 = $wxuserid or parent_4 = $wxuserid";
+    public function querySubMember($wxuserid,$level,$page,$params){
+        if($level < 0 || $level > 3){
+            //
+            return $this->apiReturnErr("参数错误!");
+        }
 
-        $subsql = "SELECT wxaccount_id,openid FROM  __WXUSER_FAMILY__
-where parent_1 = $wxuserid or parent_2 = $wxuserid or parent_3 = $wxuserid or parent_4 = $wxuserid";
+        $countsql = "SELECT count(uid) as cnt FROM  __WXUSER_FAMILY__ where `parent_$level` = $wxuserid";
 
-        $sql = "select wu.subscribe_time, wu.wxaccount_id,wu.id,wu.nickname,wu.avatar,wu.referrer,wu.openid,wu.score,wu.money,wu.costmoney,wu.status
+        $subsql = "SELECT wxaccount_id,uid FROM  __WXUSER_FAMILY__ where `parent_$level` = $wxuserid ";
+
+
+        $sql = "select wu.subscribe_time, wu.wxaccount_id,wu.id,wu.nickname,wu.avatar,wu.referrer,wu.uid,wu.score,wu.money,wu.status
 from ($subsql) as wf
-left join __WXUSER__ as wu on wf.wxaccount_id = wu.wxaccount_id and wf.openid = wu.openid
+left join __WXUSER__ as wu on wf.wxaccount_id = wu.wxaccount_id and wf.uid = wu.uid
 where wu.status =  1 limit ".$page['curpage'] . ',' . $page['size'];
         $model = M();
-        $subQuery = $model->table('__WXUSER_FAMILY__')->alias("wf")->field('wf.wxaccount_id,wf.openid')->where("parent_1 = $wxuserid or parent_2 = $wxuserid or parent_3 = $wxuserid or parent_4 = $wxuserid")->buildSql();
+        $subQuery = $model->table('__WXUSER_FAMILY__')->alias("wf")->field('wf.wxaccount_id,wf.uid')->where("`parent_$level` = $wxuserid")->buildSql();
 
         $result = $model->query($sql);
 
@@ -211,7 +216,7 @@ where wu.status =  1 limit ".$page['curpage'] . ',' . $page['size'];
         $count = $count[0]["cnt"];
 
         // 查询满足要求的总记录数
-        $Page = new \Think\Page($count, $page['size']);
+        $Page = new Page($count, $page['size']);
 
         //分页跳转的时候保证查询条件
         if ($params !== false) {

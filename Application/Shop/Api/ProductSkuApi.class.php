@@ -8,18 +8,63 @@
 
 namespace Shop\Api;
 use Common\Api\Api;
-use Common\Model\ProductSkuModel;
+use Shop\Model\ProductModel;
+use Shop\Model\ProductSkuModel;
 
 
 class ProductSkuApi extends Api{
-	
-	protected function _init(){
+
+
+    /**
+     * 查询，不分页
+     */
+    const QUERY_NO_PAGING = "Shop/ProductSku/queryNoPaging";
+    /**
+     * 添加
+     */
+    const ADD = "Shop/ProductSku/add";
+    /**
+     * 保存
+     */
+    const SAVE = "Shop/ProductSku/save";
+    /**
+     * 保存根据ID主键
+     */
+    const SAVE_BY_ID = "Shop/ProductSku/saveByID";
+
+    /**
+     * 删除
+     */
+    const DELETE = "Shop/ProductSku/delete";
+
+    /**
+     * 查询
+     */
+    const QUERY = "Shop/ProductSku/query";
+    /**
+     * 查询一条数据
+     */
+    const GET_INFO = "Shop/ProductSku/getInfo";
+    /**
+     * 保存sku数据
+     */
+    const ADD_SKU_LIST = "Shop/ProductSku/addSkuList";
+
+
+    /**
+     *
+     */
+    protected function _init(){
 		$this->model = new ProductSkuModel();
 	}
 
 
     /**
      * 保存sku数据
+     * @param $id
+     * @param $sku_info
+     * @param $list
+     * @return array
      */
     public function addSkuList($id,$sku_info,$list){
         $this->model->startTrans();
@@ -67,7 +112,7 @@ class ProductSkuApi extends Api{
                 'sku_info'=>json_encode($sku_info,JSON_UNESCAPED_UNICODE),
             );
             $map = array('id'=>$id);
-            $model = new \Common\Model\ProductModel();
+            $model = new ProductModel();
             $result = $model->where($map)->save($entity);
             if($result === false){
                 $flag = false;

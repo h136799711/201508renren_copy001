@@ -8,7 +8,7 @@
 
 namespace Shop\Api;
 use \Common\Api\Api;
-use \Common\Model\ProductModel;
+use \Shop\Model\ProductModel;
 use Think\Page;
 
 class ProductApi extends Api{
@@ -76,7 +76,7 @@ class ProductApi extends Api{
 	public function queryWithStoreUID($uid=0,$map = null, $page = array('curpage'=>0,'size'=>10), $order = false, $params = false, $fields = false){
 		$query = $this->model;
 		
-		$result = $query->query("select * from __WXSTORE__ where uid = $uid");
+		$result = $query->query("select * from __STORE__ where uid = $uid");
 		
 		if($result === false){
 			$error = $this -> model -> getDbError();
@@ -127,9 +127,13 @@ class ProductApi extends Api{
 		return $this -> apiReturnSuc(array("show" => $show, "list" => $list));
 	}
 
-
     /**
-     * 查询数据 包含店铺信息
+     * @param $name
+     * @param $type
+     * @param $page
+     * @param $order
+     * @param $params
+     * @return array
      */
     public function queryWithStore($name,$type,$page,$order,$params){
 
@@ -138,13 +142,13 @@ class ProductApi extends Api{
 
         $sql = "select  pd.name as name ,pd.id,pd.main_img,pd.buy_limit,pd.attrext_ispostfree,pd.attrext_ishasreceipt,pd.attrext_issupportreplace,pd.loc_country,pd.loc_province,pd.loc_city,pd.loc_address,pd.has_sku,pd.ori_price,pd.price,pd.quantity,pd.product_code,pd.cate_id,
 		pd.createtime,pd.updatetime,pd.onshelf,pd.status,pd.storeid,pd.properties,pd.sku_info,pd.detail,st.uid,st.name as storename,st.desc,st.isopen,st.logo,st.banner,st.wxno,st.exp";
-        $sql .= " from __WXPRODUCT__ as pd LEFT JOIN __WXSTORE__ as st on st.id = pd.storeid  ";
+        $sql .= " from __PRODUCT__ as pd LEFT JOIN __STORE__ as st on st.id = pd.storeid  ";
         if($type == '1'){
             $whereName = " pd.name ";
         }else{
             $whereName = "st.name";
         }
-        $sql .= " where pd.onshelf = ".\Common\Model\ProductModel::STATUS_ONSHELF;
+        $sql .= " where pd.onshelf = ".ProductModel::STATUS_ONSHELF;
         if(!empty($name)){
             $sql .= " and  $whereName like '%".$name."%' ";
         }
@@ -161,7 +165,7 @@ class ProductApi extends Api{
             $error = $this -> model -> getDbError();
             return $this -> apiReturnErr($error);
         }
-        $countSql = " select count(*) as cnt from __WXPRODUCT__ as pd LEFT JOIN __WXSTORE__ as st on st.id = pd.storeid   ";
+        $countSql = " select count(*) as cnt from __PRODUCT__ as pd LEFT JOIN __STORE__ as st on st.id = pd.storeid   ";
         if(!empty($name)){
             $countSql .= " where $whereName like '%".$name."%'";
         }
@@ -169,7 +173,7 @@ class ProductApi extends Api{
         $count = $query->query($countSql);
         $count = $count[0]['cnt'];
         // 查询满足要求的总记录数
-        $Page = new \Think\Page($count, $page['size']);
+        $Page = new Page($count, $page['size']);
 
         // 分页跳转的时候保证查询条件
         if ($params !== false) {
@@ -185,10 +189,14 @@ class ProductApi extends Api{
 
     }
 
-
-
+    /**
+     * @param $group_id
+     * @param $map
+     * @param $page
+     * @return array
+     */
     public function queryByGroup($group_id,$map,$page){
-        $result = $this->model->query("select g_id,p_id from __WXPRODUCT_GROUP__ where `g_id` = ".$group_id);
+        $result = $this->model->query("select g_id,p_id from __PRODUCT_GROUP__ where `g_id` = ".$group_id);
         if($result === FALSE){
             return $this->apiReturnErr($this->model->getDbError());
         }
@@ -225,7 +233,7 @@ class ProductApi extends Api{
 
         $count = $this -> model -> where($map) -> count();
         // 查询满足要求的总记录数
-        $Page = new \Think\Page($count, $page['size']);
+        $Page = new Page($count, $page['size']);
 
         // 分页跳转的时候保证查询条件
         if ($params !== false) {

@@ -19,5 +19,11 @@ class IndexController extends AdminController {
     public function tradeIndex(){
         $this->display();
     }
-	
+
+    /**
+     * 分销首页
+     */
+    public function distribution(){
+       $this->display();
+    }
 }

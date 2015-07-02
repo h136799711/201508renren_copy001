@@ -7,7 +7,7 @@
 // |-----------------------------------------------------------------------------------
 namespace Shop\Api;
 use Common\Api\Api;
-use \Common\Model\SkuvalueModel;
+use \Shop\Model\SkuvalueModel;
 
 class SkuvalueApi extends Api{
 

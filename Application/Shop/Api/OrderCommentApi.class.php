@@ -7,11 +7,11 @@
 // |-----------------------------------------------------------------------------------
 
 namespace Shop\Api;
-use Common\Model\OrderCommentModel;
+
 use \Common\Api\Api;
+use Shop\Model\OrderCommentModel;
+
 class OrderCommentApi extends Api{
-
-
 
     /**
      * 查询，不分页

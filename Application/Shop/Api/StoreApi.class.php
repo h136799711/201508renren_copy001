@@ -5,10 +5,10 @@
 // | Author: 贝贝 <hebiduhebi@163.com>
 // | Copyright (c) 2013-2016, http://www.itboye.com. All Rights Reserved.
 // |-----------------------------------------------------------------------------------
-namespace Admin\Api;
+namespace Shop\Api;
 
 use Common\Api\Api;
-use Common\Model\WxstoreModel;
+use Shop\Model\StoreModel;
 use Think\Page;
 
 /**
@@ -17,21 +17,48 @@ use Think\Page;
  * @package Admin\Api
  * @author 老胖子-何必都 <hebiduhebi@126.com>
  */
-class WxstoreApi extends Api
+class StoreApi extends Api
 {
 
     /**
      *  查询商品信息
      */
-    const  QUERY_PRODUCT_BY_UID = "Admin/Wxstore/queryProduct";
+    const  QUERY_PRODUCT_BY_UID = "Shop/Store/queryProduct";
+
     /**
-     * 获取单条信息
+     * 查询，不分页
      */
-    const  GET_INFO = "Admin/Wxstore/getInfo";
+    const QUERY_NO_PAGING = "Shop/Store/queryNoPaging";
+    /**
+     * 添加
+     */
+    const ADD = "Shop/Store/add";
+    /**
+     * 保存
+     */
+    const SAVE = "Shop/Store/save";
+    /**
+     * 查询一条数据
+     */
+    const GET_INFO = "Shop/Store/getInfo";
+    /**
+     * 保存根据ID主键
+     */
+    const SAVE_BY_ID = "Shop/Store/saveByID";
+
+    /**
+     * 删除
+     */
+    const DELETE = "Shop/Store/delete";
+
+    /**
+     * 查询
+     */
+    const QUERY = "Shop/Store/query";
 
     protected function _init()
     {
-        $this->model = new WxstoreModel();
+        $this->model = new StoreModel();
     }
 
 
@@ -43,12 +70,12 @@ class WxstoreApi extends Api
      * @return array
      */
     public function queryProduct($uid, $page = array('curpage' => 0, 'size' => 10), $order = false, $params = false){
-        $query = $this->model->alias("st")->join("LEFT JOIN __WXPRODUCT__ as wp on wp.storeid = st.id")->where(array("st.uid"=>$uid));
+        $query = $this->model->alias("st")->join("LEFT JOIN __PRODUCT__ as wp on wp.storeid = st.id")->where(array("st.uid"=>$uid));
 
         $query -> page($page['curpage'] . ',' . $page['size']) ->select();
 
 
-		$count = $this->model->alias("st")->join("LEFT JOIN __WXPRODUCT__ as wp on wp.storeid = st.id")->where(array("st.uid"=>$uid)) -> count();
+		$count = $this->model->alias("st")->join("LEFT JOIN __PRODUCT__ as wp on wp.storeid = st.id")->where(array("st.uid"=>$uid)) -> count();
 		// 查询满足要求的总记录数
 		$Page = new Page($count, $page['size']);
 

@@ -6,19 +6,14 @@
 // | Copyright (c) 2013-2016, http://www.itboye.com. All Rights Reserved.
 // |-----------------------------------------------------------------------------------
 
-namespace Common\Model;
-
+namespace Shop\Model;
 use Think\Model;
-use Think\Model\ViewModel;
 
-class BannersModel extends Model{
+class OrderStatusHistoryModel extends Model{
+	
 	protected $_auto = array(
-		array('createtime',NOW_TIME,self::MODEL_INSERT)
+		array('create_time',NOW_TIME,self::MODEL_INSERT)
 	);
-//
-// public $viewFields = array(
-//   'Banners'=>array('id','name','title'),
-//   'Datatree'=>array('title'=>'category_name', '_on'=>'Banners.position=Datatree.id'),
-// );
 	
 }
+

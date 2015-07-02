@@ -6,12 +6,13 @@
 // | Copyright (c) 2013-2016, http://www.itboye.com. All Rights Reserved.
 // |-----------------------------------------------------------------------------------
 
-namespace Common\Model;
-
+namespace Shop\Model;
 use Think\Model;
 
-class CategoryPropvalueModel extends  Model{
+class ProductGroupModel extends Model{
 	
+	protected $_auto = array(
+		array('updatetime','time',self::MODEL_INSERT,'function')
+	);
 	
 }
-

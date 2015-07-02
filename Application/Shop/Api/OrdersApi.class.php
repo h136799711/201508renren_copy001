@@ -10,8 +10,7 @@
 namespace Shop\Api;
 
 use Common\Api\Api;
-use Common\Model\OrdersItemModel;
-use Common\Model\OrdersModel;
+use Shop\Model\OrdersModel;
 
 class OrdersApi extends Api
 {

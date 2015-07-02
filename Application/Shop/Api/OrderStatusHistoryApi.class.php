@@ -7,7 +7,7 @@
 // |-----------------------------------------------------------------------------------
 namespace Shop\Api;
 
-use Common\Model\OrderStatusHistoryModel;
+use Shop\Model\OrderStatusHistoryModel;
 use Common\Api\Api;
 
 class OrderStatusHistoryApi extends Api{
