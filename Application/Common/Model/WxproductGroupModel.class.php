@@ -9,7 +9,7 @@
 namespace Common\Model;
 use Think\Model;
 
-class WxproductGroupModel extends Model{
+class ProductGroupModel extends Model{
 	
 	protected $_auto = array(
 		array('updatetime','time',self::MODEL_INSERT,'function')

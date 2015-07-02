@@ -239,7 +239,7 @@ class OrdersController extends ShopController {
 			array_push($sku_id_arr, -1);
 			$map['sku_id'] = array('in', $sku_id_arr);
 			$order = " product_id desc ";
-			$result = apiCall("Shop/WxproductSku/queryNoPaging", array($map, $order));
+			$result = apiCall("Shop/ProductSku/queryNoPaging", array($map, $order));
 			if (!$result['status']) {
 				LogRecord($result['info'], __FILE__ . __LINE__);
 				$this -> error($result['info']);
@@ -516,7 +516,7 @@ class OrdersController extends ShopController {
 		$map = array();
 		$map['id'] = array('in', $p_id_arr);
 		$order = " id desc ";
-		$result = apiCall("Shop/Wxproduct/queryNoPaging", array($map, $order));
+		$result = apiCall("Shop/Product/queryNoPaging", array($map, $order));
 
 		if (!$result['status']) {
 			LogRecord($result['info'], __FILE__ . __LINE__);

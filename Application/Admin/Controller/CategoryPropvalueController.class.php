@@ -7,6 +7,8 @@
 // |-----------------------------------------------------------------------------------
 namespace Admin\Controller;
 
+use Shop\Api\CategoryPropvalueApi;
+
 class CategoryPropvalueController extends AdminController{
 	
 	private $cate_id;
@@ -32,7 +34,7 @@ class CategoryPropvalueController extends AdminController{
 		
 		$order = " id asc ";
 		//
-		$result = apiCall("Admin/CategoryPropvalue/query",array($map,$page,$order,$params));
+		$result = apiCall(CategoryPropvalueApi::GET_INFO,array($map,$page,$order,$params));
 		
 		//
 		if($result['status']){
@@ -65,7 +67,7 @@ class CategoryPropvalueController extends AdminController{
 				'propvalueid'=>'custom'
 			);
 			
-			$result = apiCall("Admin/CategoryPropvalue/add",array($entity));
+			$result = apiCall(CategoryPropvalueApi::ADD,array($entity));
 			
 			
 			if($result['status']){
@@ -83,7 +85,7 @@ class CategoryPropvalueController extends AdminController{
 		$id = I('id','');
 		
 		if(IS_GET){
-			$result = apiCall("Admin/CategoryPropvalue/getInfo",array(array('id'=>$id)));
+			$result = apiCall(CategoryPropvalueApi::GET_INFO,array(array('id'=>$id)));
 			if($result['status']){
 				$this->assign("vo",$result['info']);
 			}
@@ -101,7 +103,7 @@ class CategoryPropvalueController extends AdminController{
 				'propvalueid'=>'custom'
 			);
 			
-			$result = apiCall("Admin/CategoryPropvalue/saveByID",array($id,$entity));
+			$result = apiCall(CategoryPropvalueApi::SAVE_BY_ID,array($id,$entity));
 						
 			if($result['status']){
 				$this->success("保存成功！",U('Admin/CategoryPropvalue/index',array('prop_id'=>$prop_id,'cate_id'=>$this->cate_id)));
@@ -117,7 +119,7 @@ class CategoryPropvalueController extends AdminController{
 	public function delete(){
 		$id = I('get.id',0);
 
-		$result = apiCall("Admin/CategoryPropvalue/delete",array(array('id'=>$id)));
+		$result = apiCall(CategoryPropvalueApi::DELETE,array(array('id'=>$id)));
 		if($result['status']){
 			$this->success("删除成功！");
 		}else{

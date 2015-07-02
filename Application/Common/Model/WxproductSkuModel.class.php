@@ -8,7 +8,7 @@
 namespace Common\Model;
 use Think\Model;
 
-class WxproductSkuModel extends Model{
+class ProductSkuModel extends Model{
 	
 	protected $_auto = array(
 		array('createtime',NOW_TIME,self::MODEL_INSERT)

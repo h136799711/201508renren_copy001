@@ -8,6 +8,10 @@
 
 namespace Admin\Controller;
 
+use Shop\Api\CategoryApi;
+use Shop\Api\SkuApi;
+use Shop\Api\SkuvalueApi;
+
 class CategorySkuController extends AdminController{
 	
 	protected $level;
@@ -40,7 +44,7 @@ class CategorySkuController extends AdminController{
 		$page = array('curpage' => I('get.p', 0), 'size' => C('LIST_ROWS'));
 		
 		$order = " id asc ";
-		$result = apiCall("Admin/Category/getInfo", array(array("id"=>$cate_id)));
+		$result = apiCall(CategoryApi::GET_INFO, array(array("id"=>$cate_id)));
 		
 		if(!$result['status']){
 			$this->error($result['info']);
@@ -48,7 +52,7 @@ class CategorySkuController extends AdminController{
 		
 		$cate_vo = $result['info'];
 		//
-		$result = apiCall("Admin/Sku/query",array($map,$page,$order,$params));
+		$result = apiCall(SkuApi::QUERY,array($map,$page,$order,$params));
 		
 		//
 		if($result['status']){
@@ -82,7 +86,7 @@ class CategorySkuController extends AdminController{
 				'sku_id'=>'custom'
 			);
 			
-			$result = apiCall("Admin/Sku/add",array($entity));
+			$result = apiCall(SkuApi::ADD,array($entity));
 			
 			
 			if($result['status']){
@@ -100,7 +104,7 @@ class CategorySkuController extends AdminController{
 		$id = I('id','');
 		
 		if(IS_GET){
-			$result = apiCall("Admin/Sku/getInfo",array(array('id'=>$id)));
+			$result = apiCall(SkuApi::GET_INFO,array(array('id'=>$id)));
 			if($result['status']){
 				$this->assign("vo",$result['info']);
 			}
@@ -118,7 +122,7 @@ class CategorySkuController extends AdminController{
 				'sku_id'=>'custom'
 			);
 			
-			$result = apiCall("Admin/Sku/saveByID",array($id,$entity));
+			$result = apiCall(SkuApi::SAVE_BY_ID,array($id,$entity));
 			
 			
 			if($result['status']){
@@ -135,13 +139,13 @@ class CategorySkuController extends AdminController{
 		
 		$id = I('get.id',0);
 		$map = array('sku_id'=>$id);
-		$result = apiCall("Admin/Skuvalue/queryNoPaging",array($map));
+		$result = apiCall(SkuvalueApi::QUERY_NO_PAGING,array($map));
 		if($result['status']){
 			if(count($result['info']) > 0){
 				$this->error("存在SKU值，请先删除SKU值！");				
 			}
 		
-			$result = apiCall("Admin/Sku/delete",array(array('id'=>$id)));
+			$result = apiCall(SkuApi::DELETE,array(array('id'=>$id)));
 			if($result['status']){
 				$this->success("删除成功！");
 			}else{

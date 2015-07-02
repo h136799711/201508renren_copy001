@@ -6,48 +6,45 @@
 // | Copyright (c) 2013-2016, http://www.itboye.com. All Rights Reserved.
 // |-----------------------------------------------------------------------------------
 namespace Shop\Api;
-
-use Common\Model\OrderStatusHistoryModel;
 use Common\Api\Api;
+use Common\Model\CategoryPropvalueModel;
 
-class OrderStatusHistoryApi extends Api{
+class CategoryPropvalueApi extends Api{
 
     /**
      * 查询，不分页
      */
-    const QUERY_NO_PAGING = "Shop/OrderStatusHistory/queryNoPaging";
+    const QUERY_NO_PAGING = "Shop/CategoryPropvalue/queryNoPaging";
     /**
      * 添加
      */
-    const ADD = "Shop/OrderStatusHistory/add";
+    const ADD = "Shop/CategoryPropvalue/add";
     /**
      * 保存
      */
-    const SAVE = "Shop/OrderStatusHistory/save";
+    const SAVE = "Shop/CategoryPropvalue/save";
     /**
      * 保存根据ID主键
      */
-    const SAVE_BY_ID = "Shop/OrderStatusHistory/saveByID";
+    const SAVE_BY_ID = "Shop/CategoryPropvalue/saveByID";
 
     /**
      * 删除
      */
-    const DELETE = "Shop/OrderStatusHistory/delete";
+    const DELETE = "Shop/CategoryPropvalue/delete";
 
     /**
      * 查询
      */
-    const QUERY = "Shop/OrderStatusHistory/query";
+    const QUERY = "Shop/CategoryPropvalue/query";
     /**
      * 查询一条数据
      */
-    const GET_INFO = "Shop/OrderStatusHistory/getInfo";
-
+    const GET_INFO = "Shop/CategoryPropvalue/getInfo";
 
 	protected function _init(){
-		$this->model = new OrderStatusHistoryModel();
-	}	
-
+		$this->model = new CategoryPropvalueModel();
+	}
 	
 }
 

@@ -8,6 +8,8 @@
 
 namespace Admin\Controller;
 
+use Shop\Api\SkuvalueApi;
+
 class CategorySkuvalueController extends AdminController{
 	
 	protected $level;
@@ -44,7 +46,7 @@ class CategorySkuvalueController extends AdminController{
 		
 		$order = " id asc ";
 		//
-		$result = apiCall("Admin/Skuvalue/query",array($map,$page,$order,$params));
+		$result = apiCall(SkuvalueApi::QUERY,array($map,$page,$order,$params));
 		
 		//
 		if($result['status']){
@@ -83,7 +85,7 @@ class CategorySkuvalueController extends AdminController{
 				'sku_id'=>$sku_id
 			);
 			
-			$result = apiCall("Admin/Skuvalue/add",array($entity));
+			$result = apiCall(SkuvalueApi::ADD,array($entity));
 			
 			
 			if($result['status']){
@@ -106,7 +108,7 @@ class CategorySkuvalueController extends AdminController{
 		$id = I('id','');
 		
 		if(IS_GET){
-			$result = apiCall("Admin/Skuvalue/getInfo",array(array('id'=>$id)));
+			$result = apiCall(SkuvalueApi::GET_INFO,array(array('id'=>$id)));
 			if($result['status']){
 				$this->assign("vo",$result['info']);
 			}
@@ -124,7 +126,7 @@ class CategorySkuvalueController extends AdminController{
 				'name'=>$name,
 			);
 			
-			$result = apiCall("Admin/Skuvalue/saveByID",array($id,$entity));
+			$result = apiCall(SkuvalueApi::SAVE_BY_ID,array($id,$entity));
 			
 			
 			if($result['status']){
@@ -141,7 +143,7 @@ class CategorySkuvalueController extends AdminController{
 		
 		$id = I('get.id',0);
 		
-		$result = apiCall("Admin/Skuvalue/delete",array(array('id'=>$id)));
+		$result = apiCall(SkuvalueApi::DELETE,array(array('id'=>$id)));
 		if($result['status']){
 			$this->success("删除成功！");
 		}else{

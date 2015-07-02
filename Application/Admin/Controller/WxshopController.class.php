@@ -27,7 +27,7 @@ class WxshopController extends AdminController{
 		
 	}
 	
-/**
+    /**
 	 * 商城配置
 	 */
 	public function config(){
@@ -242,7 +242,7 @@ class WxshopController extends AdminController{
 	public function delete(){
 		$map = array('id' => I('id', -1));
 		
-		$result = apiCall("Admin/Wxproduct/queryNoPaging",array(array('storeid'=>$map['id'])));
+		$result = apiCall("Admin/Product/queryNoPaging",array(array('storeid'=>$map['id'])));
 		
 		if(!$result['status']){
 			$this->error($result['info']);

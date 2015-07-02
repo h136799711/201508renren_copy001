@@ -130,10 +130,10 @@ class IndexController extends ShopController{
 		
 		$page = array('curpage'=>0,'size'=>10);
 		$order = "updatetime desc";
-		$map = array('onshelf'=>\Common\Model\WxproductModel::STATUS_ONSHELF);
+		$map = array('onshelf'=>\Common\Model\ProductModel::STATUS_ONSHELF);
 		$group_id = getDatatree("WXPRODUCTGROUP_RECOMMEND");
 		
-		$result = apiCall("Shop/Wxproduct/queryByGroup", array($group_id,$map));
+		$result = apiCall("Shop/Product/queryByGroup", array($group_id,$map));
 		if(!$result['status']){
 			LogRecord($result['info'], __FILE__.__LINE__);	
 		}

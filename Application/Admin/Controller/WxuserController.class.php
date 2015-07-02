@@ -8,6 +8,11 @@
 
 namespace Admin\Controller;
 
+use Common\Api\WeixinApi;
+use Weixin\Api\WxaccountApi;
+use Weixin\Api\WxuserApi;
+use Weixin\Api\WxuserFamilyApi;
+
 class WxuserController extends AdminController {
 	private $wxapi;
 	protected function _initialize() {
@@ -19,7 +24,7 @@ class WxuserController extends AdminController {
 	 */
 	public function view(){
 		$id = I('get.id',0);
-		$result = apiCall("Admin/Wxuser/getInfo", array(array('id'=>$id)));
+		$result = apiCall(WxuserApi::GET_INFO, array(array('id'=>$id)));
 		
 		if(!$result['status']){
 			$this->error($result['info']);
@@ -60,7 +65,7 @@ class WxuserController extends AdminController {
 		}
 		
 		//
-		$result = apiCall('Admin/Wxuser/query', array($map, $page, $order, $params));
+		$result = apiCall(WxuserApi::QUERY, array($map, $page, $order, $params));
 
 		//
 		if ($result['status']) {
@@ -88,7 +93,7 @@ class WxuserController extends AdminController {
 		$page = array('curpage' => 0, 'size' => 20);
 		$order = " subscribe_time desc ";
 
-		$result = apiCall("Admin/Wxuser/query", array($map, $page, $order, false, 'id,nickname,avatar,openid'));
+		$result = apiCall(WxuserApi::QUERY, array($map, $page, $order, false, 'id,nickname,avatar,openid'));
 
 		if ($result['status']) {
 			$list = $result['info']['list'];
@@ -107,7 +112,7 @@ class WxuserController extends AdminController {
 		if (IS_POST) {
 			$groupid = I('post.groupid', 0);
 			$id = I('post.uid', 0);
-			$result = apiCall("Admin/Wxuser/saveByID", array($id, array('groupid' => $groupid)));
+			$result = apiCall(WxuserApi::SAVE_BY_ID, array($id, array('groupid' => $groupid)));
 
 			if ($result['status']) {
 				$this -> success(L('RESULT_SUCCESS'), U('Admin/WxuserGroup/subMember', array('groupid' => $groupid)));
@@ -126,7 +131,7 @@ class WxuserController extends AdminController {
 			$groupid = I('get.groupid', 0);
 			$id = I('get.uid', 0);
 
-			$result = apiCall("Admin/Wxuser/saveByID", array($id, array('groupid' => 0)));
+			$result = apiCall(WxuserApi::SAVE_BY_ID, array($id, array('groupid' => 0)));
 
 			if ($result['status']) {
 				$this -> success(L('RESULT_SUCCESS'), U('Admin/WxuserGroup/subMember', array('groupid' => $groupid)));
@@ -162,7 +167,7 @@ class WxuserController extends AdminController {
 		$wxuserid = I('get.id',0);
 
 		//
-		$result = apiCall('Admin/Wxuser/querySubMember', array($wxuserid, $page, $params));
+		$result = apiCall(WxuserApi::QUERY_SUB_MEMBER, array($wxuserid, $page, $params));
 		
 		//
 		if ($result['status']) {
@@ -186,7 +191,7 @@ class WxuserController extends AdminController {
 		$uid = session("uid");
 		
 		$wxaccount = getWxAccountID();// "eotprkjn1426473619";		
-		$result = apiCall('Weixin/Wxaccount/getInfo', array( array('id' => $wxaccount)));
+		$result = apiCall(WxaccountApi::GET_INFO, array( array('id' => $wxaccount)));
 		
 		if($result['status'] === false){
 			$this->error($result['info']);	
@@ -194,7 +199,7 @@ class WxuserController extends AdminController {
 		if(is_array($result['info'])){
 			$appid = $result['info']['appid'];
 			$appsecret = $result['info']['appsecret'];
-			$this->wxapi = new \Common\Api\WeixinApi($appid,$appsecret);
+			$this->wxapi = new WeixinApi($appid,$appsecret);
 			$nextOpenID = I('get.next_openid','');
 			$userlist = $this->wxapi->getUserList($nextOpenID);
 //			dump($users);
@@ -251,7 +256,7 @@ class WxuserController extends AdminController {
 		
 		$map = array('openid' => $openid, 'wxaccount_id' => $wxaccountid);
 
-		$result = apiCall('Weixin/Wxuser/getInfo', array($map));
+		$result = apiCall(WxuserApi::GET_INFO, array($map));
 		$wxuserEntity = "";
 		if($result['status']){
 			$wxuserEntity = $result['info'];
@@ -279,16 +284,8 @@ class WxuserController extends AdminController {
 		$model -> startTrans();
 		$error = "";
 		$flag = true;
-//@deprecated 已弃用						
-//		$result = apiCall("Weixin/Commission/createOneIfNone", array($wxaccountid, $openid));
-//		
-//		if ($result['status'] === false) {
-//			$error = $result['info'];
-//			$flag = false;
-//		}
-//		dump("123456");
-//		dump($result);
-		$result = apiCall("Weixin/WxuserFamily/createOneIfNone", array($wxaccountid, $openid));
+
+		$result = apiCall(WxuserFamilyApi::CREATE_ONE_IF_NONE, array($wxaccountid, $openid));
 		
 		if ($flag && $result['status'] === false) {
 			$error = $result['info'];
@@ -300,15 +297,13 @@ class WxuserController extends AdminController {
 		//判断是否已记录
 		if ($wxuserEntity != "") {
 			//更新
-			$result = apiCall('Weixin/Wxuser/save', array($map, $wxuser));
+			$result = apiCall(WxuserApi::SAVE, array($map, $wxuser));
 		} else {
 			//新增
 			$wxuser['referrer'] = 0;
-			$result = apiCall('Weixin/Wxuser/add', array($wxuser));
+			$result = apiCall(WxuserApi::ADD, array($wxuser));
 		}
-		
-	
-		
+
 		if ($flag && $result['status'] === false) {
 			$error = $result['info'];
 			$flag = false;
@@ -348,8 +343,8 @@ class WxuserController extends AdminController {
 	public function sendToAll($text){
 		
 		$wxaccountid = getWxAccountID();
-//		$result = apiCall("Admin/Wxuser/getInfo",array(array("id"=>$wxuserid)));
-		$wxaccount = apiCall("Admin/Wxaccount/getInfo", array(array("id"=>$wxaccountid)));
+
+		$wxaccount = apiCall(WxaccountApi::GET_INFO, array(array("id"=>$wxaccountid)));
 		$openid = "";
 		
 		if($wxaccount['status'] && is_array($wxaccount['info'])){
@@ -357,7 +352,7 @@ class WxuserController extends AdminController {
 			
 			$appid =  $wxaccount['info']['appid'];
 			$appsecret =  $wxaccount['info']['appsecret'];				
-			$wxapi = new \Common\Api\WeixinApi($appid,$appsecret);
+			$wxapi = new WeixinApi($appid,$appsecret);
 			$result = $wxapi->getUserList($nextopenid);
 //			dump($result);
 			$total = $result['total'];
@@ -391,7 +386,7 @@ class WxuserController extends AdminController {
 		if($wxaccount['status'] && is_array($wxaccount['info'])){
 			$appid =  $wxaccount['info']['appid'];
 			$appsecret =  $wxaccount['info']['appsecret'];				
-			$wxapi = new \Common\Api\WeixinApi($appid,$appsecret);
+			$wxapi = new WeixinApi($appid,$appsecret);
 			$wxapi->sendTextToFans($openid, $text);
 			$wxapi->sendTextToFans($openid, $text);//发2次
 		}

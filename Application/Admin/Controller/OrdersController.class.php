@@ -8,6 +8,17 @@
 
 namespace Admin\Controller;
 
+use Common\Api\WeixinApi;
+use Common\Model\OrdersModel;
+use Shop\Api\OrdersApi;
+use Shop\Api\OrdersExpressApi;
+use Shop\Api\OrdersInfoViewApi;
+use Shop\Api\OrdersItemApi;
+use Shop\Api\OrderStatusApi;
+use Shop\Api\OrderStatusHistoryApi;
+use Weixin\Api\WxaccountApi;
+use Weixin\Api\WxuserApi;
+
 class OrdersController extends AdminController {
 	/**
 	 * 初始化
@@ -23,7 +34,7 @@ class OrdersController extends AdminController {
 		$id = I('post.orderid',0);
 		$reason = I('post.reason','商家主动取消订单');
 		
-		$result = apiCall("Admin/Orders/getInfo", array(array('id'=>$id)));
+		$result = apiCall(OrdersApi::GET_INFO, array(array('id'=>$id)));
 		
 		if(!$result['status']){
 			$this->error($result['status']);
@@ -40,19 +51,21 @@ class OrdersController extends AdminController {
 		if($cur_status != 2){
 			$this->error("当前订单状态无法变更！");
 		}
-		
+
 		//
-		$result = apiCall("Admin/Orders/backOrder", array($id,$reason,false,UID));
+		$result = apiCall(OrderStatusApi::BACK_ORDER, array($id,$reason,false,UID));
 		
 		if(!$result['status']){
 			$this->error($result['info']);
 		}
+
+        //TODO: 发送退回消息移动到消息模块
 		$text = "您的订单:".$orderid." [被退回],原因:".$reason.". [查看详情]";
 		$orderViewLink = "<a href=\"".C('SITE_URL').U('Shop/Orders/view')."?id=$id\">$text</a>";
 		$this->sendTextTo($wxuserid,$orderViewLink);
+        //======================================
 		$this->success("退回成功!");
-		
-		
+
 	}
 	
 	/**
@@ -110,13 +123,9 @@ class OrdersController extends AdminController {
 		if ($userid > 0) {
 			$map['wxuser_id'] = $userid;
 		}
-		//		$result = apiCall("Admin/Wxuser/queryNoPaging", array(array(),false,"id,nickname,avatar") );
-		//		if($result['status']){
-		//			$this->assign("users",$result['info']);
-		//		}
 
 		//
-		$result = apiCall('Admin/OrdersInfoView/query', array($map, $page, $order, $params));
+		$result = apiCall(OrdersInfoViewApi::QUERY, array($map, $page, $order, $params));
 
 		//
 		if ($result['status']) {
@@ -139,12 +148,12 @@ class OrdersController extends AdminController {
 	 */
 	public function sure() {
 		$orderid = I('orderid', '');
-		$payStatus = I('payStatus', \Common\Model\OrdersModel::ORDER_PAID);
+		$payStatus = I('payStatus', OrdersModel::ORDER_PAID);
 		
 		$userid = I('uid', 0);
 		$params = array();
 		$map = array();
-		$map['order_status'] = \Common\Model\OrdersModel::ORDER_TOBE_CONFIRMED;
+		$map['order_status'] = OrdersModel::ORDER_TOBE_CONFIRMED;
 		if(!empty($payStatus)){
 			$map['pay_status'] = $payStatus;			
 		}
@@ -163,7 +172,7 @@ class OrdersController extends AdminController {
 		}
 
 		//
-		$result = apiCall('Admin/OrdersInfoView/query', array($map, $page, $order, $params));
+		$result = apiCall(OrdersInfoViewApi::QUERY, array($map, $page, $order, $params));
 
 		//
 		if ($result['status']) {
@@ -195,16 +204,15 @@ class OrdersController extends AdminController {
 			$map['orderid'] = array('like', $orderid . '%');
 			$params['orderid'] = $orderid;
 		}
-		//		if($payStatus != ''){
-		//			$map['pay_status'] = $payStatus;
-		//		}
+
+
 		if($orderStatus != ''){
 			$map['order_status'] = $orderStatus;
 			$params['order_status'] = $orderStatus;
 		}
-//		$map['order_status'] = \Common\Model\OrdersModel::ORDER_TOBE_SHIPPED;
+
 		//		$map['createtime'] = array( array('EGT', $startdatetime), array('elt', $enddatetime), 'and');
-		$map['pay_status'] = \Common\Model\OrdersModel::ORDER_PAID;
+		$map['pay_status'] = OrdersModel::ORDER_PAID;
 
 		$page = array('curpage' => I('get.p', 0), 'size' => C('LIST_ROWS'));
 		$order = " createtime desc ";
@@ -214,7 +222,7 @@ class OrdersController extends AdminController {
 		}
 
 		//
-		$result = apiCall('Admin/OrdersInfoView/query', array($map, $page, $order, $params));
+		$result = apiCall(OrdersInfoViewApi::QUERY, array($map, $page, $order, $params));
 
 		//
 		if ($result['status']) {
@@ -236,11 +244,11 @@ class OrdersController extends AdminController {
 		if (IS_GET) {
 			$id = I('get.id', 0);
 			$map = array('id' => $id);
-			$result = apiCall("Admin/OrdersInfoView/getInfo", array($map));
+			$result = apiCall(OrdersInfoViewApi::GET_INFO, array($map));
 			if ($result['status']) {
 				$orderid = $result['info']['orderid'];			
 				$this -> assign("order", $result['info']);
-				$result = apiCall("Admin/OrdersItem/queryNoPaging", array(array('orders_id'=>$id)));
+				$result = apiCall(OrdersItemApi::QUERY_NO_PAGING, array(array('orders_id'=>$id)));
 				if(!$result['status']){
 					ifFailedLogRecord($result, __FILE__.__LINE__);
 					$this->error($result['info']);
@@ -249,7 +257,7 @@ class OrdersController extends AdminController {
 				$this -> assign("items", $result['info']);
 				
 				//查询订单状态变更纪录				
-				$result = apiCall("Admin/OrderStatusHistory/queryNoPaging", array(array('orders_id'=>$orderid),"create_time desc"));
+				$result = apiCall(OrderStatusHistoryApi::QUERY_NO_PAGING, array(array('orders_id'=>$orderid),"create_time desc"));
 				
 				if(!$result['status']){
 					ifFailedLogRecord($result, __FILE__.__LINE__);
@@ -272,7 +280,7 @@ class OrdersController extends AdminController {
 		if (IS_GET) {
 			$id = I('get.id',0);
 			$map = array('id'=>$id);
-			$result = apiCall("Admin/OrdersInfoView/getInfo", array($map));
+			$result = apiCall(OrdersInfoViewApi::GET_INFO, array($map));
 			if($result['status']){
 				$this->assign("order",$result['info']);
 			}else{
@@ -280,7 +288,7 @@ class OrdersController extends AdminController {
 			}
 			
 			$map = array('orderid'=>$result['info']['orderid']);
-			$result = apiCall("Admin/OrdersExpress/getInfo", array($map));
+			$result = apiCall(OrdersExpressApi::GET_INFO, array($map));
 			if($result['status'] && is_array($result['info'])){
 				$this->assign("express",$result['info']);
 			}
@@ -313,23 +321,29 @@ class OrdersController extends AdminController {
 				$this->error("订单编号不能为空");
 			}
 			if(empty($id) || $id <= 0){
-				$result = apiCall("Admin/OrdersExpress/add", array($entity));
+				$result = apiCall(OrdersExpressApi::ADD, array($entity));
 			}else{
-				$result = apiCall("Admin/OrdersExpress/saveByID", array($id,$entity));
+				$result = apiCall(OrdersExpressApi::SAVE_BY_ID, array($id,$entity));
 			}
 			
 			
 			if($result['status']){
 				
 				// 1. 修改订单状态为已发货
-				$result = ServiceCall("Common/Order/shipped", array($orderOfid,false,UID));				
-				if(!$result){
+//                $result = ServiceCall("Common/Order/shipped", array($orderOfid,false,UID));
+                $result = apiCall(OrderStatusApi::SHIPPED, array($orderOfid,false,UID));
+
+                if(!$result['status']){
 					ifFailedLogRecord($result['info'], __FILE__.__LINE__);
 				}
+
+                //TODO: 移动到消息模块处理
+                //========================================
 				$text = "亲，您订单($orderid)已经发货，快递单号：$expressno,快递公司：".$expresslist[$expresscode].",请注意查收";
-				//DONE:
+
 				// 2.发送提醒信息给指定用户
 				$this->sendTextTo($wxuserid,$text);
+                //========================================
 				
 				$this->success(L('RESULT_SUCCESS'),U('Admin/Orders/deliverGoods'));
 			}else{
@@ -346,7 +360,7 @@ class OrdersController extends AdminController {
 //		if (IS_GET) {
 			$orderid = I('orderid', '');
 			$userid = I('uid', 0);
-			$orderStatus = I('orderstatus',\Common\Model\OrdersModel::ORDER_RECEIPT_OF_GOODS);
+			$orderStatus = I('orderstatus', OrdersModel::ORDER_RECEIPT_OF_GOODS);
 			$params = array();
 			$map = array();
 			if (!empty($orderid)) {
@@ -355,7 +369,7 @@ class OrdersController extends AdminController {
 			}
 			$map['wxaccountid'] = getWxAccountID();
 			$map['order_status'] = $orderStatus;
-			$map['pay_status'] = \Common\Model\OrdersModel::ORDER_PAID;
+			$map['pay_status'] = OrdersModel::ORDER_PAID;
 			
 			$params['order_status'] = $orderStatus;
 			$page = array('curpage' => I('get.p', 0), 'size' => C('LIST_ROWS'));
@@ -366,7 +380,7 @@ class OrdersController extends AdminController {
 			}
 
 			//
-			$result = apiCall('Admin/OrdersInfoView/query', array($map, $page, $order, $params));
+			$result = apiCall(OrdersInfoViewApi::QUERY, array($map, $page, $order, $params));
 
 			//
 			if ($result['status']) {
@@ -395,11 +409,7 @@ class OrdersController extends AdminController {
 		}elseif(IS_POST){
 			$id = I('post.id',0,'intval');
 
-//			$entity = array('order_status'=>\Common\Model\OrdersModel::ORDER_RETURNED,'status_note'=>'|[退货]'.I('post.note',''));
-//			$result = apiCall("Admin/Orders/saveByID",array($id,$entity) );
-			
-			$result = serviceCall("Common/Order/returned", array($id,false,UID));
-			
+			$result = apiCall(OrderStatusApi::RETURNED,array($id,false,UID));
 			if($result['status']){
 				$this->success("操作成功！",U('Admin/Orders/returned'));
 			}else{
@@ -427,15 +437,10 @@ class OrdersController extends AdminController {
 			if ($ids === -1) {
 				$this -> error(L('ERR_PARAMETERS'));
 			}
-			
-//			$ids = implode(',', $ids);
-//			$map = array('id' => array('in', $ids));
-//			$entity = array('order_status' => \Common\Model\OrdersModel::ORDER_TOBE_SHIPPED);
-//			$result = apiCall("Admin/Orders/save", array($map, $entity));
-			
+
 			
 			foreach($ids as $id){
-				$result = apiCall("Admin/Orders/sureOrder", array($id , false , UID));
+				$result = apiCall(OrderStatusApi::CONFIRM_ORDER, array($id , false , UID));
 				if (!$result['status']) {
 					$this -> error($result['info']);
 				}
@@ -454,8 +459,8 @@ class OrdersController extends AdminController {
 	private function sendTextTo($wxuserid,$text){
 		//
 		$wxaccountid = getWxAccountID();
-		$result = apiCall("Admin/Wxuser/getInfo",array(array("id"=>$wxuserid)));
-		$wxaccount = apiCall("Admin/Wxaccount/getInfo", array(array("id"=>$wxaccountid)));
+		$result = apiCall(WxuserApi::GET_INFO,array(array("id"=>$wxuserid)));
+		$wxaccount = apiCall(WxaccountApi::GET_INFO, array(array("id"=>$wxaccountid)));
 		$openid = "";
 		if($result['status'] && is_array($result['info'])){
 			$openid = $result['info']['openid'];
@@ -463,7 +468,7 @@ class OrdersController extends AdminController {
 		if($wxaccount['status'] && is_array($wxaccount['info'])){
 			$appid =  $wxaccount['info']['appid'];
 			$appsecret =  $wxaccount['info']['appsecret'];				
-			$wxapi = new \Common\Api\WeixinApi($appid,$appsecret);
+			$wxapi = new WeixinApi($appid,$appsecret);
 			$wxapi->sendTextToFans($openid, $text);
 			$wxapi->sendTextToFans($openid, $text);//发2次
 		}

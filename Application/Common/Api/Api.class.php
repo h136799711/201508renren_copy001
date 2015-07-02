@@ -338,13 +338,14 @@ abstract class Api {
 
 	}
 
-	/**
-	 * query
-	 * @param map 查询条件
-	 * @param page 分页参数
-	 * @param order 排序参数
-	 * @param params 点击分页时带参数
-	 */
+    /**
+     * query
+     * @param map 查询条件
+     * @param page 分页参数
+     * @param order 排序参数
+     * @param params 点击分页时带参数
+     * @return array
+     */
 	public function query($map = null, $page = array('curpage'=>0,'size'=>10), $order = false, $params = false, $fields = false) {
 		$query = $this->model;
 		if(!is_null($map)){

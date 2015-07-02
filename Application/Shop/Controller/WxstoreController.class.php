@@ -44,7 +44,7 @@ class WxstoreController extends ShopController{
 		//TODO: 商品展示要进行分页处理
 		$page  = array('curpage'=>$p,'size'=>100);
 		$order = " price desc";
-		$result = apiCall("Shop/Wxproduct/query", array($map,$page,$order));
+		$result = apiCall("Shop/Product/query", array($map,$page,$order));
 		
 		if(!$result['status']){
 			$this->error($result['info']);

@@ -9,7 +9,7 @@
 namespace Common\Model;
 use Think\Model;
 
-class WxproductModel extends Model{
+class ProductModel extends Model{
 	
 	/**
 	 * 上架

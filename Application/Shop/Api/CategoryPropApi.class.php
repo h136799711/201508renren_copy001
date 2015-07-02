@@ -5,17 +5,49 @@
 // | Author: 贝贝 <hebiduhebi@163.com>
 // | Copyright (c) 2013-2016, http://www.itboye.com. All Rights Reserved.
 // |-----------------------------------------------------------------------------------
-namespace Admin\Api;
+namespace Shop\Api;
 use Common\Api\Api;
 use Common\Model\CategoryPropModel;
 
 class CategoryPropApi extends Api{
-		
+
+
+    /**
+     * 添加
+     */
+    const ADD = "Shop/CategoryProp/add";
+    /**
+     * 保存
+     */
+    const SAVE = "Shop/CategoryProp/save";
+    /**
+     * 保存根据ID主键
+     */
+    const SAVE_BY_ID = "Shop/CategoryProp/saveByID";
+
+    /**
+     * 删除
+     */
+    const DELETE = "Shop/CategoryProp/delete";
+
+    /**
+     * 查询
+     */
+    const QUERY = "Shop/CategoryProp/query";
+    /**
+     * 查询一条数据
+     */
+    const GET_INFO = "Shop/CategoryProp/getInfo";
+
 	protected function _init(){
 		$this->model = new CategoryPropModel();	
 	}
-	
-	
+
+    /**
+     * 查询属性
+     * @param $map
+     * @return array
+     */
 	public function queryPropTable($map){
 				
 		$result = $this->model->where($map)->select();	

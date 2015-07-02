@@ -8,7 +8,7 @@
 
 namespace Admin\Controller;
 
-class WxproductGroupController extends AdminController{
+class ProductGroupController extends AdminController{
 		
 	public function add(){
 		$product_id = I('post.product_id',0);
@@ -24,13 +24,13 @@ class WxproductGroupController extends AdminController{
 					'g_id'=>$groupid,
 				);
 				
-				$result = apiCall("Admin/WxproductGroup/getInfo", array($entity));
+				$result = apiCall("Admin/ProductGroup/getInfo", array($entity));
 				if(!$result['status']){
 					$this->error($result['info']);
 				}
 
 				if(is_null($result['info'])){
-					$result = apiCall("Admin/WxproductGroup/add", array($entity));
+					$result = apiCall("Admin/ProductGroup/add", array($entity));
 					if(!$result['status']){
 						$this->error($result['info']);
 					}				
@@ -41,11 +41,11 @@ class WxproductGroupController extends AdminController{
 			array_push($groups,"-1");
 			$map = array('g_id'=>array('not in',$groups));
 			$map['p_id'] = $product_id;
-			$result = apiCall("Admin/WxproductGroup/delete", array($map));
+			$result = apiCall("Admin/ProductGroup/delete", array($map));
 		
 		}else{
 			$result = array('status'=>true);
-			$result = apiCall("Admin/WxproductGroup/delete", array(array('p_id'=>$product_id)));
+			$result = apiCall("Admin/ProductGroup/delete", array(array('p_id'=>$product_id)));
 		}
 		
 		if($result['status']){

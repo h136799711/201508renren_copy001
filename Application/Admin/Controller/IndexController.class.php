@@ -12,5 +12,12 @@ class IndexController extends AdminController {
     		
         $this->display();
     }
+
+    /**
+     * 交易首页
+     */
+    public function tradeIndex(){
+        $this->display();
+    }
 	
 }

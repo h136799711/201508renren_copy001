@@ -7,6 +7,8 @@
 // |-----------------------------------------------------------------------------------
 namespace Admin\Controller;
 
+use Shop\Api\CategoryApi;
+
 class CategoryController extends AdminController{
 	
 	public function index(){
@@ -26,13 +28,13 @@ class CategoryController extends AdminController{
 			$params['name'] = $name;
 		}
 		
-		$result = apiCall("Admin/Category/getInfo", array(array('id'=>$parent)));
+		$result = apiCall(CategoryApi::GET_INFO, array(array('id'=>$parent)));
 		if(!$result['status']){
 			$this->error($result['info']);
 		}
 		$parent_vo = $result['info'];
 		
-		$result = apiCall("Admin/Category/getInfo", array(array('id'=>$preparent)));
+		$result = apiCall(CategoryApi::GET_INFO, array(array('id'=>$preparent)));
 		$prepreparent = "";
 		if($result['status']){
 			$prepreparent = $result['info']['parent'];
@@ -43,7 +45,7 @@ class CategoryController extends AdminController{
 		
 		$order = " id asc ";
 		//
-		$result = apiCall("Admin/Category/query",array($map,$page,$order,$params));
+		$result = apiCall(CategoryApi::QUERY,array($map,$page,$order,$params));
 		
 		//
 		if($result['status']){
@@ -86,7 +88,7 @@ class CategoryController extends AdminController{
 				'level'=>$level,
 			);
 			
-			$result = apiCall("Admin/Category/add", array($entity));
+			$result = apiCall(CategoryApi::ADD, array($entity));
 			if($result['status']){
 				$this->success("添加成功！",U('Admin/Category/index'));
 			}else{
@@ -106,7 +108,7 @@ class CategoryController extends AdminController{
 			
 			$id = I('get.id',0);
 			$map = array('id'=>$id);
-			$result = apiCall("Admin/Category/getInfo", array($map));
+			$result = apiCall(CategoryApi::GET_INFO, array($map));
 			if($result['status']){
 				$this->assign("parent",$parent);
 				$this->assign("preparent",$preparent);
@@ -122,7 +124,7 @@ class CategoryController extends AdminController{
 				'name'=>I('post.name'),
 			);
 			
-			$result = apiCall("Admin/Category/saveByID", array($id,$entity));
+			$result = apiCall(CategoryApi::SAVE_BY_ID, array($id,$entity));
 			if($result['status']){
 				$this->success("编辑成功！");
 			}else{
@@ -134,14 +136,13 @@ class CategoryController extends AdminController{
 	public function delete(){
 		$id = I('get.id',0);
 		$map = array('parent'=>$id);
-		$result = apiCall("Admin/Category/queryNoPaging",array($map));
+		$result = apiCall(CategoryApi::QUERY,array($map));
 		if($result['status']){
-			if(count($result['info']) > 0){
+			if(count($result['info']['list']) > 0){
 				$this->error("存在子类目，无法删除此类目！");
-				
 			}
 
-			$result = apiCall("Admin/Category/delete",array(array('id'=>$id)));
+			$result = apiCall(CategoryApi::DELETE,array(array('id'=>$id)));
 			if($result['status']){
 				$this->success("删除成功！");
 			}else{

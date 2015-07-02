@@ -6,48 +6,45 @@
 // | Copyright (c) 2013-2016, http://www.itboye.com. All Rights Reserved.
 // |-----------------------------------------------------------------------------------
 namespace Shop\Api;
-
-use Common\Model\OrderStatusHistoryModel;
 use Common\Api\Api;
+use \Common\Model\SkuvalueModel;
 
-class OrderStatusHistoryApi extends Api{
+class SkuvalueApi extends Api{
+
 
     /**
      * 查询，不分页
      */
-    const QUERY_NO_PAGING = "Shop/OrderStatusHistory/queryNoPaging";
+    const QUERY_NO_PAGING = "Shop/Skuvalue/queryNoPaging";
     /**
      * 添加
      */
-    const ADD = "Shop/OrderStatusHistory/add";
+    const ADD = "Shop/Skuvalue/add";
     /**
      * 保存
      */
-    const SAVE = "Shop/OrderStatusHistory/save";
+    const SAVE = "Shop/Skuvalue/save";
     /**
      * 保存根据ID主键
      */
-    const SAVE_BY_ID = "Shop/OrderStatusHistory/saveByID";
+    const SAVE_BY_ID = "Shop/Skuvalue/saveByID";
 
     /**
      * 删除
      */
-    const DELETE = "Shop/OrderStatusHistory/delete";
+    const DELETE = "Shop/Skuvalue/delete";
 
     /**
      * 查询
      */
-    const QUERY = "Shop/OrderStatusHistory/query";
+    const QUERY = "Shop/Skuvalue/query";
     /**
      * 查询一条数据
      */
-    const GET_INFO = "Shop/OrderStatusHistory/getInfo";
-
+    const GET_INFO = "Shop/Skuvalue/getInfo";
 
 	protected function _init(){
-		$this->model = new OrderStatusHistoryModel();
-	}	
-
-	
+		$this->model = new SkuvalueModel();
+	}
 }
 

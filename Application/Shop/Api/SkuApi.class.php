@@ -5,10 +5,48 @@
 // | Author: 贝贝 <hebiduhebi@163.com>
 // | Copyright (c) 2013-2016, http://www.itboye.com. All Rights Reserved.
 // |-----------------------------------------------------------------------------------
-namespace Admin\Api;
+namespace Shop\Api;
+use Common\Api\Api;
 use \Common\Model\SkuModel;
 
-class SkuApi extends \Common\Api\Api{
+class SkuApi extends Api{
+
+
+    /**
+     * 查询，不分页
+     */
+    const QUERY_NO_PAGING = "Shop/Sku/queryNoPaging";
+    /**
+     * 添加
+     */
+    const ADD = "Shop/Sku/add";
+    /**
+     * 保存
+     */
+    const SAVE = "Shop/Sku/save";
+    /**
+     * 保存根据ID主键
+     */
+    const SAVE_BY_ID = "Shop/Sku/saveByID";
+
+    /**
+     * 删除
+     */
+    const DELETE = "Shop/Sku/delete";
+
+    /**
+     * 查询
+     */
+    const QUERY = "Shop/Sku/query";
+    /**
+     * 查询一条数据
+     */
+    const GET_INFO = "Shop/Sku/getInfo";
+    /**
+     * 查询sku以及其属性
+     */
+    const QUERY_SKU_TABLE = "Shop/Sku/querySkuTable";
+
 	protected function _init(){
 		$this->model = new SkuModel();
 	}

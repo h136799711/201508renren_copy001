@@ -67,7 +67,7 @@ class ShoppingCartController extends ShopController{
 		
 		if($id > 0){
 			
-			$result = apiCall("Admin/Wxproduct/getInfo", array(array('id'=>$id)));
+			$result = apiCall("Admin/Product/getInfo", array(array('id'=>$id)));
 			
 			if(!$result['status']){
 				LogRecord($result['info'], __FILE__.__LINE__);
@@ -79,7 +79,7 @@ class ShoppingCartController extends ShopController{
 			$product = $result['info'];
 			
 //			dump($sku_id);
-			$result = apiCall("Admin/WxproductSku/getInfo", array(array('sku_id'=>$sku_id)));
+			$result = apiCall("Admin/ProductSku/getInfo", array(array('sku_id'=>$sku_id)));
 			
 			if(!$result['status']){
 				$this->error($result['info']);

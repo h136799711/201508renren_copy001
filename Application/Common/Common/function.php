@@ -40,13 +40,6 @@ function apiCall($url, $vars=array(), $layer = 'Api') {
 	//TODO:考虑使用func_get_args 获取参数数组
 	return R($url, $vars, $layer);
 }
-/**
- * ServiceCall
- */
-function serviceCall($url, $vars) {
-	//TODO:考虑使用func_get_args 获取参数数组
-	return R($url, $vars, 'Service');
-}
 
 /**
  * 记录日志，系统运行过程中可能产生的日志
@@ -796,4 +789,14 @@ function create_dir_or_files($files){
             @file_put_contents($value, '');
         }
     }
+}
+
+/**
+ * 从session中取WxAccountID
+ */
+function getWxAccountID(){
+    if(session("?wxaccountid")){
+        return session("wxaccountid");
+    }
+    return -1;
 }

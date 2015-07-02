@@ -8,11 +8,14 @@
 
 namespace Admin\Controller;
 
+use Admin\Api\WxstoreApi;
+
 class WxshopProductController extends AdminController {
 	
 	public function group(){
 		$id = I('id',0);
 		if(IS_GET){
+
 			$storeid = I('get.storeid',0);
 			$map = array('parentid'=>C('DATATREE.WXPRODUCTGROUP'));
 			$result = apiCall("Admin/Datatree/queryNoPaging",array($map));
@@ -24,7 +27,7 @@ class WxshopProductController extends AdminController {
 			$this->assign("groups",$result['info']);
 			$this->assign("storeid",$storeid);
 			
-			$result = apiCall("Admin/WxproductGroup/queryNoPaging",array(array('p_id'=>$id)));
+			$result = apiCall("Admin/ProductGroup/queryNoPaging",array(array('p_id'=>$id)));
 			if(!$result['status']){
 				$this->error($result['info']);
 			}
@@ -58,7 +61,7 @@ class WxshopProductController extends AdminController {
 			$productid = I('get.productid','');
 			$id = I('get.id',0);
 			
-			$result = apiCall("Admin/Wxproduct/getInfo", array(array('product_id'=>$productid) ));
+			$result = apiCall("Admin/Product/getInfo", array(array('product_id'=>$productid) ));
 			
 			if(!$result['status']){
 				$this->error($result['info']);
@@ -153,7 +156,7 @@ class WxshopProductController extends AdminController {
 			
 //			dump($entity);
 			
-			$result = apiCall("Admin/Wxproduct/save", array(array('product_id'=>$productid),$entity));
+			$result = apiCall("Admin/Product/save", array(array('product_id'=>$productid),$entity));
 			
 			if(!$result['status']){
 				$this->error($result['info']);
@@ -173,7 +176,7 @@ class WxshopProductController extends AdminController {
 		if(IS_GET){
 			$id = I('get.id',0);
 			
-			$result = apiCall("Admin/Wxproduct/getInfo", array(array('id'=>$id) ));
+			$result = apiCall("Admin/Product/getInfo", array(array('id'=>$id) ));
 			
 			if(!$result['status']){
 				$this->error($result['info']);
@@ -189,7 +192,7 @@ class WxshopProductController extends AdminController {
 				
 				$this->assign("skuinfo",$this->getSkuValue(json_decode($skuinfo,JSON_UNESCAPED_UNICODE)));
 				
-				$skulist = apiCall("Admin/WxproductSku/queryNoPaging", array(array('product_id'=>$id)));
+				$skulist = apiCall("Admin/ProductSku/queryNoPaging", array(array('product_id'=>$id)));
 				if($skulist['status']){
 					$this->assign("skuvaluelist",json_encode($skulist['info'],JSON_UNESCAPED_UNICODE));
 				}
@@ -243,7 +246,7 @@ class WxshopProductController extends AdminController {
 					'has_sku'=>0,
 				);
 				
-				$result = apiCall("Admin/Wxproduct/saveByID", array($id,$entity));
+				$result = apiCall("Admin/Product/saveByID", array($id,$entity));
 				
 				if(!$result['status']){
 					$this->error($result['info']);
@@ -259,7 +262,7 @@ class WxshopProductController extends AdminController {
 			$sku_info = json_decode(htmlspecialchars_decode($sku_info),JSON_UNESCAPED_UNICODE);
 			$sku_list = json_decode(htmlspecialchars_decode($sku_list),JSON_UNESCAPED_UNICODE);	
 			
-			$result = apiCall("Admin/WxproductSku/addSkuList", array($id,$sku_info,$sku_list));
+			$result = apiCall("Admin/ProductSku/addSkuList", array($id,$sku_info,$sku_list));
 			
 			if(!$result['status']){				
 				$this->error($result['info']);
@@ -304,7 +307,7 @@ class WxshopProductController extends AdminController {
 				$this->error("缺少店铺ID");
 			}
 			$map['product_id'] = $productid;
-			$result = apiCall("Admin/Wxproduct/getInfo",array($map));
+			$result = apiCall("Admin/Product/getInfo",array($map));
 			if($result['status']){
 				$detail = $result['info']['detail'];
 				
@@ -332,7 +335,7 @@ class WxshopProductController extends AdminController {
 			}
 			
 			$map['product_id'] = $productid;
-			$result = apiCall("Admin/Wxproduct/save",array($map,array('detail'=>$detail)));
+			$result = apiCall("Admin/Product/save",array($map,array('detail'=>$detail)));
 			if($result['status']){
 				$this->success("修改成功！");
 			}else{
@@ -346,36 +349,44 @@ class WxshopProductController extends AdminController {
 	 */
 	public function index() {
 		$onshelf = I('onshelf', 0);
-		
+        $name = I('post.name', '');
+
 		$storeid = I('storeid', 0, "intval");
 		if (empty($storeid)) {
 			$this -> error("缺少店铺ID参数！");
 		}
-		//get.startdatetime
-		//分页时带参数get参数
-		$params = array('onshelf' => $onshelf,'storeid'=>$storeid);
-//		dump($params);
-		$name = I('post.name', '');
-		
-		$map = array();
-		if (!empty($name)) {
-			$map['name'] = array('like', '%'.$name.'%');
-			$params['name'] = $name;
-		}
-		$map['onshelf'] = $onshelf;
-		$map['storeid'] = $storeid;
-		$page = array('curpage' => I('get.p', 0), 'size' => C('LIST_ROWS'));
-		$order = " createtime desc ";
-		//
-		$result = apiCall('Admin/Wxproduct/query', array($map, $page, $order, $params));
+
+        //检测storeid 是否合法
+        $result = apiCall(WxstoreApi::GET_INFO,array(array('id'=>$storeid,'uid'=>UID)));
+        if(!$result['status']){
+            $this -> error($result['info']);
+        }
+        if(is_null($result['info'])){
+            $this -> error("店铺ID不合法!");
+        }
+
+        $params = array('onshelf' => $onshelf,'storeid'=>$storeid);
+
+        $map = array();
+        if (!empty($name)) {
+            $map['name'] = array('like', '%'.$name.'%');
+            $params['name'] = $name;
+        }
+        $map['onshelf'] = $onshelf;
+        $map['storeid'] = $storeid;
+        $page = array('curpage' => I('get.p', 0), 'size' => C('LIST_ROWS'));
+        $order = " createtime desc ";
+
+        $result = apiCall('Admin/Product/query', array($map, $page, $order, $params));
+
 		//
 		if ($result['status']) {
+
 			$this -> assign('name', $name);
 			$this -> assign('onshelf', $onshelf);
 			$this -> assign('storeid', $storeid);
 			$this -> assign('show', $result['info']['show']);
 			$this -> assign('list', $result['info']['list']);
-			
 			
 			$store = apiCall('Admin/Wxstore/getInfo', array(array('id'=>$storeid)));
 			if(!$store['status']){
@@ -390,16 +401,16 @@ class WxshopProductController extends AdminController {
 	}
 
 
-	/**
-	 * 商品上下架
-	 * @param $success_url 删除成功后跳转
-	 */
+    /**
+     * 商品上下架
+     * @internal param 删除成功后跳转 $success_url
+     */
 	public function shelf() {
 		$status = I('get.on',0,'intval');
 		$map = array('id' => I('get.id', -1));
 		
 		$entity['onshelf'] = $status;
-		$result = apiCall('Admin/Wxproduct/save', array($map,$entity));
+		$result = apiCall('Admin/Product/save', array($map,$entity));
 		
 		if ($result['status'] === false) {
 			LogRecord('[INFO]' . $result['info'], '[FILE] ' . __FILE__ . ' [LINE] ' . __LINE__);
@@ -410,10 +421,10 @@ class WxshopProductController extends AdminController {
 
 	}
 
-	/**
-	 * 单个删除
-	 * @param $success_url 删除成功后跳转
-	 */
+    /**
+     * 单个删除
+     * @param 删除成功后跳转|bool $success_url 删除成功后跳转
+     */
 	public function delete($success_url = false) {
 		
 		if ($success_url === false) {
@@ -423,7 +434,7 @@ class WxshopProductController extends AdminController {
 		//TODO: 检测商品的其它数据是否存在
 		$map = array('id' => I('id', -1));
 		
-		$result = apiCall('Admin/Wxproduct/delete', array($map));
+		$result = apiCall('Admin/Product/delete', array($map));
 		
 		if ($result['status'] === false) {
 			LogRecord('[INFO]' . $result['info'], '[FILE] ' . __FILE__ . ' [LINE] ' . __LINE__);
@@ -517,7 +528,7 @@ class WxshopProductController extends AdminController {
 		if(IS_GET){
 			
 			$id = I('get.id',0);
-			$result = apiCall("Admin/Wxproduct/getInfo", array(array('id'=>$id)));
+			$result = apiCall("Admin/Product/getInfo", array(array('id'=>$id)));
 			
 			if($result['status']){
 				$imgs = explode(",",$result['info']['img']);
@@ -550,7 +561,7 @@ class WxshopProductController extends AdminController {
 				'attrext_isunderguaranty'=>I('isunderguaranty',0),
 				'attrext_issupportreplace'=>I('issupportreplace',0),
 			);
-			$result = apiCall("Admin/Wxproduct/saveByID",array($id,$entity));
+			$result = apiCall("Admin/Product/saveByID",array($id,$entity));
 			if(!$result['status']){
 				$this->error($result['info']);
 			}
@@ -587,6 +598,7 @@ class WxshopProductController extends AdminController {
 		$has_sku = I('post.has_sku', 0, 'intval');
 
 		$entity = array(
+                    'uid'=>UID,
 					'storeid' => $storeid, 
 					'wxaccountid' => getWxAccountID(), 
 					'product_id' => $productid, 
@@ -621,7 +633,7 @@ class WxshopProductController extends AdminController {
 			$entity['product_code'] = $product['sku_list'][0]['product_code'];
 		}
 		
-		$result = apiCall("Admin/Wxproduct/add", array($entity));
+		$result = apiCall("Admin/Product/add", array($entity));
 
 		return $result;
 	}
@@ -796,7 +808,7 @@ class WxshopProductController extends AdminController {
 		}else{
 			//多规格情况下处理
 			//去wxproduct_sku 查询
-			$skulist = apiCall("Admin/WxproductSku/queryNoPaging", array(array('product_id'=>$localproduct['product_id'])));
+			$skulist = apiCall("Admin/ProductSku/queryNoPaging", array(array('product_id'=>$localproduct['product_id'])));
 			$sku_list = $skulist['info'];
 			foreach($sku_list as &$vo){
 				unset($vo['id']);

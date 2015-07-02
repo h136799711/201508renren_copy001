@@ -155,7 +155,7 @@ class PublicController extends BaseController {
 					session("LOGIN_MOD", MODULE_NAME);
 					
 					//登录日志
-					action_log(ActionModel::UserLogin,"member",$user['id'],$user['id']);
+					action_log(ActionModel::UserLogin,"common_member",$user['id'],$user['id']);
 
 					$this -> success(L('SUC_LOGIN'), U('Admin/Index/index'));
 

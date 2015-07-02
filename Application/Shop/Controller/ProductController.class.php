@@ -76,7 +76,7 @@ class ProductController extends ShopController {
 		
 		
 		$params = false;
-		$result = apiCall("Shop/Wxproduct/queryWithWxstore", array($q,$type, $page, $order, $params));
+		$result = apiCall("Shop/Product/queryWithWxstore", array($q,$type, $page, $order, $params));
 		if (!$result['status']) {
 			$this -> error($result['info']);
 		}
@@ -118,10 +118,10 @@ class ProductController extends ShopController {
 			
 			$page = array('curpage'=>$p,'size'=>10);
 			$order = " updatetime desc";
-			$map = array('onshelf'=>\Common\Model\WxproductModel::STATUS_ONSHELF);
+			$map = array('onshelf'=>\Common\Model\ProductModel::STATUS_ONSHELF);
 			$group_id = I('post.groupid',0);
 			
-			$result = apiCall("Shop/Wxproduct/queryByGroup", array($group_id,$map,$page));
+			$result = apiCall("Shop/Product/queryByGroup", array($group_id,$map,$page));
 			if(!$result['status']){
 				LogRecord($result['info'], __FILE__.__LINE__);
 				$this->error($result['info']);	
@@ -148,7 +148,7 @@ class ProductController extends ShopController {
 	public function detail() {
 		if (IS_GET) {
 			$id = I('get.id', 0);
-			$result = apiCall("Admin/Wxproduct/getInfo", array( array('id' => $id)));
+			$result = apiCall("Admin/Product/getInfo", array( array('id' => $id)));
 
 			if (!$result['status']) {
 				$this -> error($result['info']);
@@ -297,7 +297,7 @@ class ProductController extends ShopController {
 			}
 		}
 
-		$result = apiCall("Admin/WxproductSku/queryNoPaging", array( array('product_id' => $product['id'])));
+		$result = apiCall("Admin/ProductSku/queryNoPaging", array( array('product_id' => $product['id'])));
 		if (!$result['status']) {
 			$this -> error($result['info']);
 		}

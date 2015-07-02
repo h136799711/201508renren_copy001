@@ -7,6 +7,10 @@
 // |-----------------------------------------------------------------------------------
 namespace Admin\Controller;
 
+use Shop\Api\CategoryApi;
+use Shop\Api\CategoryPropApi;
+use Shop\Api\CategoryPropvalueApi;
+
 class CategoryPropController extends AdminController{
 		
 	public function index(){
@@ -25,7 +29,7 @@ class CategoryPropController extends AdminController{
 		
 		$order = " id asc ";
 		
-		$result = apiCall("Admin/Category/getInfo", array(array("id"=>$cate_id)));
+		$result = apiCall(CategoryApi::GET_INFO, array(array("id"=>$cate_id)));
 		
 		if(!$result['status']){
 			$this->error($result['info']);
@@ -34,7 +38,7 @@ class CategoryPropController extends AdminController{
 		$cate_vo = $result['info'];
 		
 		//
-		$result = apiCall("Admin/CategoryProp/query",array($map,$page,$order,$params));
+		$result = apiCall(CategoryPropApi::QUERY,array($map,$page,$order,$params));
 		
 		//
 		if($result['status']){
@@ -68,7 +72,7 @@ class CategoryPropController extends AdminController{
 				'propid'=>'custom'
 			);
 			
-			$result = apiCall("Admin/CategoryProp/add",array($entity));
+			$result = apiCall(CategoryPropApi::ADD,array($entity));
 			
 			
 			if($result['status']){
@@ -86,7 +90,7 @@ class CategoryPropController extends AdminController{
 		$id = I('id','');
 		
 		if(IS_GET){
-			$result = apiCall("Admin/CategoryProp/getInfo",array(array('id'=>$id)));
+			$result = apiCall(CategoryPropApi::GET_INFO,array(array('id'=>$id)));
 			if($result['status']){
 				$this->assign("vo",$result['info']);
 			}
@@ -104,7 +108,7 @@ class CategoryPropController extends AdminController{
 				'propid'=>'custom'
 			);
 			
-			$result = apiCall("Admin/CategoryProp/saveByID",array($id,$entity));
+			$result = apiCall(CategoryPropApi::SAVE_BY_ID,array($id,$entity));
 			
 			
 			if($result['status']){
@@ -121,13 +125,13 @@ class CategoryPropController extends AdminController{
 	public function delete(){
 		$id = I('get.id',0);
 		$map = array('prop_id'=>$id);
-		$result = apiCall("Admin/CategoryPropvalue/queryNoPaging",array($map));
+		$result = apiCall(CategoryPropvalueApi::QUERY_NO_PAGING,array($map));
 		if($result['status']){
 			if(count($result['info']) > 0){
 				$this->error("存在属性值，请先删除属性值！");				
 			}
 
-			$result = apiCall("Admin/CategoryProp/delete",array(array('id'=>$id)));
+			$result = apiCall(CategoryPropApi::DELETE,array(array('id'=>$id)));
 			if($result['status']){
 				$this->success("删除成功！");
 			}else{
