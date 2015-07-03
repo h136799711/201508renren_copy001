@@ -7,8 +7,11 @@
 // |-----------------------------------------------------------------------------------
 
 namespace Shop\Controller;
+use Admin\Api\ConfigApi;
+use Shop\Api\OrderStatusApi;
 use Think\Controller;
 use Common\Api;
+use Weixin\Api\WxaccountApi;
 
 class OnlinePayController extends ShopController {
 
@@ -20,17 +23,21 @@ class OnlinePayController extends ShopController {
 		$ids = I('post.id', 0);
 		$ids = rtrim($ids, "-");
 		$ids = explode("-", $ids);
-		$result = serviceCall("Common/Order/cashOndelivery", array($ids,$this->userinfo['id']));
+        $result = apiCall(OrderStatusApi::CASH_ON_DELIVERY, array($ids,$this->userinfo['id']));
 		
 		if (!$result['status']) {
 			$this -> error($result['info']);
 		}
 
+
+        //TODO: 转移到插件中
+        tag("send_to_msg_user",array($id, $text));
 		$wxuserid = $this->userinfo['id'];
 		
 		$text = "用户ID:$wxuserid,时间:" . date("Y-m-d H:i:s",time()) . ",订单ID:" . rtrim(I('post.id', 0),"-") . ",选择了货到付款,请登录后台查看订单。";
-		$token = C('SHOP_TOKEN');
-		$this->sendToWxaccount($token, $text);
+		$id = C('STORE_ID');
+
+		$this->sendToWxaccount($id, $text);
 
 		$this -> success("操作成功！");
 	}
@@ -40,11 +47,12 @@ class OnlinePayController extends ShopController {
      * @param $text
      */
     private function sendToWxaccount($token, $text) {
-		$result = apiCall("Shop/Wxaccount/getInfo", array(array('token' => $token)));
+		$result = apiCall(WxaccountApi::GET_INFO, array(array('token' => $token)));
 		if ($result['status']) {
 			$api = new Api\WeixinApi($result['info']['appid'], $result['info']['appsecret']);
 			$map = array('name' => "WXPAY_OPENID");
-			$result = apiCall("Admin/Config/getInfo", array($map));
+
+			$result = apiCall(ConfigApi::GET_INFO , array($map));
 			
 			addWeixinLog($result, "接收订单支付成功的OPENID");
 			if ($result['status']) {
