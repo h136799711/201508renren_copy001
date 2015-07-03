@@ -7,6 +7,8 @@
 // |-----------------------------------------------------------------------------------
 namespace Shop\Controller;
 
+use Shop\Api\StoreApi;
+
 class ShoppingCartController extends ShopController{
 	
 	private $cart;
@@ -195,7 +197,7 @@ class ShoppingCartController extends ShopController{
 			$store_ids .= ($key.",");
 		}
 		$map['id'] = array('in',$store_ids);
-		$result = apiCall("Shop/Wxstore/queryNoPaging", array($map));
+		$result = apiCall(StoreApi::QUERY_NO_PAGING, array($map));
 		
 		if(!$result['status']){
 			LogRecord($result['info'], __FILE__.__LINE__);
@@ -210,10 +212,14 @@ class ShoppingCartController extends ShopController{
 		}
 		return $store_info;
 	}
-	
-	/**
-	 * 移除商品
-	 */
+
+    /**
+     * 移除商品
+     * @param $s_id
+     * @param $p_id
+     * @param $sku_id
+     * @return bool
+     */
 	private function removeFromCart($s_id,$p_id,$sku_id){
 		
 		if(!isset($this->cart[$s_id])){
@@ -234,12 +240,11 @@ class ShoppingCartController extends ShopController{
 				}
 			}			
 		}
-//		dump($sku_id);
-//		dump($removeIndex);
+
 		if($removeIndex == -1){
 			return false;
 		}
-//		exit();
+
 		if($count == 1){
 			//只有一件商品时
 			unset($this->cart[$s_id]);

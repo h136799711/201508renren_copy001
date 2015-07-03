@@ -8,7 +8,6 @@
 
 namespace Admin\Controller;
 
-use Admin\Api\ConfigApi;
 use Weixin\Api\WxaccountApi;
 
 class WxaccountController extends AdminController{
@@ -37,16 +36,16 @@ class WxaccountController extends AdminController{
 			$this->display();
 		}
 	}
-	
+
 	/**
 	 * 首次关注时响应关键词管理
 	 */
 	public function saveFirstResp(){
-		$keyword = I('post.ss_keyword','');			
-		$config = array("SS_KEYWORD"=>$keyword);
-		$result = apiCall(ConfigApi::SET, array($config));
-		if($result['status']){
-			C('SS_KEYWORD',$keyword);
+		$keyword = I('post.ss_keyword','');
+
+        $result = apiCall(WxaccountApi::SAVE_BY_ID,array(getWxAccountID(),array("ss_keyword"=>$keyword)));
+
+        if($result['status']){
 			$this->success(L('RESULT_SUCCESS'));
 		}else{
 			$this->error($result['info']);
