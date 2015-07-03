@@ -7,7 +7,9 @@
 // |-----------------------------------------------------------------------------------
 
 namespace Shop\Controller;
+use Shop\Model\OrdersModel;
 use Think\Controller;
+
 class OrdersController extends ShopController {
 
 	protected function _initialize() {
@@ -32,7 +34,7 @@ class OrdersController extends ShopController {
 			}
 
 			$this -> assign("items", $result['info']);
-			$backStatus = \Common\Model\OrdersModel::ORDER_BACK;
+			$backStatus = OrdersModel::ORDER_BACK;
 			$result = apiCall("Shop/OrderStatusHistory/getInfo", array(array('orders_id'=>$orderid,'status_type'=>'ORDER','next_status'=>$backStatus)));
 			if(!$result['status']){
 				ifFailedLogRecord($result, __FILE__.__LINE__);
@@ -61,10 +63,10 @@ class OrdersController extends ShopController {
 		$map = array();
 		if ($type == 1) {
 			//待付款
-			$map['pay_status'] = \Common\Model\OrdersModel::ORDER_TOBE_PAID;
+			$map['pay_status'] = OrdersModel::ORDER_TOBE_PAID;
 		} elseif($type != 0) {
 			//货到付款，在线已支付
-			$map['pay_status'] = array('in', array(\Common\Model\OrdersModel::ORDER_PAID, \Common\Model\OrdersModel::ORDER_CASH_ON_DELIVERY));
+			$map['pay_status'] = array('in', array(OrdersModel::ORDER_PAID, OrdersModel::ORDER_CASH_ON_DELIVERY));
 
 		}
 
@@ -72,19 +74,19 @@ class OrdersController extends ShopController {
 			//1. 已支付、货到付款
 			//2. 待发货
 			//
-			$map['order_status'] = \Common\Model\OrdersModel::ORDER_TOBE_SHIPPED;
+			$map['order_status'] = OrdersModel::ORDER_TOBE_SHIPPED;
 
 		} elseif ($type == 3) {
 			//1. 已支付、货到付款
 			//2. 已发货
-			$map['order_status'] = \Common\Model\OrdersModel::ORDER_SHIPPED;
+			$map['order_status'] = OrdersModel::ORDER_SHIPPED;
 			$shouldGetExpressInfo = true;
 		} elseif ($type == 4) {
 			//1. 已支付、货到付款
 			//2. 已收货
 			//3. 待评论
-			$map['order_status'] = \Common\Model\OrdersModel::ORDER_RECEIPT_OF_GOODS;
-			$map['comment_status'] = \Common\Model\OrdersModel::ORDER_TOBE_EVALUATE;
+			$map['order_status'] = OrdersModel::ORDER_RECEIPT_OF_GOODS;
+			$map['comment_status'] = OrdersModel::ORDER_TOBE_EVALUATE;
 			$shouldGetExpressInfo = true;
 
 		}

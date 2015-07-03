@@ -7,8 +7,11 @@
 // |-----------------------------------------------------------------------------------
 
 namespace Shop\Controller;
+use Admin\Api\ConfigApi;
 use Common\Api\WeixinApi;
 use Think\Controller;
+use Weixin\Api\WxaccountApi;
+use Weixin\Api\WxuserApi;
 
 class ShopController extends  Controller {
 	
@@ -16,6 +19,7 @@ class ShopController extends  Controller {
 	protected $wxaccount;
 	protected $wxapi;
 	protected $openid;
+    protected $themeType;
 	
 	protected function _initialize() {
 		header("X-AUTHOR:ITBOYE.COM");
@@ -48,6 +52,9 @@ class ShopController extends  Controller {
 			exit();
 		}
 		$this->assign("userinfo",$this->userinfo);
+
+        //TODO: 商城模板切换
+        $this->themeType = "style1";
 	}
 	
 	//获取测试用户信息，用于PC端测试使用
@@ -71,8 +78,8 @@ class ShopController extends  Controller {
 	public function getWxuser($url) {
 
 		$this -> userinfo = null;
-		if (session("?userinfo")) {
-			$this -> userinfo = session("userinfo");
+		if (session("?global_user")) {
+			$this -> userinfo = session("global_user");
 			$this -> openid = $this->userinfo['openid'];
 		}
 		
@@ -107,7 +114,7 @@ class ShopController extends  Controller {
 	 */
 	private function refreshWxuser($userinfo) {
 		$wxuser = array();
-		
+		$uid = $this -> wxaccount['uid'];
 //		$wxuser['wxaccount_id'] = intval($this -> wxaccount['id']);
 		$wxuser['nickname'] = $userinfo['nickname'];
 		$wxuser['province'] = $userinfo['province'];
@@ -121,16 +128,16 @@ class ShopController extends  Controller {
 			
 			$map = array('openid' => $this -> openid, 'wxaccount_id' => $this -> wxaccount['id']);
 
-			$result = apiCall('Weixin/Wxuser/save', array($map, $wxuser));
+			$result = apiCall(WxuserApi::SAVE, array($map, $wxuser));
 
 			if (!$result['status']) {
-				LogRecord($result['info'], "[Home/Index/refreshWxuser]" . __LINE__);
+				LogRecord($result['info'], "商城控制器基类_刷新wxuser信息" . __LINE__);
 			}else{
-				$result = apiCall('Weixin/Wxuser/getInfo', array($map));
+				$result = apiCall(WxuserApi::GET_INFO , array($map));
 				if($result['status']){
 					
 					$this -> userinfo = $result['info'];
-					session("userinfo", $result['info']);
+					session("global_user", $result['info']);
 				}
 			}
 
@@ -142,20 +149,20 @@ class ShopController extends  Controller {
 	 * 刷新
 	 */
 	private function refreshWxaccount() {
-		$token = I('get.token', '');
+		$id = I('get.storeid', '');
 		if (!empty($token)) {
-			session("shop_token", $token);
-		} elseif (session("?shop_token")) {
-			$token = session("shop_token");
+			session("storeid", $id);
+		} elseif (session("?storeid")) {
+            $id = session("storeid");
 		}else{
-			$token = I('post.token', '');
+            $id = I('post.storeid', '');
 		}
-		
-		if(empty($token)){
-			$token = C('SHOP_TOKEN');
+        
+		if(empty($id)){
+            $id = C('STORE_ID');
 		}
-		
-		$result = apiCall('Weixin/Wxaccount/getInfo', array( array('token' => $token)));
+
+		$result = apiCall(WxaccountApi::GET_INFO, array( array('id' => $id)));
 		if ($result['status'] && is_array($result['info'])) {
 			$this -> wxaccount = $result['info'];
 			$this -> wxapi = new WeixinApi($this -> wxaccount['appid'], $this -> wxaccount['appsecret']);
@@ -173,7 +180,7 @@ class ShopController extends  Controller {
 		if ($config === false) {
 			$map = array();
 			$fields = 'type,name,value';
-			$result = apiCall('Admin/Config/queryNoPaging', array($map, false, $fields));
+			$result = apiCall(ConfigApi::QUERY_NO_PAGING, array($map, false, $fields));
 			if ($result['status']) {
 				$config = array();
 				if (is_array($result['info'])) {

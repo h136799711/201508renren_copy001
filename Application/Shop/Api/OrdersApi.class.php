@@ -16,6 +16,10 @@ class OrdersApi extends Api
 {
 
     /**
+     * 添加
+     */
+    const COUNT = "Shop/Orders/count";
+    /**
      * 查询，不分页
      */
     const QUERY_NO_PAGING = "Shop/Orders/queryNoPaging";

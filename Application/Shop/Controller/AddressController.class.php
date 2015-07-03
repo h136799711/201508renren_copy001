@@ -8,6 +8,11 @@
 
 namespace Shop\Controller;
 
+use Shop\Api\AddressApi;
+use Tool\Api\AreaApi;
+use Tool\Api\CityApi;
+use Tool\Api\ProvinceApi;
+
 class AddressController extends ShopController{
 	
 	/**
@@ -17,7 +22,7 @@ class AddressController extends ShopController{
 		$map = array();
 		$map['wxuserid'] = $this->userinfo['id'];
 		
-		$result = apiCall("Shop/Address/query", array($map));
+		$result = apiCall(AddressApi::QUERY, array($map));
 		
 		if(!$result['status']){
 			$this->error($result['info']);
@@ -36,19 +41,19 @@ class AddressController extends ShopController{
 			$map['wxuserid'] = $this->userinfo['id'];
 			$map['default'] = 1;
 			
-			$result = apiCall("Shop/Address/getInfo", array($map));
+			$result = apiCall(AddressApi::GET_INFO,array($map));
 
 			if(!$result['status']){
 				$this->error($result['info']);
 			}
 			if(is_array($result['info'])){
 				//获取城市，区域信息
-				$city  = apiCall("Tool/City/getListByProvinceID", array($result['info']['province']));
+				$city  = apiCall( CityApi::GET_LIST_BY_PROVINCE_ID, array($result['info']['province']));
 				if(!$city['status']){
 					LogRecord($city['info'], __FILE__.__LINE__);
 				}
 				$this->assign("city",$city['info']);
-				$area  = apiCall("Tool/Area/getListByCityID", array($result['info']['city']));
+				$area  = apiCall(AreaApi::GET_LIST_BY_CITY_ID , array($result['info']['city']));
 				if(!$area['status']){
 					LogRecord($city['info'], __FILE__.__LINE__);
 				}
@@ -56,11 +61,12 @@ class AddressController extends ShopController{
 			}
 			$this->assign("address",$result['info']);
 			
-			$result = apiCall("Tool/Province/queryNoPaging", array());
+			$result = apiCall(ProvinceApi::QUERY_NO_PAGING, array());
 			
 			if(!$result['status']){
 				$this->error($result['info']);
 			}
+
 			$this->assign("provinces",$result['info']);
 			
 			$this->display();
@@ -91,7 +97,7 @@ class AddressController extends ShopController{
 			if(empty($id)){
 				//新增
 				$entity['wxuserid'] = $this->userinfo['id'];
-				$result = apiCall("Shop/Address/add",array($entity));
+				$result = apiCall(AddressApi::ADD,array($entity));
 			}else{
 				//保存
 				$result = apiCall("Shop/Address/saveByID",array($id,$entity));

@@ -8,6 +8,8 @@
 
 namespace Shop\Controller;
 
+use Shop\Api\ProductApi;
+
 class ProductController extends ShopController {
 
 	public function quickSort($left, $right, $arr) {
@@ -76,7 +78,7 @@ class ProductController extends ShopController {
 		
 		
 		$params = false;
-		$result = apiCall("Shop/Product/queryWithWxstore", array($q,$type, $page, $order, $params));
+		$result = apiCall(ProductApi::QUERY_WITH_STORE, array($q,$type, $page, $order, $params));
 		if (!$result['status']) {
 			$this -> error($result['info']);
 		}

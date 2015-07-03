@@ -13,7 +13,11 @@ use Shop\Api\ProductApi;
 use Shop\Model\ProductModel;
 
 class IndexController extends ShopController{
-	
+
+    public function distributor(){
+        $this->theme($this->themeType)->display();
+    }
+
 	protected function _initialize(){
 		parent::_initialize();
 		$showStartPage = true;
