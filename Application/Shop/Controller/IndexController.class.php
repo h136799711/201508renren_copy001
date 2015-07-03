@@ -15,7 +15,11 @@ use Shop\Model\ProductModel;
 class IndexController extends ShopController{
 
     public function distributor(){
-        $this->theme($this->themeType)->display();
+    	if(IS_GET){
+       	 	$this->theme($this->themeType)->display();
+		}else{
+		
+		}
     }
 
 	protected function _initialize(){
