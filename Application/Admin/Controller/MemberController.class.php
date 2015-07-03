@@ -72,7 +72,7 @@ class MemberController extends AdminController {
 			}
 			
 			/* 调用注册接口注册用户 */			
-			$result = apiCall("Uclient/User/register", array($username, $password, $email));
+			$result = apiCall(UserApi::REGISTER, array($username, $password, $email));
 
             if($result['status']){ //注册成功
             	$entity = array(
@@ -81,7 +81,7 @@ class MemberController extends AdminController {
 					'realname'=>'',
 					'idnumber'=>'',
 				);
-				$result = apiCall("Admin/Member/add", array($entity));
+				$result = apiCall(MemberApi::ADD, array($entity));
                 if(!$result['status']){
                     $this->error('用户添加失败！');
                 } else {
@@ -90,13 +90,7 @@ class MemberController extends AdminController {
             } else { //注册失败，显示错误信息
                 $this->error($result['info']);
             }
-			
-//			$entity = array(
-//				'username'=>I('username','','trim'),
-//				'password'=>$password,
-//				'email'=>I('email','','trim'),
-//			);
-//			parent::add($entity);
+
 		}else{
 			$this->display();
 		}
@@ -106,7 +100,7 @@ class MemberController extends AdminController {
 	 * 检测用户名是否已存在
 	 */
 	public function check_username($username){
-		$result = apiCall("Uclient/User/checkUsername",array($username));
+		$result = apiCall(UserApi::CHECK_USER_NAME,array($username));
 		if($result['status']){
 			echo "true";
 		}else{
@@ -118,7 +112,7 @@ class MemberController extends AdminController {
 	 * 检测用户名是否已存在
 	 */
 	public function check_email(){
-			$result = apiCall("Uclient/User/checkEmail",array($email));
+			$result = apiCall(UserApi::CHECK_EMAIL,array($email));
 		if($result['status']){
 			echo "true";
 		}else{
@@ -137,7 +131,7 @@ class MemberController extends AdminController {
 		$page = array('curpage'=>0,'size'=>20);
 		$order = " last_login_time desc ";
 		
-		$result = apiCall("Admin/Member/query", array($map,$page, $order,false,'uid,nickname'));
+		$result = apiCall(MemberApi::QUERY, array($map,$page, $order,false,'uid,nickname'));
 		
 		if($result['status']){
 			$list = $result['info']['list'];

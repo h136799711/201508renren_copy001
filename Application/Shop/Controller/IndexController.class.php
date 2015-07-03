@@ -7,6 +7,11 @@
 // |-----------------------------------------------------------------------------------
 namespace Shop\Controller;
 
+use Admin\Api\DatatreeApi;
+use Shop\Api\BannersApi;
+use Shop\Api\ProductApi;
+use Shop\Model\ProductModel;
+
 class IndexController extends ShopController{
 	
 	protected function _initialize(){
@@ -38,7 +43,7 @@ class IndexController extends ShopController{
 		$order = "createtime desc";
 		$params = false;
 		
-		$result = apiCall("Shop/Banners/query",array($map,$page,$order,$params));
+		$result = apiCall(BannersApi::QUERY,array($map,$page,$order,$params));
 //		dump($result);
 		if(!$result['status']){
 			$this->error($result['info']);
@@ -47,11 +52,12 @@ class IndexController extends ShopController{
 		$this->assign("banners",$result['info']['list']);
 		
 		$map= array('parentid'=>C("DATATREE.STORE_TYPE"));
-		$result = apiCall("Admin/Datatree/query",array($map,$page,$order,$params));
+		$result = apiCall(DatatreeApi::QUERY,array($map,$page,$order,$params));
 		
 		if(!$result['status']){
 			$this->error($result['info']);
 		}
+
 		$this->assign("store_types",$result['info']['list']);
 		
 		// 获取推荐商品
@@ -85,7 +91,7 @@ class IndexController extends ShopController{
 		$page = array('curpage'=>0,'size'=>4);
 	 	$map = array('parentid'=>getDatatree("INDEX_4_ACTIVTIY"));
 		$order = " sort desc";
-		$result = apiCall("Admin/Datatree/query", array($map,$page,$order));
+		$result = apiCall(DatatreeApi::QUERY, array($map,$page,$order));
 	
 		if(!$result['status']){
 			$this->error($result['info']);
@@ -101,7 +107,7 @@ class IndexController extends ShopController{
 		
 		$page = array('curpage'=>0,'size'=>2);
 		$map = array('position'=>getDatatree("SHOP_INDEX_ADVERT"));
-		$result = apiCall("Admin/Banners/query", array($map,$page));
+		$result = apiCall(DatatreeApi::QUERY, array($map,$page));
 		if(!$result['status']){
 			$this->error($result['info']);
 		}
@@ -115,7 +121,7 @@ class IndexController extends ShopController{
 		
 		$page = array('curpage'=>0,'size'=>4);
 		$map = array('position'=>getDatatree("SHOP_INDEX_RECOMMEND_STORE"));
-		$result = apiCall("Admin/Banners/query", array($map));
+		$result = apiCall(DatatreeApi::QUERY, array($map));
 		if(!$result['status']){
 			$this->error($result['info']);
 		}
@@ -130,10 +136,10 @@ class IndexController extends ShopController{
 		
 		$page = array('curpage'=>0,'size'=>10);
 		$order = "updatetime desc";
-		$map = array('onshelf'=>\Common\Model\ProductModel::STATUS_ONSHELF);
+		$map = array('onshelf'=>ProductModel::STATUS_ONSHELF);
 		$group_id = getDatatree("WXPRODUCTGROUP_RECOMMEND");
 		
-		$result = apiCall("Shop/Product/queryByGroup", array($group_id,$map));
+		$result = apiCall(ProductApi::QUERY_BY_GROUP, array($group_id,$map));
 		if(!$result['status']){
 			LogRecord($result['info'], __FILE__.__LINE__);	
 		}

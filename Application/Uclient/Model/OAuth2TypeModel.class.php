@@ -13,7 +13,7 @@ namespace Uclient\Model;
  * Class OAuth2FromEnum
  * @package Uclient\Model
  */
-class OAuth2TypeEnum {
+class OAuth2TypeModel {
     /**
      * 来源QQ注册
      */

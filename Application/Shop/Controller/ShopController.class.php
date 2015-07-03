@@ -7,6 +7,7 @@
 // |-----------------------------------------------------------------------------------
 
 namespace Shop\Controller;
+use Common\Api\WeixinApi;
 use Think\Controller;
 
 class ShopController extends  Controller {
@@ -31,8 +32,8 @@ class ShopController extends  Controller {
 		}
 		C('SHOW_PAGE_TRACE', false);//设置不显示trace
 		$this -> refreshWxaccount();
-//		$debug = true;
-		$debug = false;
+		$debug = true;
+//		$debug = false;
 		
 		if($debug){
 			$this->getDebugUser();
@@ -151,13 +152,13 @@ class ShopController extends  Controller {
 		}
 		
 		if(empty($token)){
-//			$token = C('SHOP_TOKEN');
+			$token = C('SHOP_TOKEN');
 		}
 		
 		$result = apiCall('Weixin/Wxaccount/getInfo', array( array('token' => $token)));
 		if ($result['status'] && is_array($result['info'])) {
 			$this -> wxaccount = $result['info'];
-			$this -> wxapi = new \Common\Api\WeixinApi($this -> wxaccount['appid'], $this -> wxaccount['appsecret']);
+			$this -> wxapi = new WeixinApi($this -> wxaccount['appid'], $this -> wxaccount['appsecret']);
 		} else {
 			exit("公众号信息获取失败，请重试！");
 		}
@@ -190,11 +191,12 @@ class ShopController extends  Controller {
 		C($config);
 	}
 
-	/**
-	 * 根据配置类型解析配置
-	 * @param  integer $type  配置类型
-	 * @param  string  $value 配置值
-	 */
+    /**
+     * 根据配置类型解析配置
+     * @param  integer $type 配置类型
+     * @param  string $value 配置值
+     * @return array|string
+     */
 	private static function parse($type, $value) {
 		switch ($type) {
 			case 3 :
