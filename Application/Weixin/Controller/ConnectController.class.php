@@ -7,7 +7,10 @@
 // |-----------------------------------------------------------------------------------
 
 namespace Weixin\Controller;
+use Common\Api\AccountApi;
 use Think\Controller;
+use Uclient\Model\OAuth2TypeModel;
+use Weixin\Api\WxuserApi;
 
 /*
  * 微信通信控制器
@@ -102,7 +105,7 @@ class ConnectController extends WeixinController {
 			$this -> fans = S($fanskey);
 			if (is_null($this->fans) || $this -> fans === false) {
 				
-				$result = apiCall('Weixin/Wxuser/getInfo', array( array('wxaccount_id'=>$this -> wxaccount['id'], 'openid' => $this->getOpenID())));
+				$result = apiCall(WxuserApi::GET_INFO , array( array('wxaccount_id'=>$this -> wxaccount['id'], 'openid' => $this->getOpenID())));
 				addWeixinLog($result,"wxuser getInfo");
 				if ($result['status'] && is_array($result['info'])) {
 					S($fanskey,  $result['info'],600);//10分钟
@@ -119,7 +122,6 @@ class ConnectController extends WeixinController {
 				exit("");
 			}
 			list($content, $type) = $reply;
-//			$weixin -> response(serialize($content), self::MSG_TYPE_TEXT);
 			$weixin -> response($content, $type);
 		} else {
 			$weixin -> response("无法识别！", self::MSG_TYPE_TEXT);
@@ -436,14 +438,13 @@ class ConnectController extends WeixinController {
 			LogRecord($userinfo['info'], __FILE__.__LINE__);
 			return ;
 		}
+
 		$userinfo = $userinfo['info'];
-		addWeixinLog($userinfo,"openid的粉丝信息 2");
 		
 		$map = array('openid' => $this -> getOpenID(), 'wxaccount_id' => $this->wxaccount['id'] );
 		
-		$result = apiCall('Weixin/Wxuser/getInfo', array($map));//当前粉丝的信息是否已经存在记录
-		
-		
+		$result = apiCall(WxuserApi::GET_INFO, array($map));//当前粉丝的信息是否已经存在记录
+
 		$wxuser = array();
 		$wxuser['wxaccount_id'] = intval($this->wxaccount['id']);
 		$wxuser['openid'] = $openid;
@@ -467,42 +468,34 @@ class ConnectController extends WeixinController {
 			$wxuser['subscribe_time'] = $userinfo['subscribe_time'];
 			$wxuser['subscribed'] = 1;
 		}
-						
+
+
+
 		//判断是否已记录
 		if (is_array($result['info'])) {
 			//更新
-			$result = apiCall('Weixin/Wxuser/save', array($map, $wxuser));
+			$result = apiCall(WxuserApi::SAVE, array($map, $wxuser));
 		} else {
-			//新增
-			$result = apiCall('Weixin/Wxuser/add', array($wxuser));
+			//注册
+            $entity = array(
+                'username'=>$openid,
+                'password'=>$openid,
+                'from'=>OAuth2TypeModel::WEIXIN,
+                'email'=>'',
+                'phone'=>'',
+            );
+
+            $result =   apiCall(AccountApi::REGISTER, array($entity,$wxuser));
+//			$result =   apiCall(WxuserApi::ADD, array($wxuser));
 		}
-		
-		
-		
+
 		if ($result['status']) {
 			return ;
-		} 
-
+		}
 
 		LogRecord($result['info'], __FILE__.__LINE__);
 
 	}
-	
-	/**
-	 * 检测推荐人是否合法
-	 * @param $referrer 推荐人
-	 * @param $id 当前用户ID
-	 */
-	private function checkReferrer($curID,$family){
-		if($curID == 0){return true;}
-		if($curID == $family['wxuserid']){
-			//不能自己推荐自己
-			return false;
-		}
-		
-		return true;		
-	}
-
 
 	/*
 	 * 获取openid
