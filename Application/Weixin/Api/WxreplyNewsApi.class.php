@@ -12,10 +12,15 @@ use Common\Api\Api;
 use Weixin\Model\WxreplyNewsModel;
 
 class WxreplyNewsApi extends Api{
+
     /**
      * 查询，不分页
      */
     const QUERY_NO_PAGING = "Weixin/UserPicture/queryNoPaging";
+    /**
+     * 查询包含图片
+     */
+    const QUERY_WITH_PICTURE = "Weixin/UserPicture/queryWithPicture";
     /**
      * 查询
      */

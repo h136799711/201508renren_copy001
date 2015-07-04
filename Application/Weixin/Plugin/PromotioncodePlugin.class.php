@@ -7,6 +7,7 @@
 // |-----------------------------------------------------------------------------------
 
 namespace Weixin\Plugin;
+use Common\Api\PromotioncodeApi;
 
 /**
  * 推广二维码插件
@@ -20,7 +21,7 @@ class PromotioncodePlugin extends  WeixinPlugin{
 	 */
 	function process($data){
 		addWeixinLog($data,'[PromotioncodePlugin]');
-		$promotionapi = new \Common\Api\PromotioncodeApi(C('PROMOTIONCODE'));
+		$promotionapi = new PromotioncodeApi(C('PROMOTIONCODE'));
 		
 		if(empty($data['fans']) ){
 			LogRecord("fans参数为empty", "[PromotioncodePlugin]".__LINE__);

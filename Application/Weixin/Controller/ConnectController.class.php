@@ -8,8 +8,11 @@
 
 namespace Weixin\Controller;
 use Common\Api\AccountApi;
+use Common\Api\WeixinApi;
 use Think\Controller;
 use Uclient\Model\OAuth2TypeModel;
+use Weixin\Api\WxreplyNewsApi;
+use Weixin\Api\WxreplyTextApi;
 use Weixin\Api\WxuserApi;
 
 /*
@@ -70,18 +73,8 @@ class ConnectController extends WeixinController {
 			S('weixin_' . $this -> token, $this -> wxaccount, 600);
 			//缓存10分钟
 		}
-		
-//		if (!session("?weixin_wxaccount")) {
-//			$result = apiCall('Weixin/Wxaccount/getInfo', array( array('token' => $this -> token)));
-//			if ($result['status']) {
-//				$this -> wxaccount = $result['info'];
-//			}
-//			session("weixin_wxaccount" , $this -> wxaccount);
-//		}else{
-//			$this->wxaccount = session("weixin_wxaccount");
-//		}
-		
-		$this -> wxapi = new \Common\Api\WeixinApi($this -> wxaccount['appid'], $this -> wxaccount['appsecret']);
+
+		$this -> wxapi = new WeixinApi($this -> wxaccount['appid'], $this -> wxaccount['appsecret']);
 
 		if (I('test','0') == 1) {
 			$this -> data['Event'] = (I('post.event', ''));
@@ -206,15 +199,16 @@ class ConnectController extends WeixinController {
 
 	//END reply
 	
-	private $Plugins = array(
-		'_promotioncode_'=>"Promotioncode",
-	);
+//	private $Plugins = array(
+//		'_promotioncode_'=>"Promotioncode",
+//	);
 	
 	private function innerProcess(){
-		
+
+        $keyword =  strtolower($this->data['Content']);
 		//系统内置关键词处理方式
 		//统一以包括上_
-		switch (strtolower($this->data['Content'])) {
+		switch ($keyword) {
 			case 'id' :
 				// 当前粉丝的openid
 				$return = array($this -> getOpenID(), self::MSG_TYPE_TEXT);
@@ -230,7 +224,19 @@ class ConnectController extends WeixinController {
 				//TODO: 可以检测用户请求数
 				break;
 		}
-		
+
+        $pluginData = array(
+            'keyword'=>$keyword,
+            'data'=>$this->getPluginParams(),
+            'result'=>'',
+        );
+        /**
+         * 微信关键词处理，插件
+         */
+        tag("WeixinInnerProcess",$pluginData);
+
+        $return = $pluginData['result'];
+		addWeixinLog($return,"插件处理结果");
 		return $return;
 	}
 	
@@ -253,14 +259,14 @@ class ConnectController extends WeixinController {
 		$map = array('keyword'=>$keyword);
 		
 		//文本响应
-		$result = apiCall("Weixin/WxreplyText/getInfo",array($map));
+		$result = apiCall(WxreplyTextApi::GET_INFO,array($map));
 		
 		if($result['status'] && is_array($result['info'])){
 			return array((($result['info']['content'])) , self::MSG_TYPE_TEXT);
 		}
 		
 		//图文响应
-		$result = apiCall("Weixin/WxreplyNews/queryWithPicture",array($map,'sort desc'));
+		$result = apiCall(WxreplyNewsApi::QUERY_WITH_PICTURE,array($map,'sort desc'));
 		
 		if($result['status'] && !is_null($result['info'])){
 			$siteurl = C("SITE_URL");
@@ -405,7 +411,7 @@ class ConnectController extends WeixinController {
 		//TODO: 取消关注
 		//==更新粉丝为未关注
 		$wxuser = array('subscribed' => 0);
-		$result = apiCall('Weixin/Wxuser/save', array( array('openid' => $this -> getOpenID(),'wxaccount'=>$this->wxaccount['id']), $wxuser));
+		$result = apiCall(WxuserApi::SAVE, array( array('openid' => $this -> getOpenID(),'wxaccount'=>$this->wxaccount['id']), $wxuser));
 		if (!$result['status']) {
 			LogRecord($result['info'], __FILE__);
 		}

@@ -10,6 +10,7 @@ namespace Common\Api;
 
 use Admin\Api\MemberApi;
 use Uclient\Api\UserApi;
+use Weixin\Api\WxuserApi;
 
 interface IAccount
 {
@@ -34,6 +35,41 @@ class AccountApi implements IAccount
      * 注册
      */
     const REGISTER = "Common/Account/register";
+    /**
+     * 获取用户信息
+     */
+    const GET_INFO = "Common/Account/getInfo";
+
+    public function getInfo($id){
+
+        $result = apiCall(UserApi::GET_INFO, array($id));
+//        id,username,email,mobile,status
+        if(!$result['status']){
+            return array('status' => false, 'info' => $result['info']);
+        }
+
+        $user_info = $result['info'];
+
+        $result = apiCall(MemberApi::GET_INFO, array(array('id'=>$id)));
+
+        if(!$result['status']){
+            return array('status' => false, 'info' => $result['info']);
+        }
+
+        $member_info = $result['info'];
+
+        $result = apiCall(WxuserApi::GET_INFO, array(array('id'=>$id)));
+
+        if(!$result['status']){
+            return array('status' => false, 'info' => $result['info']);
+        }
+
+        $wxuser_info = $result['info'];
+
+        $info = array_merge($user_info,$member_info);
+        $info['_wxuser'] = $wxuser_info;
+        return array('status'=>true,'info'=>$info);
+    }
 
 
     public function login($username, $password, $email, $phone, $from)

@@ -44,4 +44,14 @@ class TestAccountApiController extends Controller {
         
         $this->ajaxReturn($result,"xml");
     }
+
+
+    public function getInfo(){
+
+        $result = apiCall(AccountApi::GET_INFO,array(1));
+
+        $this->ajaxReturn($result,"xml");
+
+    }
+
 }
