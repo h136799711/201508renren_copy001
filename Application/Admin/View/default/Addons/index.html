@@ -34,7 +34,12 @@
                         <volist name="_list" id="vo">
                             <tr>
                                 <td>{$vo.title}</td>
-                                <td>{$vo.name}</td>
+                                <td>
+                                    <eq name="vo['has_adminlist']" value="1">
+                                        <a href="{:U('Admin/Addons/adminlist',array('name'=>$vo['name']))}">{$vo.name}</a>
+                                    <else/>{$vo.name}
+                                    </eq>
+                                </td>
                                 <td>{$vo.description}</td>
                                 <td>{$vo._status_text|default="未安装"}</td>
                                 <td>{$vo.version}</td>

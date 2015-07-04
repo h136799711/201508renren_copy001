@@ -7,8 +7,15 @@
 // |-----------------------------------------------------------------------------------
 
 namespace Shop\Controller;
+use Shop\Api\AddressApi;
+use Shop\Api\OrderCommentApi;
+use Shop\Api\OrdersApi;
+use Shop\Api\ProductApi;
 use Shop\Model\OrdersModel;
 use Think\Controller;
+use Tool\Api\AreaApi;
+use Tool\Api\CityApi;
+use Tool\Api\ProvinceApi;
 
 class OrdersController extends ShopController {
 
@@ -413,7 +420,7 @@ class OrdersController extends ShopController {
 			session("shoppingcart", null);
 			session("confirm_order_info", null);
 			//			addWeixinLog($ids,'订单IDs');
-			$this -> success("订单保存成功，前往支付！", C('SITE_URL') . "/index.php/Shop/OnlinePay/pay/id/$ids?showwxpaytitle=1");
+			$this -> success("订单保存成功，前往支付！", C('SITE_URL') . "/index.php/Shop/Pay/pay/id/$ids?showwxpaytitle=1");
 
 			//			$this->success("订单保存成功，前往支付！",C('SITE_URL')."/index.php?m=Shop&c=OnlinePay&a=pay&id=$ids&showwxpaytitle=1");
 		} else {
@@ -429,7 +436,7 @@ class OrdersController extends ShopController {
 	public function evaluation(){
 		if(IS_GET){
 			$id = I('get.id',0,'intval');
-			$result = apiCall("Shop/OrdersItem/queryNoPaging", array(array( 'orders_id'=>$id )));
+			$result = apiCall(OrdersApi::QUERY_NO_PAGING , array(array( 'orders_id'=>$id )));
 			
 			if(!$result['status']){
 				$this->error($result['info']);
@@ -445,22 +452,12 @@ class OrdersController extends ShopController {
 			$text_arr = I("post.text",array());
 			
 			
-			$result = apiCall("Shop/OrderComment/addArray", array($orders_id,$this->userinfo['id'],$pid_arr,$score_arr,$text_arr));
-			
-			
-			
-//			//其它评分
-			
-			
+			$result = apiCall(OrderCommentApi::Add_ARRAY , array($orders_id,$this->userinfo['id'],$pid_arr,$score_arr,$text_arr));
+
 			if(!$result['status']){
 				$this->error($result['info']);
 			}
-			
-//			$result = serviceCall("Common/Order/evaluation", array($id,false,$this->userinfo['id']));
-			
-			if(!$result['status']){
-				$this->error($result['info']);
-			}
+
 			$this->success("评价成功!",U('Shop/User/order'));
 		}
 	}
@@ -495,7 +492,7 @@ class OrdersController extends ShopController {
 			'id'=>I('get.id',0)
 		);
 		//假删除订单
-		$result = apiCall("Shop/Orders/pretendDelete", array($map));
+		$result = apiCall(OrdersApi::PRETEND_DELETE, array($map));
 		ifFailedLogRecord($result, __FILE__.__LINE__);
 		
 		if(!$result['status']){
@@ -518,7 +515,7 @@ class OrdersController extends ShopController {
 		$map = array();
 		$map['id'] = array('in', $p_id_arr);
 		$order = " id desc ";
-		$result = apiCall("Shop/Product/queryNoPaging", array($map, $order));
+		$result = apiCall(ProductApi::QUERY_NO_PAGING, array($map, $order));
 
 		if (!$result['status']) {
 			LogRecord($result['info'], __FILE__ . __LINE__);
@@ -529,16 +526,16 @@ class OrdersController extends ShopController {
 	}
 
 	private function getDefaultAddress() {
-		$result = apiCall("Shop/Address/getInfo", array( array('wxuserid' => $this -> userinfo['id'], 'default' => 1)));
+		$result = apiCall(AddressApi::GET_INFO, array( array('wxuserid' => $this -> userinfo['id'], 'default' => 1)));
 		if (!$result['status']) {
 			LogRecord($result['info'], __FILE__ . __LINE__);
 		}
 
 		$default_address = $result['info'];
 		//默认收货地址
-		$province_one = apiCall("Tool/Province/getInfo", array( array("provinceID" => $default_address['province'])));
-		$city_one = apiCall("Tool/City/getInfo", array( array("cityID" => $default_address['city'])));
-		$area_one = apiCall("Tool/Area/getInfo", array( array("areaID" => $default_address['area'])));
+		$province_one = apiCall(ProvinceApi::GET_INFO, array( array("provinceID" => $default_address['province'])));
+		$city_one = apiCall(CityApi::GET_INFO, array( array("cityID" => $default_address['city'])));
+		$area_one = apiCall(AreaApi::GET_INFO, array( array("areaID" => $default_address['area'])));
 
 		if (is_array($province_one['info'])) {
 			$default_address['province_name'] = $province_one['info']['province'];

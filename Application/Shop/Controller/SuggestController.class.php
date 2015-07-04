@@ -7,6 +7,8 @@
 // |-----------------------------------------------------------------------------------
 namespace Shop\Controller;
 
+use Shop\Api\SuggestApi;
+
 class SuggestController extends ShopController{
 	
 	
@@ -26,15 +28,18 @@ class SuggestController extends ShopController{
 			if(empty($text)){
 				$this->error("意见或建议内容必须填写!");
 			}
+
 			$entity = array(
 				'suggestion'=>$text,
 				'text'=>'',
 				'process_status'=>'',
 				'name'=>$name,
 				'tel'=>$phone,
+                'email'=>'',
+                'IP'=>ip2long(get_client_ip()),
 			);
 			
-			$result = apiCall("Shop/Suggest/add", array($entity));
+			$result = apiCall(SuggestApi::ADD, array($entity));
 			
 			if(!$result['status']){
 				$this->error($result['info']);

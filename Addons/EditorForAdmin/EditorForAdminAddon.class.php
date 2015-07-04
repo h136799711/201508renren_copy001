@@ -9,6 +9,7 @@
 
 namespace Addons\EditorForAdmin;
 use Common\Controller\Addon;
+defined("PROJECT_NAME") || die('DENY ACCESS');
 
 /**
  * 编辑器插件

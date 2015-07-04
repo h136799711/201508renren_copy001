@@ -16,6 +16,10 @@ class OrdersApi extends Api
 {
 
     /**
+     * 假删除
+     */
+    const PRETEND_DELETE = "Shop/Orders/pretendDelete";
+    /**
      * 添加
      */
     const COUNT = "Shop/Orders/count";

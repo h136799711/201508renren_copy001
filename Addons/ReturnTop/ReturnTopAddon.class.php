@@ -9,10 +9,10 @@
 
 namespace Addons\ReturnTop;
 use Common\Controller\Addon;
+defined("PROJECT_NAME") || die('DENY ACCESS');
 
 /**
  * 编辑器插件
- * @author yangweijie <yangweijiester@gmail.com>
  */
 
 	class ReturnTopAddon extends Addon{
