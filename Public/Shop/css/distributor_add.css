@@ -70,3 +70,5 @@ ul, li {
     font-size: 0.35rem;
     color: #ccc
 }
+
+.error{font-size: 0.3rem;color: red;}
