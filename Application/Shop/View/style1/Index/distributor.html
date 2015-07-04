@@ -9,9 +9,14 @@
 
     <!--<link rel="stylesheet" type="text/css" href="__CDN__/amazeui/2.3.0/css/amazeui.min.css"/>-->
     <link rel="stylesheet" type="text/css" href="__CSS__/distributor_add.css?v=__APP_VERSION__"/>
-    <script type="text/javascript">
-       
-    </script>
+  
+      <script type="text/javascript">
+		function check(){
+			alertMsg('sdfasdfasdfasdf');
+			return false;
+		}
+      </script> 
+  
 
 </block>
 
@@ -25,14 +30,17 @@
 		
 		    <p>邀请人：<font color="#F0005E">总部</font>（请核对）</p>
 		
-		    <form class="validate_form"  >
-		        <p><input type="text" name="name" class="am-form-field am-radius required" placeholder="请填写真实姓名,用与佣金结算"/></p>
+		    <form class="validate-form">
+		        <p><input type="text" name="name"  class="required am-form-field am-radius" placeholder="请填写真实姓名,用与佣金结算"/></p>
 		
-		        <p><input type="text" name="tel" class="am-form-field am-radius" placeholder="请填写手机号码方便联系"/></p>
+		        <p><input type="text" name="tel"  class="required am-form-field am-radius" placeholder="请填写手机号码方便联系"/></p>
 		
-		        <p><input type="text" name="city" class="am-form-field am-radius" placeholder="请填写所在城市"/></p>
-		        <button type="button" url="{:U('Shop/Index/distributor')}" target-form="validate_form"  class="am-btn am-btn-primary am-btn-block ajax-get">申请成为分销商</button>
+		        <p><input type="text" name="city" class="required am-form-field am-radius" placeholder="请填写所在城市"/></p>
+		        <button type="button" url="{:U('Shop/Index/distributor')}"  target-form="validate-form"  class="ajax-post am-btn am-btn-primary am-btn-block">申请成为分销商</button>
 		    </form>
+		    
+
+		    
 		    <p style="font-size: 25px; color: #999;margin-top:50px;">分销商特权</p>
 		    <ul>
 		        <li>

@@ -18,7 +18,7 @@ class IndexController extends ShopController{
     	if(IS_GET){
        	 	$this->theme($this->themeType)->display();
 		}else{
-		
+			dump('dddd');
 		}
     }
 
