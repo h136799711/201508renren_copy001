@@ -12,6 +12,9 @@ use Ucenter\Model\MemberModel;
 
 class MemberApi extends \Common\Api\Api{
 	
+	const ADD="Ucenter/Member/add";
+	
+	
 	//初始化
 	protected function _init(){
 		$this->model = new MemberModel();

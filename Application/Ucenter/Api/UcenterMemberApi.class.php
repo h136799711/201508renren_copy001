@@ -13,6 +13,8 @@ use Ucenter\Model\UcenterMemberModel;
  * 统一用户信息表
  */
 class UcenterMemberApi extends Api{
+	const ADD="Ucenter/UcenterMember/add";
+	
 	
 	protected function _init(){
 		$this->model = new UcenterMemberModel();

@@ -10,13 +10,25 @@
     <!--<link rel="stylesheet" type="text/css" href="__CDN__/amazeui/2.3.0/css/amazeui.min.css"/>-->
     <link rel="stylesheet" type="text/css" href="__CSS__/distributor_add.css?v=__APP_VERSION__"/>
   
-      <script type="text/javascript">
-		function check(){
-			alertMsg('sdfasdfasdfasdf');
-			return false;
-		}
-      </script> 
-  
+      <script type="text/javascript" src="__CDN__/jquery-validation/1.13.1/jquery.validate.min.js"> </script> 
+	<script type="text/javascript" src="__CDN__/jquery-validation/1.13.1/localization/messages_zh.js"></script>
+	<script type="text/javascript">
+	$(function(){
+		/*$.validator.addMethod('mobile', function( value, element ){
+		 
+		    // /^1\d{10}$/ 来自支付宝的正则
+		    return this.optional( element ) || /^1\d{10}$/.test( value );
+		 
+		}, '请输入正确的手机号码');
+		*/
+		
+		jQuery.validator.addMethod("mobile", function (value, element) {
+		    var mobile = /^1[3|4|5|7|8]\d{9}$/;
+			return this.optional(element) || (mobile.test(value));
+		}, "手机格式不对");
+	})
+			
+	</script>
 
 </block>
 
@@ -28,15 +40,15 @@
 		<div class="div_main">
 		    <p>欢迎加入<font color="#F0005E">KISSLADY卡诗兰</font>,请填写申请信息！</p>
 		
-		    <p>邀请人：<font color="#F0005E">总部</font>（请核对）</p>
+		    <p>邀请人：<font color="#F0005E">{$referrer.nickname}</font>（请核对）</p>
 		
-		    <form class="validate-form">
-		        <p><input type="text" name="name"  class="required am-form-field am-radius" placeholder="请填写真实姓名,用与佣金结算"/></p>
-		
-		        <p><input type="text" name="tel"  class="required am-form-field am-radius" placeholder="请填写手机号码方便联系"/></p>
+		    <form class="validate-form"  >
+		        <p><input type="text" name="name"  class="required  am-form-field am-radius" placeholder="请填写真实姓名,用与佣金结算"/></p>
+					<input name="referrer" value="{$referrer.id}" type="hidden"/>
+		        <p><input type="text" name="tel" class="required mobile am-form-field am-radius" placeholder="请填写手机号码方便联系"/></p>
 		
 		        <p><input type="text" name="city" class="required am-form-field am-radius" placeholder="请填写所在城市"/></p>
-		        <button type="button" url="{:U('Shop/Index/distributor')}"  target-form="validate-form"  class="ajax-post am-btn am-btn-primary am-btn-block">申请成为分销商</button>
+		        <button type="button" url="{:U('Shop/Index/addDistributor')}" target-form="validate-form"  class="ajax-post am-btn am-btn-primary am-btn-block">申请成为分销商</button>
 		    </form>
 		    
 

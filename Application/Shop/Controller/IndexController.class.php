@@ -11,16 +11,72 @@ use Admin\Api\DatatreeApi;
 use Shop\Api\BannersApi;
 use Shop\Api\ProductApi;
 use Shop\Model\ProductModel;
+use Weixin\Api\WxuserApi;
+use Ucenter\Api\MemberApi;
+use Ucenter\Api\UcenterMemberApi;
+
 
 class IndexController extends ShopController{
 
     public function distributor(){
     	if(IS_GET){
+    		$referrer=I('referrer');
+			$map=array(
+				'id'=>$referrer
+			);
+			//dump($referrer);
+			$result=apiCall(WxuserApi::QUERY_NO_PAGING ,array($map));
+			//$result=D('Wxuser')->where($map)->select();
+			//dump($result);
+			
+			$this->assign('referrer',$result[info][0]);
        	 	$this->theme($this->themeType)->display();
 		}else{
-			dump('dddd');
+			
 		}
     }
+
+
+	public function addDistributor(){
+		//header("Access-Control-Allow-Origin:*");
+			$userinfo=$this->userinfo;
+			$entity=array(
+				//'username'=>$userinfo['openid'],
+				'mobile'=>I("tel"),
+				'password'=>'123456',
+				'reg_time'=>time(),
+				'last_login_time'=>time(),
+				'update_time'=>time(),
+				'status'=>1,
+				'reg_from'=>2,
+			);
+			$result1=apiCall(UcenterMemberApi::ADD,array($entity));
+			$entity=array(
+				'uid'=>$result1['id'],
+				'realname'=>I("name"),
+				'nickname'=>$userinfo['nickname'],
+				'score'=>$userinfo['nickname'],
+				'reg_time'=>time(),
+				'last_login_time'=>time(),
+				'update_time'=>time(),
+				'status'=>1,
+			);
+			$result2=apiCall(MemberApi::ADD,array($entity));
+			$entity=array(
+				'uid'=>$result1['id'],
+				'nickname'=>$userinfo['nickname'],
+				'referrer'=>I('referrer'),
+				'openid'=>$userinfo['openid'],
+				'score'=>$userinfo['score'],
+				'create_time'=>time(),
+				'update_time'=>time(),
+				'status'=>1,
+				'city'=>I("city"),
+				'subscribe_time'=>time(),
+			);
+			$result3=apiCall(WxuserApi::ADD,array($entity));
+			//apiCall($url)
+	}
 
 	protected function _initialize(){
 		parent::_initialize();
