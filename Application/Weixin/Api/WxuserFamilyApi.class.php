@@ -57,28 +57,55 @@ class WxuserFamilyApi extends  Api{
     /**
      * 根据参数创建一个wxuserfamily记录
      *
-     * @param $wxaccount_id
-     * @param $openid
+     * @param $uid
+     * @param $referrer
      * @return array|bool
+     * @internal param $wxaccount_id
+     * @internal param $openid
      */
-	public function createOneIfNone($wxaccount_id,$openid){
-		
-		$wxuserfamily = $this->model->where(array('wxaccount_id'=>$wxaccount_id,'openid'=>$openid))->find();
-		if($wxuserfamily === false ){
-			$error = $this->model->getDbError();
-			return $this -> apiReturnErr($error);
-		}elseif(is_array($wxuserfamily)){
-			//已存在
-			return $this -> apiReturnSuc($wxuserfamily['id']);
-		}
-		
-		$entity = array(
-			'wxaccount_id'=>$wxaccount_id,
-			'openid'=>$openid,
-		);
-		
-		
-		return  $this->add($entity);
-	}
+    public function createOneIfNone($uid,$referrer){
+
+        $userfamily = $this->model->where(array('uid'=>$uid))->find();
+
+        if($userfamily === false ){
+            $error = $this->model->getDbError();
+            return $this -> apiReturnErr($error);
+        }elseif(is_array($userfamily)){
+            //已存在,不更新，返回数据
+            return $this -> apiReturnSuc($userfamily);
+        }
+        $parent_family = null;
+        if($referrer > 0){
+            //推荐人的父级关系
+            $parent_family = $this->model->where(array('uid'=>$referrer))->find();
+
+            if($parent_family === false){
+                $error = $this->model->getDbError();
+                return $this -> apiReturnErr($error);
+            }
+
+            if(is_null($parent_family)){
+                return $this -> apiReturnErr("推荐人家族关系BUG！");
+            }
+        }
+
+        $entity = array(
+            'uid'=>$uid,
+            'parent_1'=>$referrer,
+            'parent_2'=>0,
+            'parent_3'=>0,//三级
+            'parent_4'=>0,
+            'create_time'=>time(),
+            'wxaccount_id'=>-1, //无效字段
+        );
+
+        if($referrer > 0 && is_array($parent_family)){
+            $entity['parent_1'] = $parent_family['parent_1'];
+            $entity['parent_2'] = $parent_family['parent_2'];
+        }
+
+
+        return  $this->add($entity);
+    }
 	
 }

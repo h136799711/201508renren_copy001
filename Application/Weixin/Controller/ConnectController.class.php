@@ -101,13 +101,20 @@ class ConnectController extends WeixinController {
 				$result = apiCall(WxuserApi::GET_INFO , array( array('wxaccount_id'=>$this -> wxaccount['id'], 'openid' => $this->getOpenID())));
 				addWeixinLog($result,"wxuser getInfo");
 				if ($result['status'] && is_array($result['info'])) {
-					S($fanskey,  $result['info'],600);//10分钟
-					$this -> fans = $result['info'];
+                    S($fanskey,  $result['info'],600);//10分钟
+                    $this -> fans = $result['info'];
 				} else {
-					//$this->addWxuser();
-					$this -> fans = null;
-					S($fanskey,  null);//清除
-				}
+                    //添加用户-
+					$uid = $this->addWxuser(0,1);
+                    $result = apiCall(WxuserApi::GET_INFO , array( array('id'=>$uid)));
+                    if ($result['status'] && is_array($result['info'])){
+                        S($fanskey,  $result['info'],600);//10分钟
+                        $this -> fans = $result['info'];
+                    }else{
+                        //TODO：失败
+                    }
+
+                }
 			}
 			
 			$reply = $this -> reply();
@@ -209,34 +216,34 @@ class ConnectController extends WeixinController {
 		//系统内置关键词处理方式
 		//统一以包括上_
 		switch ($keyword) {
+            case 'who' :
+                // 当前粉丝的openid
+                $return = array("I am itboye.com", self::MSG_TYPE_TEXT);
+                break;
 			case 'id' :
 				// 当前粉丝的openid
 				$return = array($this -> getOpenID(), self::MSG_TYPE_TEXT);
-				break;
-//			case '_promotioncode_':
-//				//TODO: 考虑从数据库中取得 关键词对应的插件标识名
-//				addWeixinLog($this->getPluginParams(),"[Promotioncode]");
-//				$return = pluginCall($this->Plugins['_promotioncode_'],array($this->getPluginParams()));
-//				
-//				$return = pluginCall("Promotioncode",array($this->getPluginParams()));
 				break;
 			default :
 				//TODO: 可以检测用户请求数
 				break;
 		}
 
-        $pluginData = array(
-            'keyword'=>$keyword,
-            'data'=>$this->getPluginParams(),
-            'result'=>'',
-        );
-        /**
-         * 微信关键词处理，插件
-         */
-        tag("WeixinInnerProcess",$pluginData);
+        if(empty($return)){
+            $pluginData = array(
+                'keyword'=>$keyword,
+                'data'=>$this->getPluginParams(),
+                'result'=>'',
+            );
 
-        $return = $pluginData['result'];
-		addWeixinLog($return,"插件处理结果");
+            /**
+             * 微信关键词处理，插件
+             */
+            tag("WeixinInnerProcess",$pluginData);
+
+            $return = $pluginData['result'];
+            addWeixinLog($return,"插件处理结果");
+        }
 		return $return;
 	}
 	
@@ -433,13 +440,12 @@ class ConnectController extends WeixinController {
 	/**
 	 * 插入粉丝信息
 	 */
-	private function addWxuser($referrer = 0) {
+	private function addWxuser($referrer = 0,$is_add=0) {
 
-		addWeixinLog($referrer,"addWxuser 1");
+		addWeixinLog($referrer,"添加一个微信粉丝账户!");
 		$openid = $this -> getOpenID();
 		$userinfo = $this -> wxapi -> getBaseUserInfo($openid);
-		
-		
+
 		if(!$userinfo['status']){
 			LogRecord($userinfo['info'], __FILE__.__LINE__);
 			return ;
@@ -448,8 +454,9 @@ class ConnectController extends WeixinController {
 		$userinfo = $userinfo['info'];
 		
 		$map = array('openid' => $this -> getOpenID(), 'wxaccount_id' => $this->wxaccount['id'] );
-		
-		$result = apiCall(WxuserApi::GET_INFO, array($map));//当前粉丝的信息是否已经存在记录
+		if($is_add == 0){
+		    $result = apiCall(WxuserApi::GET_INFO, array($map));//当前粉丝的信息是否已经存在记录
+        }
 
 		$wxuser = array();
 		$wxuser['wxaccount_id'] = intval($this->wxaccount['id']);
@@ -478,7 +485,7 @@ class ConnectController extends WeixinController {
 
 
 		//判断是否已记录
-		if (is_array($result['info'])) {
+		if ($is_add === 0 && is_array($result['info'])) {
 			//更新
 			$result = apiCall(WxuserApi::SAVE, array($map, $wxuser));
 		} else {
@@ -490,9 +497,14 @@ class ConnectController extends WeixinController {
                 'email'=>'',
                 'phone'=>'',
             );
+            $entity['_wxuser'] = $wxuser;
 
-            $result =   apiCall(AccountApi::REGISTER, array($entity,$wxuser));
-//			$result =   apiCall(WxuserApi::ADD, array($wxuser));
+            addWeixinLog($entity,"注册一个微信粉丝账户!");
+            $result = apiCall(AccountApi::REGISTER, array($entity));
+            if(!$result['status']){
+                LogRecord($result['info'],"ERR");
+            }
+            return $result['info'];
 		}
 
 		if ($result['status']) {

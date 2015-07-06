@@ -11,7 +11,11 @@ namespace Common\Model;
 use Think\Model;
 
 class WxuserGroupModel extends Model{
-	
+
+    /**
+     * 默认,组
+     */
+    const DEFAULT_GROUP = 1;
 	
 	protected $_validate = array(
 		array('name','require','用户组名称必须！',self::EXISTS_VALIDATE ),

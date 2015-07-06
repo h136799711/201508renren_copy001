@@ -16,6 +16,10 @@ use Think\Page;
 class WxuserApi extends Api{
 
     /**
+     * 注册
+     */
+    const REGISTER = "Weixin/Wxuser/register";
+    /**
      * 查询，不分页
      */
     const QUERY_NO_PAGING = "Weixin/Wxuser/queryNoPaging";
@@ -74,7 +78,28 @@ class WxuserApi extends Api{
 	protected function _init(){
 		$this->model = new WxuserModel();
 	}
-	
+
+
+    /**
+     *
+     */
+    public function register($wxuser){
+        //
+        if($this->model->create($wxuser)){
+            $result = $this->model->add();
+            if($result === false){
+                return $this->apiReturnErr($this->model->getDbError());
+            }else{
+                return $this->apiReturnSuc($result);
+            }
+
+
+        }else{
+            return $this->apiReturnErr($this->model->getError());
+        }
+
+    }
+
 	/**
 	 * 获取家族关系
 	 */

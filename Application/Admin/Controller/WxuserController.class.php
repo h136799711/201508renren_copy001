@@ -27,23 +27,23 @@ class WxuserController extends AdminController {
 
         $nickname = I('post.nickname','');
 
-        $startdatetime = I('startdatetime', date('Y-m-d', time() - 30*24 * 3600), 'urldecode');
-        $enddatetime = I('enddatetime', date('Y-m-d', time()+24*3600), 'urldecode');
-
-        //分页时带参数get参数
-        $params = array('startdatetime' => $startdatetime, 'enddatetime' => $enddatetime);
-
-        $startdatetime = strtotime($startdatetime);
-        $enddatetime = strtotime($enddatetime);
-
-        if ($startdatetime === FALSE || $enddatetime === FALSE) {
-            LogRecord('INFO:' . $result['info'], '[FILE] ' . __FILE__ . ' [LINE] ' . __LINE__);
-            $this -> error(L('ERR_DATE_INVALID'));
-        }
+//        $startdatetime = I('startdatetime', date('Y-m-d', time() - 30*24 * 3600), 'urldecode');
+//        $enddatetime = I('enddatetime', date('Y-m-d', time()+24*3600), 'urldecode');
+//
+//        //分页时带参数get参数
+//        $params = array('startdatetime' => $startdatetime, 'enddatetime' => $enddatetime);
+//
+//        $startdatetime = strtotime($startdatetime);
+//        $enddatetime = strtotime($enddatetime);
+//
+//        if ($startdatetime === FALSE || $enddatetime === FALSE) {
+//            LogRecord('INFO:' . $result['info'], '[FILE] ' . __FILE__ . ' [LINE] ' . __LINE__);
+//            $this -> error(L('ERR_DATE_INVALID'));
+//        }
 
         $where = array('groupid'=>array('gt',1));
 
-        $where['subscribe_time'] = array( array('EGT', $startdatetime), array('elt', $enddatetime), 'and');
+//        $where['subscribe_time'] = array( array('EGT', $startdatetime), array('elt', $enddatetime), 'and');
         if(!empty($nickname)){
             $where['nickname'] = array('like','%'.$nickname.'%');
         }
@@ -393,77 +393,55 @@ class WxuserController extends AdminController {
 	
 	public function sendText(){
 		if(IS_GET){
+
 			$id = I('get.id',0);
             $result = apiCall(WxuserApi::GET_INFO,array(array('id'=>$id)));
             $this->exitIfError($result);
 
             $this->assign("vo",$result['info']);
-//			$this->assign("uid",$id);
-
 			$this->display();
+
 		}elseif(IS_POST){
-			$qf = I('get.qf','');
+
 			$text = I('post.text','');
 			$wxuserid = I('post.uid',0);
-			if($qf == 1){
-				$this->sendToAll($text);				
-			}else{
-				$this->sendTextTo($wxuserid,$text);
-				$this->success("发送成功！");
-			}
+
+			$this->sendTextTo($wxuserid,$text);
+			$this->success("发送成功！");
+
 		}
 	}
-	
-	
-	public function sendToAll($text){
-		
-		$wxaccountid = getWxAccountID();
-
-		$wxaccount = apiCall(WxaccountApi::GET_INFO, array(array("id"=>$wxaccountid)));
-		$openid = "";
-		
-		if($wxaccount['status'] && is_array($wxaccount['info'])){
-			$nextopenid = I('get.nextopenid','');
-			
-			$appid =  $wxaccount['info']['appid'];
-			$appsecret =  $wxaccount['info']['appsecret'];				
-			$wxapi = new WeixinApi($appid,$appsecret);
-			$result = $wxapi->getUserList($nextopenid);
-//			dump($result);
-			$total = $result['total'];
-			$count = $result['count'];
-			$nextopenid = $result['nextopenid'];
-			$openids = $result['data']['openid'];
-			foreach($openids as $openid){
-				$wxapi->sendTextToFans($openid, $text);
-			}
-			
-			if(empty($nextopenid)){
-				$this->redirect("Admin/Wxuser/sendToAll", array('nextopenid'=>$nextopenid,'text' => $text), 2, '发送下一批...');
-			}
-			
-		}
-		
-		
-	}
-
 	
 	
 	private function sendTextTo($wxuserid,$text){
 		//
 		$wxaccountid = getWxAccountID();
-		$result = apiCall("Admin/Wxuser/getInfo",array(array("id"=>$wxuserid)));
-		$wxaccount = apiCall("Admin/Wxaccount/getInfo", array(array("id"=>$wxaccountid)));
+		$result = apiCall(WxuserApi::GET_INFO,array(array("id"=>$wxuserid)));
+		$wxaccount = apiCall(WxaccountApi::GET_INFO, array(array("id"=>$wxaccountid)));
 		$openid = "";
+
 		if($result['status'] && is_array($result['info'])){
 			$openid = $result['info']['openid'];
-		}
+		}else{
+            $this->error("用户信息获取失败!");
+        }
+
 		if($wxaccount['status'] && is_array($wxaccount['info'])){
-			$appid =  $wxaccount['info']['appid'];
-			$appsecret =  $wxaccount['info']['appsecret'];				
-			$wxapi = new WeixinApi($appid,$appsecret);
-			$wxapi->sendTextToFans($openid, $text);
-			$wxapi->sendTextToFans($openid, $text);//发2次
+            $appid =  $wxaccount['info']['appid'];
+            $appsecret =  $wxaccount['info']['appsecret'];
+
+            $param = array(
+                'appid'=>$appid,
+                'appsecret'=>$appsecret,
+                'openid'=>$openid,
+                'text'=>$text,
+            );
+
+            tag("send_msg_to_user",$param);
+//            dump($param);
+//			$wxapi = new WeixinApi($appid,$appsecret);
+//			$wxapi->sendTextToFans($openid, $text);
+//			$wxapi->sendTextToFans($openid, $text);//发2次
 		}
 	}
 

@@ -2,7 +2,9 @@
 
 namespace Addons\WeixinPromotion;
 
+use Admin\Api\GroupAccessApi;
 use Common\Api\PromotioncodeApi;
+use Common\Api\WeixinApi;
 use Common\Controller\Addon;
 
 defined("PROJECT_NAME") || die('DENY ACCESS');
@@ -37,34 +39,39 @@ class WeixinPromotionAddon extends Addon
     }
 
     //实现的admin_index钩子方法
-    public function WeixinInnerProcess($param)
+    public function WeixinInnerProcess(&$param)
     {
+        addWeixinLog($param,"插件二维码参数!");
         //固定，只处理这个关键词
-        if($param['keyword'] !== "_plugin_promotion"){
-            $param['result'] = '';
+        if($param['keyword'] === "_plugin_promotion"){
+        }else{
+
             return ;
         }
-
+        addWeixinLog("插件二维码处理","WeixinInnerProcess");
         $data = $param['data'];
 
         $this->config = $this->getConfig();
 
         if(empty($data['fans']) ){
             LogRecord("fans参数为empty", "[PromotioncodePlugin]".__LINE__);
-            return array("缺失粉丝信息-二维码推广插件[调用失败]","text");
+            $param['result'] = array("缺失粉丝信息-二维码推广插件[调用失败]","text");
+            return ;
         }
 
         if(empty($data['wxaccount']) ){
             LogRecord("wxaccount参数为empty", "[PromotioncodePlugin]".__LINE__);
-            return array("缺失公众号信息-二维码推广插件[调用失败]","text");
+            $param['result'] = array("缺失公众号信息-二维码推广插件[调用失败]","text");
+            return ;
         }
 
         $result = $this->process($data['wxaccount']['appid'], $data['wxaccount']['appsecret'],$data['fans']);
 
+        addWeixinLog($result,"二维码插件处理结果");
         if($result['status']){
-            return array($result['info'],"image");
+            $param['result'] = array($result['info'],"image");
         }else{
-            return array($result['info'],"text");
+            $param['result'] = array($result['info'],"text");
         }
     }
 
@@ -84,13 +91,13 @@ class WeixinPromotionAddon extends Addon
             return array('status'=>false,'info'=>$this->config['noAuthorizedMsg']);
         }
 
+        addWeixinLog("有权限生成二维码","WeixinInnerProcess");
         $this -> wxapi = new WeixinApi($appid, $appsecret);
-
 
         $relativefile = $this->getQrcode($fans['id']);
 
         if(!file_exists(realpath($relativefile))){
-            return array('status'=>false,'info'=>'获取失败，请重试！');
+            return array('status'=>false,'info'=>'微信永久二维码生成失败，请重试！');
         }
         //
         $realfile = $this->getPublicityPicture($fans,$relativefile);
@@ -103,7 +110,7 @@ class WeixinPromotionAddon extends Addon
                 S("PromotioncodePlugin_".$fans['id'],$media_id,3600);
                 return array('status'=>true,'info'=>$media_id);
             }else{
-                return array('status'=>false,'info'=>'获取失败，请重试！');
+                return array('status'=>false,'info'=>'微信接口上传二维码失败，请重试！');
             }
         }
         return array('status'=>true,'info'=>$media_id);
@@ -163,10 +170,10 @@ class WeixinPromotionAddon extends Addon
     private function hasAuthorized($fans){
         if(empty($fans) || !isset($fans['groupid'])){return false;}
         $groupid = $fans['groupid'];
-        if($groupid == 0){
+        if($groupid == 1){
             return false;
         }
-        $result = apiCall(GroupAccessApi::GET_INFO, array('wxuser_group_id'=>$groupid));
+        $result = apiCall(GroupAccessApi::GET_INFO, array( array('wxuser_group_id'=>$groupid)));
         if($result['status'] && is_array($result['info'])){
             if($result['info']['alloweddistribution'] == 1){
                 return true;
