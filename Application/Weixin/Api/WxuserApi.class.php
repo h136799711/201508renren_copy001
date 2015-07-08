@@ -16,6 +16,10 @@ use Think\Page;
 class WxuserApi extends Api{
 
     /**
+     * 增加用户字段值
+     */
+    const SET_INC = "Weixin/Wxuser/setInc";
+    /**
      * 注册
      */
     const REGISTER = "Weixin/Wxuser/register";

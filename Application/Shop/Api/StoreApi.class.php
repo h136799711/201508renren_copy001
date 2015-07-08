@@ -21,6 +21,10 @@ class StoreApi extends Api
 {
 
     /**
+     *  增加字段值
+     */
+    const  SET_INC = "Shop/Store/setInc";
+    /**
      *  查询商品信息
      */
     const  QUERY_PRODUCT_BY_UID = "Shop/Store/queryProduct";

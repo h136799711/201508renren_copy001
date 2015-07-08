@@ -43,7 +43,6 @@
 	</div>
 	
 	<div class="order-confirm">
-		
 		<form class="js_address_form am-form am-padding-left-sm am-padding-right-sm validate-form" method="post" action="{:U('Shop/Address/add')}">
 			<input type="hidden" name="id" value="{$address.id}" />
 			<div class="am-form-group-sm">
@@ -101,7 +100,7 @@
 			<div class="am-form-group-sm">
 				<div class="am-form-label">邮编</div>
 				<div class="">
-					<input type="tel" name="postcode" class="required am-form-control postcode" value="{$address['postcode']}"  />
+					<input type="tel" name="postcode" class="required am-form-control postcode" value="{$address['zip_code']}"  />
 					<label></label>
 				</div>
 			</div>

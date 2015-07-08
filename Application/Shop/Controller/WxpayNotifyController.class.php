@@ -7,11 +7,17 @@
 // |-----------------------------------------------------------------------------------
 
 namespace Shop\Controller;
-use Common\Model\OrdersModel;
+use Admin\Api\ConfigApi;
+use Common\Api\WeixinApi;
+use Common\Api\Wxpay\PayNotifyCallback;
+use Shop\Api\OrdersApi;
+use Shop\Api\StoreApi;
+use Shop\Model\OrdersModel;
 use Think\Controller;
 use Common\Api;
 use Common\Api\Wxpay;
 use Weixin\Api\WxaccountApi;
+use Weixin\Api\WxuserApi;
 
 class WxpayNotifyController extends Controller {
 
@@ -26,7 +32,7 @@ class WxpayNotifyController extends Controller {
 		$xml = $GLOBALS['HTTP_RAW_POST_DATA'];
 		$config = C('WXPAY_CONFIG');
 
-		$notify = new \Common\Api\Wxpay\PayNotifyCallback($config);
+		$notify = new PayNotifyCallback($config);
 		$notify -> Handle(false);
 	}
 	
@@ -90,20 +96,22 @@ class WxpayNotifyController extends Controller {
 		$orderids = $entity['attach'];
 		$orderids = rtrim($orderids,"_");
 		addWeixinLog($orderids, "[完成支付的订单ID]");
-		//1. 清除缓存
+		//1. 清除粉丝用户信息缓存
 		$fanskey = "appid_" . $entity['appid'] . "_" . $entity['openid'];
 		S($fanskey, null);
 		//2. 获取订单信息
 		$orderids = explode("_", $orderids);
-		if(count($orderids) == 0){
-			$orderids = array(-1);
-		}
-		addWeixinLog($orderids, "[orderids]");
+		if(count($orderids) > 0){
+		addWeixinLog($orderids, "[订单ID集合]");
 		$map = array('pay_status' => OrdersModel::ORDER_TOBE_PAID, 'id' => array('in', $orderids));
 		//只查询待支付的订单信息
-		$result = apiCall("Shop/Orders/queryNoPaging", array($map));
+		$result = apiCall(OrdersApi::QUERY_NO_PAGING, array($map));
 		addWeixinLog($result, "[通知支付完成的订单]");
 		$wxuserid = 0;
+        }else{
+            $orderids = array(-1);
+            addWeixinLog("订单ID为空", "[支付通知失败！]");
+        }
 		//3. 判断订单信息是否获取到
 		if ($result['status'] && is_array($result['info'])) {
 
@@ -113,15 +121,13 @@ class WxpayNotifyController extends Controller {
 			//
             $parms = array('userid'=>$wxuserid,'$wxaccountid'=>$wxaccountid,"orders"=>$result['info']) ;
             //
-            \Think\Hook::listen('WXPAY_COMPLETED',$parms);
+            tag('wxpay_completed',$parms);
 
-			addWeixinLog($wxuserid.$wxaccountid, "wxuserid,wxaccountid");
 			//改变订单的状态为已支付
 			$paidStatus = OrdersModel::ORDER_PAID;
-			$result = apiCall("Shop/Orders/savePayStatus", array($map, $paidStatus));
+			$result = apiCall(OrdersApi::SAVE_PAY_STATUS, array($map, $paidStatus));
 
 			if (!$result['status']) {
-				//					LogRecord($result['info'], __FILE__.__LINE__);
 				addWeixinLog($result['info'], __FILE__ . __LINE__);
 			}
 
@@ -139,12 +145,11 @@ class WxpayNotifyController extends Controller {
 				$total_price = $total_price + floatval($vo['price']/100.0);
 				foreach ($items['products'] as $product) {
 					$total_items = $total_items + intval($product['count']);
-//					addWeixinLog($product, "商品信息");
 				}
 				
 				addWeixinLog($total_items, "[ID=".$vo['storeid']."的店铺增加经验.]");
 				//增加店铺经验
-				$result = apiCall("Shop/Wxstore/setInc", array( array('id' => $vo['storeid']), "exp", $total_items));
+				$result = apiCall(StoreApi::SET_INC, array( array('id' => $vo['storeid']), "exp", $total_items));
 				if (!$result['status']) {
 					LogRecord($result['info'], __FILE__ . __LINE__);
 				}
@@ -157,11 +162,11 @@ class WxpayNotifyController extends Controller {
 			$addScore = round($total_price);
 			$map = array('id' => $wxuserid);
 			addWeixinLog($addScore, "[ID=".$wxuserid."的用户增加积分.]");
-			$result = apiCall("Shop/Wxuser/setInc", array($map, "score", $addScore));
+			$result = apiCall(WxuserApi::SET_INC, array($map, "score", $addScore));
 			
 			addWeixinLog($total_items, "[ID=".$wxuserid."的用户增加经验.]");
 			//2. 增加经验
-			$result = apiCall("Shop/Wxuser/setInc", array($map, "exp", $total_items));
+			$result = apiCall(WxuserApi::SET_INC, array($map, "exp", $total_items));
 			//================================================================================
 
 			addWeixinLog($result, "[处理微信支付成功通知的处理都已成功！]");
@@ -183,7 +188,7 @@ class WxpayNotifyController extends Controller {
 	private function sendNotification($stores, $wxaccountid, $text) {
 		//TODO:
 		//1. 发送给店铺
-		//		$this -> sendToStores($stores，$text);
+//		$this -> sendToStores($stores，$text);
 		
 		//2. 发送给配置的微信粉丝
 		$this -> sendToWxaccount($wxaccountid, $text);
@@ -193,9 +198,9 @@ class WxpayNotifyController extends Controller {
 	private function sendToWxaccount($wxaccountid, $text) {
 		$result = apiCall(WxaccountApi::GET_INFO, array(array('id' => $wxaccountid)));
 		if ($result['status']) {
-			$wxapi = new \Common\Api\WeixinApi($result['info']['appid'], $result['info']['appsecret']);
+			$wxapi = new WeixinApi($result['info']['appid'], $result['info']['appsecret']);
 			$map = array('name' => "WXPAY_OPENID");
-			$result = apiCall("Admin/Config/getInfo", array($map));
+			$result = apiCall(ConfigApi::GET_INFO, array($map));
 			
 			addWeixinLog($result, "接收订单支付成功的OPENID");
 			if ($result['status']) {

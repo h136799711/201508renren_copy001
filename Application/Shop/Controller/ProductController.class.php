@@ -8,7 +8,16 @@
 
 namespace Shop\Controller;
 
+use Shop\Api\CategoryPropApi;
+use Shop\Api\CategoryPropvalueApi;
+use Shop\Api\OrdersApi;
+use Shop\Api\OrdersItemApi;
 use Shop\Api\ProductApi;
+use Shop\Api\ProductSkuApi;
+use Shop\Api\SkuApi;
+use Shop\Api\SkuvalueApi;
+use Shop\Api\StoreApi;
+use Shop\Model\ProductModel;
 
 class ProductController extends ShopController {
 
@@ -120,10 +129,10 @@ class ProductController extends ShopController {
 			
 			$page = array('curpage'=>$p,'size'=>10);
 			$order = " updatetime desc";
-			$map = array('onshelf'=>\Common\Model\ProductModel::STATUS_ONSHELF);
+			$map = array('onshelf'=>ProductModel::STATUS_ONSHELF);
 			$group_id = I('post.groupid',0);
 			
-			$result = apiCall("Shop/Product/queryByGroup", array($group_id,$map,$page));
+			$result = apiCall(ProductApi::QUERY_BY_GROUP, array($group_id,$map,$page));
 			if(!$result['status']){
 				LogRecord($result['info'], __FILE__.__LINE__);
 				$this->error($result['info']);	
@@ -150,7 +159,7 @@ class ProductController extends ShopController {
 	public function detail() {
 		if (IS_GET) {
 			$id = I('get.id', 0);
-			$result = apiCall("Admin/Product/getInfo", array( array('id' => $id)));
+			$result = apiCall(ProductApi::GET_INFO, array( array('id' => $id)));
 
 			if (!$result['status']) {
 				$this -> error($result['info']);
@@ -189,7 +198,7 @@ class ProductController extends ShopController {
 			$this -> assign("details", json_decode($details));
 			$this -> assign("banners", $banners);
 			$this -> assign("product", $result['info']);
-			$result = apiCall("Admin/Wxstore/getInfo", array( array('id' => $result['info']['storeid'])));
+			$result = apiCall(StoreApi::GET_INFO, array( array('id' => $result['info']['storeid'])));
 			
 			if ($result['status']) {
 				$this -> assign("wxstore", $result['info']);
@@ -213,7 +222,7 @@ class ProductController extends ShopController {
 		foreach ($list as $vo) {
 			array_push($tmp_arr, $vo['id']);
 		}
-		$result = apiCall("Shop/Orders/monthlySales", array($tmp_arr));
+		$result = apiCall(OrdersApi::MONTHLY_SALES, array($tmp_arr));
 		
 		if (!$result['status']) {
 			$this -> error($result['info']);
@@ -244,7 +253,7 @@ class ProductController extends ShopController {
 	private function getMonthlySales($p_id) {
 //		dump($p_id);
 		//统计订单数 ， 满足条件小于当前时间，大于当前时间－30天
-		$result = apiCall("Shop/OrdersItem/monthlySales", array($p_id));
+		$result = apiCall(OrdersItemApi::MONTHLY_SALES, array($p_id));
 		if (!$result['status']) {
 			$this -> error($result['info']);
 		}
@@ -266,7 +275,7 @@ class ProductController extends ShopController {
 		$map = array();
 		$map['id'] = array('in', $sku_ids);
 
-		$result = apiCall("Admin/Sku/queryNoPaging", array($map));
+		$result = apiCall(SkuApi::QUERY_NO_PAGING, array($map));
 		if (!$result['status']) {
 			$this -> error($result['info']);
 		}
@@ -275,7 +284,7 @@ class ProductController extends ShopController {
 		$map = array();
 		$map['id'] = array('in', $sku_value_ids);
 
-		$result = apiCall("Admin/Skuvalue/queryNoPaging", array($map));
+		$result = apiCall(SkuvalueApi::QUERY_NO_PAGING, array($map));
 		if (!$result['status']) {
 			$this -> error($result['info']);
 		}
@@ -287,9 +296,8 @@ class ProductController extends ShopController {
 			$key = $_sku['id'] . ':';
 			foreach ($sku_value_result as $_sku_value) {
 				if ($_sku_value['sku_id'] == $_sku['id']) {
-					//						$tmpKey = $key . $_sku_value['id'];
-					//						$sku_arr[$tmpKey] = array('sku_id'=>$_sku['id'],'sku_name'=>$_sku['name'],'sku_value_name'=>$_sku_value['name']);
-					if (!isset($sku_arr[$_sku['id']])) {
+
+                    if (!isset($sku_arr[$_sku['id']])) {
 						$sku_arr[$_sku['id']] = array('id' => $_sku['id'], 'sku_name' => $_sku['name'], 'sku_value_list' => array());
 					}
 
@@ -299,7 +307,7 @@ class ProductController extends ShopController {
 			}
 		}
 
-		$result = apiCall("Admin/ProductSku/queryNoPaging", array( array('product_id' => $product['id'])));
+		$result = apiCall(ProductSkuApi::QUERY_NO_PAGING, array( array('product_id' => $product['id'])));
 		if (!$result['status']) {
 			$this -> error($result['info']);
 		}
@@ -333,7 +341,7 @@ class ProductController extends ShopController {
 		$map = array();
 		$map['id'] = array("in", $prop_ids);
 		$order =  " id asc ";
-		$prop_result = apiCall("Admin/CategoryProp/queryNoPaging", array($map,$order));
+		$prop_result = apiCall(CategoryPropApi::QUERY_NO_PAGING, array($map,$order));
 		if (!$prop_result) {
 			$this -> error($prop_result['info']);
 		}
@@ -343,7 +351,7 @@ class ProductController extends ShopController {
 		$map = array();
 		$map['id'] = array("in", $propvalue_ids);
 		$order =  " prop_id asc ";
-		$propvalue_result = apiCall("Admin/CategoryPropvalue/queryNoPaging", array($map,$order));
+		$propvalue_result = apiCall(CategoryPropvalueApi::QUERY_NO_PAGING, array($map,$order));
 		if (!$propvalue_result) {
 			$this -> error($propvalue_result['info']);
 		}

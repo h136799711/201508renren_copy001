@@ -7,7 +7,7 @@
 // |-----------------------------------------------------------------------------------
 namespace Shop\Api;
 use Common\Api\Api;
-use Shop\Model\AddressModel;
+use Common\Model\AddressModel;
 
 class AddressApi extends Api{
     /**

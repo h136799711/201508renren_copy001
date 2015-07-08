@@ -37,6 +37,8 @@ class AddressController extends ShopController{
 	
 	public function add(){
 		if(IS_GET){
+
+            cookie("__forward__",$_SERVER['HTTP_REFERER']);
 			$map = array();
 			$map['wxuserid'] = $this->userinfo['id'];
 			$map['default'] = 1;
@@ -59,6 +61,7 @@ class AddressController extends ShopController{
 				}
 				$this->assign("area",$area['info']);
 			}
+            dump($result['info']);
 			$this->assign("address",$result['info']);
 			
 			$result = apiCall(ProvinceApi::QUERY_NO_PAGING, array());
@@ -66,19 +69,18 @@ class AddressController extends ShopController{
 			if(!$result['status']){
 				$this->error($result['info']);
 			}
-
 			$this->assign("provinces",$result['info']);
-			
+			$this->assign("back_url",cookie("__forward__"));
 			$this->display();
 		}else{
 			$id = I('post.id',0,'intval');
 			$province = I('post.province','');
 			$city = I('post.city','');
 			$area = I('post.area','');
-			$detailinfo = I('post.detail','');
+			$detail = I('post.detail','');
 			$mobile = I('post.mobile','');
-			$postcode = I('post.postcode','');			
-			$contactname = I('post.name','');
+			$postcode = I('post.postcode','');
+            $contactname = I('post.name','');
 			
 			$entity = array(
 				'wxno'=>'',
@@ -86,11 +88,11 @@ class AddressController extends ShopController{
 				'province'=>$province,
 				'city'=>$city,
 				'area'=>$area,
-				'detailinfo'=>$detailinfo,
+				'detailinfo'=>$detail,
 				'mobile'=>$mobile,
 				'default'=>1,
 				'contactname'=>$contactname,			
-				'postcode'=>$postcode,	
+				'zip_code'=>$postcode,
 			);
 			
 			
@@ -100,14 +102,14 @@ class AddressController extends ShopController{
 				$result = apiCall(AddressApi::ADD,array($entity));
 			}else{
 				//保存
-				$result = apiCall("Shop/Address/saveByID",array($id,$entity));
+				$result = apiCall(AddressApi::SAVE_BY_ID,array($id,$entity));
 			}
 			
 			if(!$result['status']){
 				$this->error($result['info']);
 			}
-			
-			$this->success("操作成功!~");
+
+			$this->success("操作成功!~",cookie("__forward__"));
 			
 		}
 	}

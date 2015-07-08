@@ -7,6 +7,8 @@
 // |-----------------------------------------------------------------------------------
 namespace Shop\Controller;
 
+use Shop\Api\ProductApi;
+use Shop\Api\ProductSkuApi;
 use Shop\Api\StoreApi;
 
 class ShoppingCartController extends ShopController{
@@ -61,7 +63,7 @@ class ShoppingCartController extends ShopController{
 //		sleep(5);
 		$id = I('p_id',0);
 		$count = I('sku_count',1,'intval');//默认一件
-		$sku_id = I('hebidu_skuchecked','');
+		$sku_id = I('hebidu_skuchecked','');//标识是否有多规格
 		$sku_desc = I('sku_desc','');//SKU选择的信息描述
 		if($count <= 0){
 			$this->error("商品数量不对！");
@@ -69,7 +71,7 @@ class ShoppingCartController extends ShopController{
 		
 		if($id > 0){
 			
-			$result = apiCall("Admin/Product/getInfo", array(array('id'=>$id)));
+			$result = apiCall(ProductApi::GET_INFO, array(array('id'=>$id)));
 			
 			if(!$result['status']){
 				LogRecord($result['info'], __FILE__.__LINE__);
@@ -81,7 +83,7 @@ class ShoppingCartController extends ShopController{
 			$product = $result['info'];
 			
 //			dump($sku_id);
-			$result = apiCall("Admin/ProductSku/getInfo", array(array('sku_id'=>$sku_id)));
+			$result = apiCall(ProductSkuApi::GET_INFO, array(array('sku_id'=>$sku_id)));
 			
 			if(!$result['status']){
 				$this->error($result['info']);

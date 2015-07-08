@@ -13,6 +13,10 @@ class CategoryPropApi extends Api{
 
 
     /**
+     * 查询,不分页
+     */
+    const QUERY_NO_PAGING = "Shop/CategoryProp/queryNoPaging";
+    /**
      * 添加
      */
     const ADD = "Shop/CategoryProp/add";

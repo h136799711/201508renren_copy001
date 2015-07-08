@@ -124,11 +124,39 @@ class IndexController extends ShopController{
 		
 		//获取首页4格活动
 		$result = $this->getFourGrid();
-//		
+
+        $this->assign("meta_title",$this->getStoreName());
+
 		$this->assign("fourgrid",$result['info']['list']);
-//		
+
 		$this->theme($this->themeType)->display();
 	}
+
+    private function getStoreName(){
+        //默认当前公众号名
+        $name = $this->wxaccount['wxname'];
+
+        // 如果是分销商，显示分销商名称
+        if($this->isDistriubtor()){
+            $name = $this->userinfo['nickname'];
+        }
+
+        return $name;
+    }
+
+    /**
+     * 判断是否为分销商
+     * @return bool
+     */
+    private function isDistributor(){
+        //TODO: 当前仅判断大于1 时都为分销商
+        if($this->userinfo['groupid'] > 1){
+            return true;
+        }
+
+        return false;
+    }
+
 
 	/**
 	 * 获取首页4格活动

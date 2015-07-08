@@ -8,6 +8,9 @@
 
 namespace Shop\Controller;
 
+use Admin\Api\DatatreeApi;
+use Shop\Api\OrdersApi;
+use Shop\Api\ProductApi;
 use Shop\Api\StoreApi;
 
 class WxstoreController extends ShopController{
@@ -46,7 +49,7 @@ class WxstoreController extends ShopController{
 		//TODO: 商品展示要进行分页处理
 		$page  = array('curpage'=>$p,'size'=>100);
 		$order = " price desc";
-		$result = apiCall("Shop/Product/query", array($map,$page,$order));
+		$result = apiCall(ProductApi::QUERY, array($map,$page,$order));
 		
 		if(!$result['status']){
 			$this->error($result['info']);
@@ -66,7 +69,7 @@ class WxstoreController extends ShopController{
 	 */
 	public function allCategory(){
 		
-		$this->redirect("Shop/Wxstore/view", array('id' => I('id')));
+		$this->redirect( "Shop/Wxstore/view", array('id' => I('id')));
 //		$this->error("TODO:查看所有的宝贝分类");
 //		$this->display();
 	}
@@ -97,7 +100,7 @@ class WxstoreController extends ShopController{
 			$order = " createtime desc ";
 			
 			
-			$result = apiCall('Admin/Wxstore/query', array($map, $page, $order));
+			$result = apiCall(StoreApi::QUERY, array($map, $page, $order));
 			
 			if ($result['status']) {
 				$this->success($result['info']['list']);
@@ -107,9 +110,10 @@ class WxstoreController extends ShopController{
 			}
 		
 		}else{
+
 			$map = array('parentid'=>C('DATATREE.STORE_TYPE'));
 	
-			$result = apiCall('Admin/Datatree/queryNoPaging', array($map));
+			$result = apiCall(DatatreeApi::QUERY_NO_PAGING, array($map));
 			
 			if(!$result['status']){
 				$this->error($result['info']);
@@ -136,7 +140,7 @@ class WxstoreController extends ShopController{
 			array_push($tmp_arr, $vo['id']);
 		}
 		
-		$result = apiCall("Shop/Orders/monthlySales", array($tmp_arr));
+		$result = apiCall(OrdersApi::MONTHLY_SALES, array($tmp_arr));
 		
 		if (!$result['status']) {
 			$this -> error($result['info']);

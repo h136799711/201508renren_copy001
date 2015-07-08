@@ -7,11 +7,19 @@
 // |-----------------------------------------------------------------------------------
 
 namespace Shop\Controller;
+use Admin\Api\AddonsApi;
 use Shop\Api\AddressApi;
 use Shop\Api\OrderCommentApi;
 use Shop\Api\OrdersApi;
+use Shop\Api\OrdersInfoViewApi;
+use Shop\Api\OrdersItemApi;
+use Shop\Api\OrderStatusApi;
+use Shop\Api\OrderStatusHistoryApi;
 use Shop\Api\ProductApi;
+use Shop\Api\ProductSkuApi;
+use Shop\Api\StoreApi;
 use Shop\Model\OrdersModel;
+use Shop\Model\OrderStatusHistoryModel;
 use Think\Controller;
 use Tool\Api\AreaApi;
 use Tool\Api\CityApi;
@@ -30,11 +38,11 @@ class OrdersController extends ShopController {
 	public function view(){
 		$id = I('get.id',0);
 		$map = array('id' => $id);
-		$result = apiCall("Shop/OrdersInfoView/getInfo", array($map));
+		$result = apiCall(OrdersInfoViewApi::GET_INFO, array($map));
 		if ($result['status']) {
 			$orderid = $result['info']['orderid'];			
 			$this -> assign("order", $result['info']);
-			$result = apiCall("Shop/OrdersItem/queryNoPaging", array(array('orders_id'=>$id)));
+			$result = apiCall(OrdersItemApi::QUERY_NO_PAGING, array(array('orders_id'=>$id)));
 			if(!$result['status']){
 				ifFailedLogRecord($result, __FILE__.__LINE__);
 				$this->error($result['info']);
@@ -42,7 +50,7 @@ class OrdersController extends ShopController {
 
 			$this -> assign("items", $result['info']);
 			$backStatus = OrdersModel::ORDER_BACK;
-			$result = apiCall("Shop/OrderStatusHistory/getInfo", array(array('orders_id'=>$orderid,'status_type'=>'ORDER','next_status'=>$backStatus)));
+			$result = apiCall(OrderStatusHistoryApi::GET_INFO, array(array('orders_id'=>$orderid,'status_type'=>'ORDER','next_status'=>$backStatus)));
 			if(!$result['status']){
 				ifFailedLogRecord($result, __FILE__.__LINE__);
 				$this->error($result['info']);
@@ -104,7 +112,7 @@ class OrdersController extends ShopController {
 		$orders = " createtime desc ";
 		$page = array('curpage'=>I('post.p',0),'size'=>3);
 		
-		$result = apiCall("Shop/Orders/query", array($map, $page, $orders));
+		$result = apiCall(OrdersApi::QUERY, array($map, $page, $orders));
 
 		ifFailedLogRecord($result, __FILE__ . __LINE__);
 
@@ -141,7 +149,7 @@ class OrdersController extends ShopController {
 			$mapStore = array();
 			$mapStore['id'] = array('in', $store_ids);
 			//2. 获取店铺信息
-			$result = apiCall("Shop/Wxstore/queryNoPaging", array($mapStore));
+			$result = apiCall(StoreApi::QUERY_NO_PAGING, array($mapStore));
 			ifFailedLogRecord($result, __FILE__ . __LINE__);
 			foreach ($result_list as &$vo_obj){
 				foreach ($result['info'] as $vo) {
@@ -158,7 +166,7 @@ class OrdersController extends ShopController {
 		if (count($store_ids) > 0) {
 			$mapOrder = array();
 			$mapOrder['orders_id'] = array('in', $order_ids);
-			$result = apiCall("Shop/OrdersItem/queryNoPaging", array($mapOrder));
+			$result = apiCall(OrdersItemApi::QUERY_NO_PAGING, array($mapOrder));
 			
 			ifFailedLogRecord($result, __FILE__ . __LINE__);
 			
@@ -205,6 +213,7 @@ class OrdersController extends ShopController {
 	 * TODO: 暂不支持运费模板的运费计算
 	 */
 	public function confirm() {
+        //标识是否直接从session中取订单确认信息
 		$fromsession = I('get.fromsession', 0);
 		$p_id_arr = I('post.p_id', array());
 		$sku_id_arr = I('post.sku_id', array());
@@ -221,11 +230,12 @@ class OrdersController extends ShopController {
 		if (!empty($hebidu_skuchecked)) {
 			array_push($sku_id_arr, $hebidu_skuchecked);
 			$count_arr[0] = I('post.sku_count', 1);
-//			dump($count_arr[0]);
+
 		}
-//		dump($count_arr);
+
+
 		if (intval($fromsession) == 1) {
-			if (session("?confirm_order_info")) {
+			if (!session("?confirm_order_info")) {
 				$this -> redirect('Shop/Index/index');
 			}
 			//从session中取
@@ -248,7 +258,7 @@ class OrdersController extends ShopController {
 			array_push($sku_id_arr, -1);
 			$map['sku_id'] = array('in', $sku_id_arr);
 			$order = " product_id desc ";
-			$result = apiCall("Shop/ProductSku/queryNoPaging", array($map, $order));
+			$result = apiCall(ProductSkuApi::QUERY_NO_PAGING, array($map, $order));
 			if (!$result['status']) {
 				LogRecord($result['info'], __FILE__ . __LINE__);
 				$this -> error($result['info']);
@@ -300,11 +310,10 @@ class OrdersController extends ShopController {
 				$express_price = $express_price / 100.0;
 				//转化为元
 				//取得最大的运费
-				//				if($tmp_store[$vo['storeid']]['post_price'] < $express_price){
+
 				$entity['post_price'] = $express_price;
 				$tmp_store[$vo['storeid']]['post_price'] += $express_price;
 				$all_express += $express_price;
-				//				}
 
 				array_push($tmp_store[$vo['storeid']]['products'], $entity);
 				array_push($store_ids, $vo['storeid']);
@@ -313,7 +322,7 @@ class OrdersController extends ShopController {
 			unset($map['sku_id']);
 			$map['id'] = array('in', $store_ids);
 			$order = " id asc ";
-			$result = apiCall("Shop/Wxstore/queryNoPaging", array($map, $order));
+			$result = apiCall(StoreApi::QUERY_NO_PAGING, array($map, $order));
 			if (!$result['status']) {
 				LogRecord($result['info'], __FILE__ . __LINE__);
 				$this -> error($result['info']);
@@ -334,7 +343,7 @@ class OrdersController extends ShopController {
 		//获取默认收货地址
 
 		$default_address = $this -> getDefaultAddress();
-
+//        dump($default_address);
 		$this -> assign("default_address", $default_address);
 		$this -> assign("list", $list);
 		$this ->theme($this->themeType)-> display();
@@ -360,7 +369,7 @@ class OrdersController extends ShopController {
 
 			$map = array('id' => $address_id);
 
-			$result = apiCall("Shop/Address/getInfo", array($map));
+			$result = apiCall(AddressApi::GET_INFO, array($map));
 
 			if (!$result['status']) {
 				$this -> error($result['info']);
@@ -406,7 +415,7 @@ class OrdersController extends ShopController {
 				$i++;
 				//				dump($entity['items']['products']);
 				//				exit();
-				$result = apiCall("Shop/Orders/addOrder", array($entity));
+				$result = apiCall(OrdersApi::ADD_ORDER, array($entity));
 				//				addWeixinLog($result,'订单3333');
 				if (!$result['status']) {
 					LogRecord($result['info'], __FILE__ . __LINE__);
@@ -472,7 +481,7 @@ class OrdersController extends ShopController {
 		
 		$id= I('get.id',0);
 		
-		$result = serviceCall("Common/Order/confirmReceive", array($id,false,UID));
+		$result = apiCall(OrderStatusApi::CONFIRM_RECEIVE, array($id,false,UID));
 		
 		if(!$result['status']){
 			$this->error($result['info']);
@@ -530,8 +539,12 @@ class OrdersController extends ShopController {
 		if (!$result['status']) {
 			LogRecord($result['info'], __FILE__ . __LINE__);
 		}
-
+//        dump($result);
 		$default_address = $result['info'];
+        if(empty($default_address)){
+            return $default_address;
+        }
+
 		//默认收货地址
 		$province_one = apiCall(ProvinceApi::GET_INFO, array( array("provinceID" => $default_address['province'])));
 		$city_one = apiCall(CityApi::GET_INFO, array( array("cityID" => $default_address['city'])));
