@@ -442,7 +442,6 @@ class ConnectController extends WeixinController {
 	 */
 	private function addWxuser($referrer = 0,$is_add=0) {
 
-		addWeixinLog($referrer,"添加一个微信粉丝账户!");
 		$openid = $this -> getOpenID();
 		$userinfo = $this -> wxapi -> getBaseUserInfo($openid);
 
