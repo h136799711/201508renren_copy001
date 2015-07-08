@@ -9,6 +9,9 @@ namespace Shop\Controller;
 
 use Shop\Api\OrdersApi;
 use Shop\Model\OrdersModel;
+use Admin\Api\DatatreeApi;
+use Shop\Api\WalletApi;
+
 
 class UserController extends ShopController{
 	
@@ -48,6 +51,42 @@ class UserController extends ShopController{
 		}
 		
 	}
+	
+	public function withdraw(){
+		$map=array(
+			'uid'=>$this->userinfo['uid'],
+			//'uid'=>236,
+		);
+		$result=apiCall(WalletApi::GET_INFO_If_NOT_EXIST_THEN_ADD,array($map));
+		$this->assign('wallet',$result);
+		$this->theme($this->themeType)->display();
+		
+	}
+	
+	
+	public function add(){
+		/*$map=array(
+			'parentid'=>27,
+		);
+		$result=apiCall(DatatreeApi::QUERY_NO_PAGING,array($map));
+		$this->assign('accountType',$result['info']);
+		$this->theme($this->themeType)->display();*/
+		$map=array(
+			'uid'=>$this->userinfo['uid'],
+			'money'=>50,
+			'accountType'=>28,
+			'accountName'=>'张铭',
+			'bankBranch'=>'1235',
+			'cashAccount'=>'3212356465464',
+			'reason'=>'提现'
+			
+		);
+		apiCall(WalletApi::MINUS,array($map));
+		
+		
+	}
+	
+	
 	
 	
 	private function orderCount($type){
