@@ -8,6 +8,7 @@
 
 namespace Shop\Controller;
 use Common\Api\Wxpay\WxPayApi;
+use Distributor\Api\CommissionCountApi;
 use Shop\Api\OrdersInfoViewApi;
 use Shop\Api\OrdersItemApi;
 use Shop\Api\OrderStatusApi;
@@ -40,6 +41,9 @@ class PayController extends ShopController {
             $this -> error($result['info']);
         }
 
+        $commission = new CommissionCountApi();
+
+        $commission->add($this->userinfo['id'],$ids);
 
         //TODO: 转移到插件中
         tag("send_to_msg_user",array($id, $text));
@@ -89,7 +93,7 @@ class PayController extends ShopController {
         $ids = I('get.id', 0);
 
         $ids = rtrim($ids, "-");
-        $ids_arr = split("-", $ids);
+        $ids_arr = explode("-", $ids);
         if (count($ids_arr) == 0) {
             $this -> error("参数错误！");
         }
