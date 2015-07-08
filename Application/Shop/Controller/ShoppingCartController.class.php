@@ -32,7 +32,7 @@ class ShoppingCartController extends ShopController{
 		
 		$this->assign("stores",$store);
 		$this->assign("cart",$this->cart);
-		$this->display();
+		$this->theme($this->themeType)->display();
 	}
 	
 	/**

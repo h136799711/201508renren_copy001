@@ -103,7 +103,7 @@ class ProductController extends ShopController {
 			$this -> assign("curpage", $page['curpage']);
 			$this -> assign("show", $result['info']['show']);
 			$this -> assign("list", $list);
-			$this -> display();
+			$this ->theme($this->themeType)->display();
 		}
 	}
 	/**
@@ -199,7 +199,7 @@ class ProductController extends ShopController {
 			//获取月销量
 			$this -> assign("monthlySales", $monthlySales);
 			
-			$this -> display();
+			$this -> theme($this->themeType)->display();
 
 		}
 
