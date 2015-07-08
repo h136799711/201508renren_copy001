@@ -94,7 +94,7 @@ class WalletApi extends Api{
 		
 		$trans = M();
         $trans->startTrans(); //开启事务
-        $error = "";
+        //$error = "";
 		
 		
 		$entity=array(
@@ -148,6 +148,9 @@ class WalletApi extends Api{
 				
 				if($result['status']){
 					$trans->commit();//提交事务
+					$lastResult['status']=true;
+					$lastResult['info']='提取成功';
+					return $lastResult;
 				}else{
 					$trans->rollback();//回滚事务
 					return $lastResult;

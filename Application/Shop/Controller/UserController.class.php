@@ -65,13 +65,13 @@ class UserController extends ShopController{
 	
 	
 	public function add(){
-		/*$map=array(
+		$map=array(
 			'parentid'=>27,
 		);
 		$result=apiCall(DatatreeApi::QUERY_NO_PAGING,array($map));
 		$this->assign('accountType',$result['info']);
-		$this->theme($this->themeType)->display();*/
-		$map=array(
+		$this->theme($this->themeType)->display();
+		/*$map=array(
 			'uid'=>$this->userinfo['uid'],
 			'money'=>50,
 			'accountType'=>28,
@@ -81,7 +81,7 @@ class UserController extends ShopController{
 			'reason'=>'提现'
 			
 		);
-		apiCall(WalletApi::MINUS,array($map));
+		apiCall(WalletApi::MINUS,array($map));*/
 		
 		
 	}

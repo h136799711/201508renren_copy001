@@ -22,24 +22,24 @@
 		
 		
 		<form class="validate-form"  >
-		<ul>
-		<li class="li_info"><input type="text" class="am-form-field am-radius am-text-xs" style="" placeholder="请输入收款人" /></li>
-		<li class="li_info">
-			    <select onchange="changeAccountType(this)">
-			      <option value="0">选择提现方式</option>
-			      <volist name="accountType" id="at">
-					<option value="{$at.id}">{$at.name}</option>
-				</volist>
-			    </select>
-		</li>
-		<!--选择提现方式-->
-		<li class="li_info"><input type="text" name="bankName" class="am-form-field am-radius  am-text-xs" style="" placeholder="开户银行支行名称" /></li>
-		<li class="li_info"><input type="text" class="am-form-field am-radius  am-text-xs" style="" placeholder="账号/卡号" /></li>
-		<li class="li_info"><input type="text" class="am-form-field am-radius am-text-xs" style="" placeholder="确认账号/卡号" /></li>
-		
-		<li class="li_info"><button type="button" url="{:U('Shop/Index/distributor')}" target-form="validate-form" class="am-btn am-btn-success am-btn-block" style="">添加账号</button></li>
-		</ul>
-		  </form>
+			<ul>
+			<li class="li_info"><input type="text" name="accountName" class="am-form-field am-radius am-text-xs" style="" placeholder="请输入收款人" /></li>
+			<li class="li_info">
+				    <select name="accountType" onchange="changeAccountType(this)">
+				      <option value="0">选择提现方式</option>
+				      <volist name="accountType" id="at">
+						<option value="{$at.id}">{$at.name}</option>
+					</volist>
+				    </select>
+			</li>
+			<!--选择提现方式-->
+			<li class="li_info"><input type="text" name="bankBranch" class="am-form-field am-radius  am-text-xs" style="" placeholder="开户银行支行名称" /></li>
+			<li class="li_info"><input type="text"  name="cashAccount"  class="am-form-field am-radius  am-text-xs" style="" placeholder="账号/卡号" /></li>
+			<li class="li_info"><input type="text"  name="cashAccounts"  class="am-form-field am-radius am-text-xs" style="" placeholder="确认账号/卡号" /></li>
+			<li class="li_info"><input type="text"  name="money"  class="am-form-field am-radius am-text-xs" style="" placeholder="提取金额" /></li>
+			<li class="li_info"><button type="button" url="{:U('Shop/User/add')}" target-form="validate-form" class="ajax-post am-btn am-btn-success am-btn-block" style="">提取金额</button></li>
+			</ul>
+		 </form>
 	</div>
 	
 </block>		
