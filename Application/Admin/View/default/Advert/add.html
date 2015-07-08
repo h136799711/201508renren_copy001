@@ -47,6 +47,15 @@
 							<div class="help-block">(广告展示的时间段,默认7天)</div>
 						</div>
 					</div>
+                    <div class="form-group">
+                        <label for="inputtitle" class="col-md-2 col-lg-2 control-label">广告位置</label>
+                        <div class="col-md-10 col-lg-10">
+                                <select name="position" class="form-control  input-normal" >
+                                    {:W("Partials/datatree",array(getDatatree('ADVERT_POSITION'),true))}
+                                </select>
+                                <div class="help-block">(选择位置)</div>
+                        </div>
+                    </div>
 					<div class="form-group">
 						<label for="inputtitle" class="col-md-2 col-lg-2 control-label">广告标题</label>
 						<div class="col-md-10 col-lg-10">

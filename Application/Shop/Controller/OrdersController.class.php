@@ -428,10 +428,9 @@ class OrdersController extends ShopController {
 			//目前 就直接删除购物车
 			session("shoppingcart", null);
 			session("confirm_order_info", null);
-			//			addWeixinLog($ids,'订单IDs');
+
 			$this -> success("订单保存成功，前往支付！", C('SITE_URL') . "/index.php/Shop/Pay/pay/id/$ids?showwxpaytitle=1");
 
-			//			$this->success("订单保存成功，前往支付！",C('SITE_URL')."/index.php?m=Shop&c=OnlinePay&a=pay&id=$ids&showwxpaytitle=1");
 		} else {
 			LogRecord("禁止访问！", __FILE__ . __LINE__);
 			$this -> error("禁止访问！");

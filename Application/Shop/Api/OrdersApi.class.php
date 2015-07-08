@@ -10,6 +10,8 @@
 namespace Shop\Api;
 
 use Common\Api\Api;
+use Shop\Model\OrdersContactinfoModel;
+use Shop\Model\OrdersItemModel;
 use Shop\Model\OrdersModel;
 
 class OrdersApi extends Api
@@ -101,8 +103,7 @@ class OrdersApi extends Api
      */
     public function addOrder($entity)
     {
-//		addWeixinLog($entity['items'],'add order 订单 0');
-//		addWeixinLog($entity['items'],'add order 订单 0.0');
+
         $flag = true;
         $error = "";
         //1. 增加order表记录
@@ -140,7 +141,7 @@ class OrdersApi extends Api
                 'wxno' => $entity['wxno'],
                 'detailinfo' => $entity['detailinfo'],
             );
-            $model = new \Common\Model\OrdersContactinfoModel();
+            $model = new OrdersContactinfoModel();
             $result = $model->create($orderContactInfo, 1);
 
             if ($result) {

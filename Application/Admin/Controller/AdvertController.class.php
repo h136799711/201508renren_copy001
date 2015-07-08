@@ -8,24 +8,39 @@
 
 namespace Admin\Controller;
 
+use Admin\Api\DatatreeApi;
+use Shop\Api\BannersApi;
+
 class AdvertController extends  AdminController{
-	
-	protected $position;
-	
+
 	protected function _initialize(){
 		parent::_initialize();
-		$this->position = C('DATATREE.SHOP_INDEX_ADVERT');
 	}
 
 	public function index(){
-		
-		$map = array();
-		$map = array('uid'=>UID,'position'=>$this->position);
-		
-		$page = array('curpage' => I('get.p', 0), 'size' => C('LIST_ROWS'));
-		$order = " createtime desc ";
-		//
-		$result = apiCall('Admin/Banners/query', array($map, $page, $order, $params));
+        $result = apiCall(DatatreeApi::QUERY_NO_PAGING,array(array("parentid"=>getDatatree('ADVERT_POSITION')),"","id"));
+        if(!$result['status']){
+            $this->error($result['info']);
+        }
+        $result = $result['info'];
+        $advert_pos = array();
+        foreach($result as $vo){
+            array_push($advert_pos,$vo['id']);
+        }
+        if(count($advert_pos) > 0){
+            $map = array();
+            $map = array('uid'=>UID);
+
+            $map['position'] = array('in',$advert_pos);
+            $page = array('curpage' => I('get.p', 0), 'size' => C('LIST_ROWS'));
+            $order = " createtime desc ";
+            //
+            $result = apiCall(BannersApi::QUERY, array($map, $page, $order, $params));
+//            dump($map);
+        }else{
+            $result = array('status'=>true,'info'=>array('show'=>'','list'=>''));
+        }
+
 		//
 		if ($result['status']) {
 			$this -> assign('show', $result['info']['show']);
@@ -43,9 +58,9 @@ class AdvertController extends  AdminController{
 			$this->display();
 		}else{
 			$title = I('post.title','');
-//			$url = 
+
 			$notes = I('post.notes','');
-			$position = $this->position;
+			$position = I('post.position','');
 			$starttime = I('post.startdatetime',FALSE);
 			$endtime = I('post.enddatetime',FALSE);
 			$noticetime = I('post.noticedatetime',FALSE);
@@ -63,7 +78,7 @@ class AdvertController extends  AdminController{
 				$this->error("时间格式错误！");
 			}
 			if(empty($position)){
-				$this->error("配置错误！");
+				$this->error("广告位置未知！");
 			}
 			
 			$entity = array(
@@ -80,7 +95,7 @@ class AdvertController extends  AdminController{
 			);
 		
 			
-			$result = apiCall("Admin/Banners/add", array($entity));
+			$result = apiCall(BannersApi::ADD, array($entity));
 			
 			if(!$result['status']){
 				$this->error($result['info']);
@@ -95,7 +110,7 @@ class AdvertController extends  AdminController{
 	public function edit(){
 		$id = I('id',0);
 		if(IS_GET){
-			$result = apiCall("Admin/Banners/getInfo", array(array('id'=>$id)));
+			$result = apiCall(BannersApi::GET_INFO , array(array('id'=>$id)));
 			if(!$result['status']){
 				$this->error($result['info']);
 			}
@@ -131,7 +146,7 @@ class AdvertController extends  AdminController{
 			);
 			
 			
-			$result = apiCall("Admin/Banners/saveByID", array($id,$entity));
+			$result = apiCall(BannersApi::SAVE_BY_ID, array($id,$entity));
 			
 			if(!$result['status']){
 				$this->error($result['info']);
@@ -146,7 +161,7 @@ class AdvertController extends  AdminController{
 		
 		$id = I('id',0);
 		$map = array("id"=>$id);
-		$result = apiCall("Admin/Banners/delete", array($map));
+		$result = apiCall(BannersApi::DELETE, array($map));
 		
 		if(!$result['status']){
 			$this->error($result['info']);

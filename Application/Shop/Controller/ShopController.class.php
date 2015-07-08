@@ -36,8 +36,8 @@ class ShopController extends  Controller {
 		}
 		C('SHOW_PAGE_TRACE', false);//设置不显示trace
 		$this -> refreshWxaccount();
-//		$debug = true;
-		$debug = false;
+		$debug = true;
+//		$debug = false;
 		
 		if($debug){
 			$this->getDebugUser();
@@ -61,8 +61,10 @@ class ShopController extends  Controller {
 	//获取测试用户信息，用于PC端测试使用
 	private function getDebugUser(){
 		$this->userinfo = array(
-			'id'=>8,
-			'openid'=>'oxGH0sgeUkH4g8aowy0452xJnX1o',
+			'id'=>1,
+            'uid'=>224,
+            'openid'=>'on1gxt-HCbKcX4r56QwXVrBvpFoA',
+//			'openid'=>'oxGH0sgeUkH4g8aowy0452xJnX1o',
 			'nickname'=>'老胖子何必都',
 			'avatar'=>'http://wx.qlogo.cn/mmopen/An6TFzHNImPecEhl1R3UWd26LlC1mvVgyhdh2KGCOb0yjQ4JNQnOicG2ysaKojzusSO9R3RE55Exq0lYKpVr3RRArU0u7kgjR/0',
 			'score'=>0,
@@ -71,7 +73,7 @@ class ShopController extends  Controller {
 		);
 		
 //		$this->wxapi = new \Common\Api\WeixinApi('wx5f9ed360f5da5370','4a0e3e50c8e9137c4873689b8ee99124');
-		$this->openid = "oxGH0sgeUkH4g8aowy0452xJnX1o";
+		$this->openid = "on1gxt-HCbKcX4r56QwXVrBvpFoA";
 	}
 	
 	

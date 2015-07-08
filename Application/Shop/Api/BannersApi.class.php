@@ -11,6 +11,11 @@ use Shop\Model\BannersModel;
 use Think\Page;
 
 class BannersApi extends Api{
+
+    /**
+     * 查询数据包含位置名称
+     */
+    const QUERY_NO_PAING = "Shop/Banners/queryNoPaging";
     /**
      * 查询数据包含位置名称
      */

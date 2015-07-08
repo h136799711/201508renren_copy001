@@ -51,7 +51,7 @@ class OrderStatusApi {
      *
      */
     function __construct(){
-        $this->model = new Model\OrdersModel();
+        $this->model = new OrdersModel();
     }
 
     /**
@@ -60,7 +60,7 @@ class OrderStatusApi {
      * @return array
      */
     public function cashOndelivery($ids,$isauto,$uid){
-        $orderStatusHistoryModel = new Model\OrderStatusHistoryModel();
+        $orderStatusHistoryModel = new OrderStatusHistoryModel();
         //
         foreach($ids as  $id){
 
@@ -74,7 +74,7 @@ class OrderStatusApi {
                 return $this->returnErr("订单ID错误!");
             }
 
-            if($result['pay_status'] !=  Model\OrdersModel::ORDER_TOBE_PAID){
+            if($result['pay_status'] !=  OrdersModel::ORDER_TOBE_PAID){
                 return $this->returnErr("当前订单状态无法变更！");
             }
 
@@ -84,7 +84,7 @@ class OrderStatusApi {
                 'operator'=>$uid,
                 'status_type'=>'PAY',
                 'cur_status'=>$result['pay_status'],
-                'next_status'=> Model\OrdersModel::ORDER_CASH_ON_DELIVERY,
+                'next_status'=> OrdersModel::ORDER_CASH_ON_DELIVERY,
             );
 
             $this->model->startTrans();
@@ -92,7 +92,7 @@ class OrderStatusApi {
             $return = "";
 
             //设置订单状态为货到付款
-            $result = $this->model->where(array('id'=>$id))->save(array('pay_status'=> Model\OrdersModel::ORDER_CASH_ON_DELIVERY));
+            $result = $this->model->where(array('id'=>$id))->save(array('pay_status'=> OrdersModel::ORDER_CASH_ON_DELIVERY));
             if($result === false){
                 $flag = false;
                 $return = $this->model->getDbError();
@@ -133,7 +133,7 @@ class OrderStatusApi {
      * @internal param $isauto
      */
     public function shipped($id,$uid){
-        $orderStatusHistoryModel = new Model\OrderStatusHistoryModel();
+        $orderStatusHistoryModel = new OrderStatusHistoryModel();
         $result = $this->model->where(array('id'=>$id))->find();
 
         if($result == false){
@@ -144,7 +144,7 @@ class OrderStatusApi {
             return $this->returnErr("订单ID错误!");
         }
 
-        if($result['order_status'] != Model\OrdersModel::ORDER_TOBE_SHIPPED){
+        if($result['order_status'] != OrdersModel::ORDER_TOBE_SHIPPED){
             return $this->returnErr("当前订单状态无法变更！");
         }
 
@@ -154,14 +154,14 @@ class OrderStatusApi {
             'operator'=>$uid,
             'status_type'=>'ORDER',
             'cur_status'=>$result['order_status'],
-            'next_status'=> Model\OrdersModel::ORDER_SHIPPED,
+            'next_status'=> OrdersModel::ORDER_SHIPPED,
         );
 
         $this->model->startTrans();
         $flag = true;
         $return = "";
 
-        $result = $this->model->where(array('id'=>$id))->save(array('order_status'=> Model\OrdersModel::ORDER_SHIPPED));
+        $result = $this->model->where(array('id'=>$id))->save(array('order_status'=> OrdersModel::ORDER_SHIPPED));
         if($result === false){
             $flag = false;
             $return = $this->model->getDbError();
@@ -210,7 +210,7 @@ class OrderStatusApi {
             return $this->returnErr("订单ID错误!");
         }
 
-        if($result['order_status'] != Model\OrdersModel::ORDER_TOBE_CONFIRMED){
+        if($result['order_status'] != OrdersModel::ORDER_TOBE_CONFIRMED){
             return $this->returnErr("当前订单状态无法变更！");
         }
 
@@ -220,14 +220,14 @@ class OrderStatusApi {
             'operator'=>$uid,
             'status_type'=>'ORDER',
             'cur_status'=>$result['order_status'],
-            'next_status'=> Model\OrdersModel::ORDER_TOBE_SHIPPED,
+            'next_status'=> OrdersModel::ORDER_TOBE_SHIPPED,
         );
 
         $this->model->startTrans();
         $flag = true;
         $return = "";
 
-        $result = $this->model->where(array('id'=>$id))->save(array('order_status'=> Model\OrdersModel::ORDER_TOBE_SHIPPED));
+        $result = $this->model->where(array('id'=>$id))->save(array('order_status'=> OrdersModel::ORDER_TOBE_SHIPPED));
         if($result === false){
             $flag = false;
             $return = $this->model->getDbError();
@@ -331,7 +331,7 @@ class OrderStatusApi {
      * 确认收货操作
      */
     public function confirmReceive($id,$isauto,$uid){
-        $orderStatusHistoryModel = new Model\OrderStatusHistoryModel();
+        $orderStatusHistoryModel = new OrderStatusHistoryModel();
         $result = $this->model->where(array('id'=>$id))->find();
 
         if($result == false){
@@ -342,7 +342,7 @@ class OrderStatusApi {
             return $this->returnErr("订单ID错误!");
         }
 
-        if($result['order_status'] != Model\OrdersModel::ORDER_SHIPPED){
+        if($result['order_status'] != OrdersModel::ORDER_SHIPPED){
             return $this->returnErr("当前订单状态出错!");
         }
 
@@ -352,14 +352,14 @@ class OrderStatusApi {
             'operator'=>$uid,
             'status_type'=>'ORDER',
             'cur_status'=>$result['order_status'],
-            'next_status'=>Model\OrdersModel::ORDER_RECEIPT_OF_GOODS,
+            'next_status'=>OrdersModel::ORDER_RECEIPT_OF_GOODS,
         );
 
         $this->model->startTrans();
         $flag = true;
         $return = "";
 
-        $result = $this->model->where(array('id'=>$id))->save(array('order_status'=>Model\OrdersModel::ORDER_RECEIPT_OF_GOODS));
+        $result = $this->model->where(array('id'=>$id))->save(array('order_status'=>OrdersModel::ORDER_RECEIPT_OF_GOODS));
         if($result === false){
             $flag = false;
             $return = $this->model->getDbError();
@@ -427,7 +427,7 @@ class OrderStatusApi {
         $flag = true;
         $return = "";
 
-        $result = $this->model->where(array('id'=>$id))->save(array('order_status'=>Model\OrdersModel::ORDER_RETURNED));
+        $result = $this->model->where(array('id'=>$id))->save(array('order_status'=>OrdersModel::ORDER_RETURNED));
         if($result === false){
             $flag = false;
             $return = $this->model->getDbError();
@@ -496,7 +496,7 @@ class OrderStatusApi {
         $flag = true;
         $return = "";
 
-        $result = $this->model->where(array('id'=>$id))->save(array('comment_status'=>Model\OrdersModel::ORDER_HUMAN_EVALUATED,'order_status'=>\Common\Model\OrdersModel::ORDER_COMPLETED));
+        $result = $this->model->where(array('id'=>$id))->save(array('comment_status'=>OrdersModel::ORDER_HUMAN_EVALUATED,'order_status'=>OrdersModel::ORDER_COMPLETED));
         if($result === false){
             $flag = false;
             $return = $this->model->getDbError();

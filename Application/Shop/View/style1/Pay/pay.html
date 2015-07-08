@@ -83,7 +83,7 @@
 					callpay();
 				}else{
 					//货到付款
-					var url = "{:U('Shop/OnlinePay/cashOndelivery')}";
+					var url = "{:U('Shop/Pay/cashOndelivery')}";
 					var ids = "{$ids}";
 					$.ajax({
 						url:url,

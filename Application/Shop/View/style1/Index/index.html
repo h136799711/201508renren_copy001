@@ -4,7 +4,7 @@
 
 	<head>
 		<meta charset="utf-8">
-		<title>{:C('WEBSITE_TITLE')}</title>
+		<title>{$meta_title|default='商城首页'}</title>
 		<meta name="keywords" content="{$seo.keywords|default=" "}" />
 		<meta name="description" content="{$seo.description|default=" "}" />
 		<meta name="author" content="{$cfg.owner|default=" Gooraye "}" />
@@ -210,17 +210,17 @@
 	  	</volist>
 	  </ul>
 	</div>
-	
-	<div class="store_types grid ">
-		<volist name="store_types" id="vo">
-			<div class="type-item col-3">
-				<a href="{:U('Shop/Wxstore/search',array('cate_id'=>$vo['id']))}">
-				<img  src="{$vo.iconurl}" class="lazy" alt="{$vo.name}" />
-				<span>{$vo.name}</span>
-				</a>
-			</div>
-		</volist>
-	</div>
+	<!---->
+	<!--<div class="store_types grid " style="display: none;">-->
+		<!--<volist name="store_types" id="vo">-->
+			<!--<div class="type-item col-3">-->
+				<!--<a href="{:U('Shop/Wxstore/search',array('cate_id'=>$vo['id']))}">-->
+				<!--<img  src="{$vo.iconurl}" class="lazy" alt="{$vo.name}" />-->
+				<!--<span>{$vo.name}</span>-->
+				<!--</a>-->
+			<!--</div>-->
+		<!--</volist>-->
+	<!--</div>-->
 	
 	<div class="top-line">
 		<!--TODO: 头条新闻-->
@@ -228,27 +228,27 @@
 	<div class="grid activity">
 		<if condition="count($fourgrid) gt 3"> 
 		<div class="col-6 text-center grid-1" style="border: 1px solid #F0F0EE;height: 4rem;  border-left: 0px;background: #FFFFFF;">
-			<a href="{:U('Shop/Product/group',array('id'=>$fourgrid[0]['notes']))}">
-			<img src="{$fourgrid[0]['iconurl']}" alt="{$fourgrid[0]['name']}" class="am-responsive-width lazy"/>
+			<a href="{$fourgrid[0]['url']}">
+			<img src="{$fourgrid[0]['img']}" alt="{$fourgrid[0]['title']}" class="am-responsive-width lazy"/>
 			</a>
 		</div>
 		<div class=" text-center" >			
   
 			<div class="col-3 text-center grid-2" >
-				<a href="{:U('Shop/Product/group',array('id'=>$fourgrid[1]['notes']))}">
-				<img  src="{$fourgrid[1]['iconurl']}" alt="{$fourgrid[1]['name']}" class="am-responsive-width lazy" />
+				<a href="{$fourgrid[0]['url']}">
+				<img  src="{$fourgrid[1]['img']}" alt="{$fourgrid[1]['title']}" class="am-responsive-width lazy" />
 				</a>
 			</div>
 			<div class="col-3 text-center grid-3"  >
-				<a href="{:U('Shop/Product/group',array('id'=>$fourgrid[2]['notes']))}">
-				<img src="{$fourgrid[2]['iconurl']}" alt="{$fourgrid[2]['name']}" class="am-responsive-width lazy" />
+				<a href="{$fourgrid[0]['url']}">
+				<img src="{$fourgrid[2]['img']}" alt="{$fourgrid[2]['title']}" class="am-responsive-width lazy" />
 				</a>
 			</div>
 		</div>
-		<div class=" text-center" >			
+		<div class=" text-center" >
 			<div class="col-6 text-center grid-4"  >
-				<a href="{:U('Shop/Product/group',array('id'=>$fourgrid[3]['notes']))}">
-				<img  src="{$fourgrid[3]['iconurl']}" alt="{$fourgrid[3]['name']}" class="am-responsive-width lazy" />
+				<a href="{$fourgrid[0]['url']}">
+				<img  src="{$fourgrid[3]['img']}" alt="{$fourgrid[3]['title']}" class="am-responsive-width lazy" />
 				</a>
 			</div>
 		</div>
@@ -272,7 +272,7 @@
                       	描述：TODO 活动
                       --></div>
 	
-	<div class="layer grid">
+	<div class="layer grid" style="display: none;">
 		<div class="layer-title">优质商家</div>
 		<div class="layer-cont">
 			<div data-am-widget="slider" class="am-slider am-slider-c4" data-am-slider='{&quot;controlNav&quot;:false}'>
@@ -287,10 +287,10 @@
 			  			</a>
 			  		</li>
 			  	</volist>
-    
+
 			  </ul>
 			</div>
-			
+
 		</div>
 	</div>
 	

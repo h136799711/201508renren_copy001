@@ -10,20 +10,20 @@
   namespace Tool\Api;
   
   use Common\Api\Api;
-  use Common\Model\OrdersModel;
-  
+  use Shop\Model\OrdersModel;
+
   class OrdersApi extends Api{
   	protected function _init(){
   		$this->model = new OrdersModel();
   	}
-	
 
 
-	/**
-	 * 设置订单状态
-	 * TODO：需要锁定数据行写操作
-	 * @param $interval 判断的间隔时间 秒 为单位
-	 */
+      /**
+       * 设置订单状态
+       * TODO：需要记录状态变更日志
+       * @param $interval 判断的间隔时间 秒 为单位
+       * @return array
+       */
 	public function orderStatusToCancel($interval){
 		$map['updatetime'] = array('lt',time()-$interval);
 		$map['order_status'] = OrdersModel::ORDER_TOBE_CONFIRMED;
@@ -43,11 +43,12 @@
 		}
 	}
 
-	/**
-	 * 设置订单状态
-	 * TODO：需要锁定数据行写操作
-	 * @param $interval 判断的间隔时间 秒 为单位
-	 */
+      /**
+       * 设置订单状态
+       * TODO：需要记录状态变更日志
+       * @param $interval 判断的间隔时间 秒 为单位
+       * @return array
+       */
 	public function orderStatusToRecieved($interval){
 		$map['updatetime'] = array('lt',time()-$interval);
 		$map['order_status'] = OrdersModel::ORDER_SHIPPED;
@@ -65,14 +66,15 @@
 			return $this->apiReturnSuc($result);
 		}
 	}
-	
-	/**
-	 *
-	 * 设置订单状态
-	 * TODO：需要锁定数据行写操作
-	 * @param $interval 判断的间隔时间 秒 为单位
-	 * 
-	 */
+
+      /**
+       *
+       * 设置订单状态
+       * TODO：需要记录状态变更日志
+       * @param $interval 判断的间隔时间 秒 为单位
+       *
+       * @return array
+       */
 	public function orderStatusToCompleted($interval){
 		$map['updatetime'] = array('lt',time()-$interval);
 		$map['order_status'] = OrdersModel::ORDER_RECEIPT_OF_GOODS;

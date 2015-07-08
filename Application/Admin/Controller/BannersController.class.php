@@ -8,20 +8,34 @@
 
 namespace Admin\Controller;
 
+use Admin\Api\DatatreeApi;
 use Shop\Api\BannersApi;
 
 class BannersController extends  AdminController{
 	
 	public function index(){
 
-		$map = array();
-		$map = array('uid'=>UID);
-		$map['position'] = array("in","18,20");
-		
-		$page = array('curpage' => I('get.p', 0), 'size' => C('LIST_ROWS'));
-		$order = " createtime desc ";
-		//
-		$result = apiCall(BannersApi::QUERY_WITH_POSITION, array($map, $page, $order, $params));
+        $result = apiCall(DatatreeApi::QUERY_NO_PAGING,array(array("parentid"=>getDatatree('BANNERS_TYPE')),"","id"));
+        if(!$result['status']){
+            $this->error($result['info']);
+        }
+        $result = $result['info'];
+        $banners_pos = array();
+        foreach($result as $vo){
+            array_push($banners_pos,$vo['id']);
+        }
+        if(count($banners_pos) > 0) {
+            $map = array();
+            $map = array('uid' => UID);
+            $map['position'] = array("in", $banners_pos);
+
+            $page = array('curpage' => I('get.p', 0), 'size' => C('LIST_ROWS'));
+            $order = " createtime desc ";
+            //
+            $result = apiCall(BannersApi::QUERY_WITH_POSITION, array($map, $page, $order, $params));
+        }else{
+            $result = array('status'=>true,'info'=>array('show'=>'','list'=>''));
+        }
 		//
 		if ($result['status']) {
 			$this -> assign('show', $result['info']['show']);
@@ -108,7 +122,17 @@ class BannersController extends  AdminController{
 		}
 	}
 		
-	
+	public function delete(){
+        $id = I('get.id',0);
+        $result = apiCall(BannersApi::DELETE,array(array('id'=>$id)));
+
+        if(!$result['status']){
+            $this->error($result['info']);
+        }
+
+        $this->success("删除成功！",U('Admin/Banners/index'));
+
+    }
 	
 	
 }

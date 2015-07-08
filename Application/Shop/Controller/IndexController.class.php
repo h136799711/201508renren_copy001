@@ -80,7 +80,7 @@ class IndexController extends ShopController{
 		$map= array(
 			'uid'=>$this->wxaccount['uid'],
 			'storeid'=>-1,
-			'position'=>C("DATATREE.SHOP_INDEX_BANNERS")
+			'position'=>getDatatree("SHOP_INDEX_BANNERS")
 		);
 		
 		$page = array(
@@ -137,7 +137,7 @@ class IndexController extends ShopController{
         $name = $this->wxaccount['wxname'];
 
         // 如果是分销商，显示分销商名称
-        if($this->isDistriubtor()){
+        if($this->isDistributor()){
             $name = $this->userinfo['nickname'];
         }
 
@@ -164,14 +164,14 @@ class IndexController extends ShopController{
 	 */
 	 private function getFourGrid(){
 		$page = array('curpage'=>0,'size'=>4);
-	 	$map = array('parentid'=>getDatatree("INDEX_4_ACTIVTIY"));
-		$order = " sort desc";
-		$result = apiCall(DatatreeApi::QUERY, array($map,$page,$order));
-	
+	 	$map = array('position'=>getDatatree("INDEX_4_ACTIVTIY"));
+		$order = " id desc";
+		$result = apiCall(BannersApi::QUERY, array($map,$page,$order));
+
 		if(!$result['status']){
 			$this->error($result['info']);
 		}
-		
+
 		return $result;
 	 }
 	
@@ -182,11 +182,10 @@ class IndexController extends ShopController{
 		
 		$page = array('curpage'=>0,'size'=>2);
 		$map = array('position'=>getDatatree("SHOP_INDEX_ADVERT"));
-		$result = apiCall(DatatreeApi::QUERY, array($map,$page));
+		$result = apiCall(BannersApi::QUERY, array($map,$page));
 		if(!$result['status']){
 			$this->error($result['info']);
 		}
-		//dump($result);
 		return $result;
 	}
 	/**

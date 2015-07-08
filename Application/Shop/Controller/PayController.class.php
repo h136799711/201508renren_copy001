@@ -7,7 +7,7 @@
 // |-----------------------------------------------------------------------------------
 
 namespace Shop\Controller;
-use Api\Wxpay\WxPayApi;
+use Common\Api\Wxpay\WxPayApi;
 use Shop\Api\OrdersInfoViewApi;
 use Shop\Api\OrdersItemApi;
 use Shop\Api\OrderStatusApi;
@@ -21,6 +21,11 @@ use Common\Api;
  */
 class PayController extends ShopController {
 
+    protected function _initialize(){
+        parent::_initialize();
+
+    }
+
     /**
      * 更改订单为货到付款
      */
@@ -29,7 +34,7 @@ class PayController extends ShopController {
         $ids = I('post.id', 0);
         $ids = rtrim($ids, "-");
         $ids = explode("-", $ids);
-        $result = apiCall(OrderStatusApi::CASH_ON_DELIVERY, array($ids,$this->userinfo['id']));
+        $result = apiCall(OrderStatusApi::CASH_ON_DELIVERY, array($ids,false,$this->userinfo['id']));
 
         if (!$result['status']) {
             $this -> error($result['info']);
@@ -98,7 +103,7 @@ class PayController extends ShopController {
 
             $payConfig = C('WXPAY_CONFIG');
             $payConfig['jsapicallurl'] = getCurrentURL();
-
+            addWeixinLog($payConfig,"配置信息");
             $items = array();
             $total_fee = 0;
             $total_express = 0.0;
@@ -124,14 +129,14 @@ class PayController extends ShopController {
                 $this -> error("支付金额不能小于0！");
             }
 
-//			$total_fee = 1;
+			$total_fee = 1;
 
             //测试时
             $this -> setWxpayConfig($payConfig, $trade_no, $body, $total_fee,$attach);
             $this -> assign("total_express", $total_express);
             $this -> assign("ids", I('get.id', 0));
             $this -> assign("total_fee", ($total_fee + $total_express));
-            $this -> display();
+            $this -> theme($this->themeType) -> display();
 
         } else {
             $this -> error("支付失败！");
@@ -171,6 +176,7 @@ class PayController extends ShopController {
      */
     private function setWxpayConfig($config, $trade_no, $body, $total_fee, $attach='') {
         try {
+
             $jsApiParameters = "";
             //①、获取用户openid
             $tools = new Api\Wxpay\JsApi($config);
@@ -192,6 +198,12 @@ class PayController extends ShopController {
             $input -> SetOpenid($openId);
             WxPayApi::setConfig($config);
             $order = WxPayApi::unifiedOrder($input);
+
+            if(isset($order['return_code']) && $order['return_code'] == 'FAIL'){
+                    $this->error($order['return_msg']);
+            }
+
+            addWeixinLog($order,"GETJsApiParameters");
             $jsApiParameters = $tools -> GetJsApiParameters($order);
             $this -> assign("jsApiParameters", $jsApiParameters);
 

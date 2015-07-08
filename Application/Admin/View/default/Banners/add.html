@@ -40,10 +40,9 @@
 					<div class="form-group">
 						<label for="inputtitle" class="col-md-2 col-lg-2 control-label">所在类别或位置</label>
 						<div class="col-md-10 col-lg-10">
-							<select name="position" class="form-control input-normal">
-								<option value="18" >首页-滚动大图</option>
-								<option value="20" >首页-推荐店铺</option>
-							</select>
+                            <select name="position" class="form-control  input-normal" >
+                                {:W("Partials/datatree",array(getDatatree('BANNERS_TYPE'),true))}
+                            </select>
 							<div class="help-block">(选择类别或位置)</div>
 						</div>
 					</div>
