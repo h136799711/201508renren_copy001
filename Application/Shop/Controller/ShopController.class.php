@@ -51,9 +51,7 @@ class ShopController extends  Controller {
 //			$this->error("请先关注公众号，无法获取到用户信息！");
 			exit();
 		}
-
-        $this->assign("userinfo",$this->userinfo);
-        $this->assign("wxaccount",$this->wxaccount);
+		$this->assign("userinfo",$this->userinfo);
 
         //TODO: 商城模板切换
         $this->themeType = "style1";
