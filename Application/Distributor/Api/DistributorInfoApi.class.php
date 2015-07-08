@@ -27,6 +27,16 @@ class DistributorInfoApi extends Api{
      * 保存，根据ID
      */
     const SAVE_BY_ID = "Distributor/DistributorInfo/saveByID";
+	
+	   /**
+     *
+     * 保存
+     */
+    const ADD = "Distributor/DistributorInfo/add";
+	
+	
+	
+	
     /**
      *
      * 保存

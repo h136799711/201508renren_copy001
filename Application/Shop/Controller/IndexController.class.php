@@ -14,69 +14,45 @@ use Shop\Model\ProductModel;
 use Weixin\Api\WxuserApi;
 use Ucenter\Api\MemberApi;
 use Ucenter\Api\UcenterMemberApi;
+use Distributor\Api\DistributorInfoApi;
 
 
 class IndexController extends ShopController{
 
     public function distributor(){
+		
     	if(IS_GET){
+    		//phpinfo();
     		$referrer=I('referrer');
 			$map=array(
 				'id'=>$referrer
 			);
-			//dump($referrer);
 			$result=apiCall(WxuserApi::QUERY_NO_PAGING ,array($map));
-			//$result=D('Wxuser')->where($map)->select();
-			//dump($result);
-			
 			$this->assign('referrer',$result[info][0]);
        	 	$this->theme($this->themeType)->display();
-		}else{
+		}else if(IS_AJAX){
 			
+			$map=array(
+				'id'=>18,
+			);
+			$userInfo= apiCall(WxuserApi::QUERY_NO_PAGING,array($map));
+			$userInfo['info']['groupid']=11;
+			//dump($userInfo['info']);
+			$result=apiCall(WxuserApi::SAVE_BY_ID,array(18,$userInfo['info']));
+			
+			$entity=array(
+				'name'=>I("name"),
+				'phone'=>I("phone"),
+				'address'=>I("address"),
+				'create_time'=>time(),
+				'uid'=>$userInfo['info'][0]['uid'],
+				'wxaccount_id'=>1
+			);
+			$result=apiCall(DistributorInfoApi::ADD,array($entity));
+			$this->success('操作成功',U('Shop/Index/index'));
 		}
     }
 
-
-	public function addDistributor(){
-		//header("Access-Control-Allow-Origin:*");
-			$userinfo=$this->userinfo;
-			$entity=array(
-				//'username'=>$userinfo['openid'],
-				'mobile'=>I("tel"),
-				'password'=>'123456',
-				'reg_time'=>time(),
-				'last_login_time'=>time(),
-				'update_time'=>time(),
-				'status'=>1,
-				'reg_from'=>2,
-			);
-			$result1=apiCall(UcenterMemberApi::ADD,array($entity));
-			$entity=array(
-				'uid'=>$result1['id'],
-				'realname'=>I("name"),
-				'nickname'=>$userinfo['nickname'],
-				'score'=>$userinfo['nickname'],
-				'reg_time'=>time(),
-				'last_login_time'=>time(),
-				'update_time'=>time(),
-				'status'=>1,
-			);
-			$result2=apiCall(MemberApi::ADD,array($entity));
-			$entity=array(
-				'uid'=>$result1['id'],
-				'nickname'=>$userinfo['nickname'],
-				'referrer'=>I('referrer'),
-				'openid'=>$userinfo['openid'],
-				'score'=>$userinfo['score'],
-				'create_time'=>time(),
-				'update_time'=>time(),
-				'status'=>1,
-				'city'=>I("city"),
-				'subscribe_time'=>time(),
-			);
-			$result3=apiCall(WxuserApi::ADD,array($entity));
-			//apiCall($url)
-	}
 
 	protected function _initialize(){
 		parent::_initialize();
@@ -101,9 +77,16 @@ class IndexController extends ShopController{
 	 * 首页
 	 */
 	public function index(){
-		$map= array('uid'=>$this->wxaccount['uid'],'storeid'=>-1,'position'=>C("DATATREE.SHOP_INDEX_BANNERS"));
+		$map= array(
+			'uid'=>$this->wxaccount['uid'],
+			'storeid'=>-1,
+			'position'=>C("DATATREE.SHOP_INDEX_BANNERS")
+		);
 		
-		$page = array('curpage'=>0,'size'=>8);
+		$page = array(
+			'curpage'=>0,
+			'size'=>8
+		);
 		$order = "createtime desc";
 		$params = false;
 		
@@ -144,7 +127,7 @@ class IndexController extends ShopController{
 //		
 		$this->assign("fourgrid",$result['info']['list']);
 //		
-		$this->display();
+		$this->theme($this->themeType)->display();
 	}
 
 	/**
@@ -175,7 +158,7 @@ class IndexController extends ShopController{
 		if(!$result['status']){
 			$this->error($result['info']);
 		}
-		
+		//dump($result);
 		return $result;
 	}
 	/**

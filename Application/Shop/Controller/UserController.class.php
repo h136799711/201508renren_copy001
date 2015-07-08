@@ -32,7 +32,7 @@ class UserController extends ShopController{
 			
 			$rank = convert2LevelImg($this->userinfo['exp']);
 			$this->assign("rank",$rank);
-			$this->display();
+			$this->theme($this->themeType)->display();
 		}
 	}
 	
