@@ -50,7 +50,7 @@ class OrdersController extends ShopController {
 			
 			$this -> assign("backStatus", $backStatus);
 			$this -> assign("backinfo", $result['info']);
-			$this -> display();
+			$this ->theme($this->themeType)-> display();
 		} else {
 			$this -> error($result['info']);
 		}
@@ -337,7 +337,7 @@ class OrdersController extends ShopController {
 
 		$this -> assign("default_address", $default_address);
 		$this -> assign("list", $list);
-		$this -> display();
+		$this ->theme($this->themeType)-> display();
 
 	}
 
@@ -443,7 +443,7 @@ class OrdersController extends ShopController {
 			}
 //			dump($result);
 			$this->assign("items",$result['info']);
-			$this->display();
+			$this->theme($this->themeType)->display();
 		}else{
 			
 			$orders_id = I('get.id',0,'intval');

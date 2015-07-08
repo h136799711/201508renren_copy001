@@ -8,6 +8,8 @@
 
 namespace Shop\Controller;
 
+use Shop\Api\StoreApi;
+
 class WxstoreController extends ShopController{
 	
 	
@@ -20,7 +22,7 @@ class WxstoreController extends ShopController{
 		$map = array(
 			'id'=>$storeid
 		);
-		$result = apiCall("Shop/Wxstore/getInfo", array($map));
+		$result = apiCall(StoreApi::GET_INFO, array($map));
 		if(!$result['status']){
 			$this->error($result['info']);
 		}
@@ -32,7 +34,7 @@ class WxstoreController extends ShopController{
 		
 		$this->assign("products",$this->listProduts());
 		
-		$this->display();
+		$this->theme($this->themeType)->display();
 	}
 	
 	public function listProduts(){
@@ -118,7 +120,7 @@ class WxstoreController extends ShopController{
 			$this->assign("cates",$result['info']);			
 			$this->assign("cate_id",$cate_id);
 			
-			$this->display();
+			$this->theme($this->themeType)->display();
 		}
 	
 		

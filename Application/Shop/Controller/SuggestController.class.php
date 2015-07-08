@@ -17,7 +17,7 @@ class SuggestController extends ShopController{
 	 */
 	public function add(){
 		if(IS_GET){		
-			$this->display();
+			$this->theme($this->themeType)->display();
 		}else{
 			$name = I("post.name","");
 			$phone = I("post.phone","");

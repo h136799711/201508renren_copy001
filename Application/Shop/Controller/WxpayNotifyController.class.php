@@ -11,6 +11,7 @@ use Common\Model\OrdersModel;
 use Think\Controller;
 use Common\Api;
 use Common\Api\Wxpay;
+use Weixin\Api\WxaccountApi;
 
 class WxpayNotifyController extends Controller {
 
@@ -190,7 +191,7 @@ class WxpayNotifyController extends Controller {
 
 	//
 	private function sendToWxaccount($wxaccountid, $text) {
-		$result = apiCall("Shop/Wxaccount/getInfo", array(array('id' => $wxaccountid)));
+		$result = apiCall(WxaccountApi::GET_INFO, array(array('id' => $wxaccountid)));
 		if ($result['status']) {
 			$wxapi = new \Common\Api\WeixinApi($result['info']['appid'], $result['info']['appsecret']);
 			$map = array('name' => "WXPAY_OPENID");
@@ -198,7 +199,7 @@ class WxpayNotifyController extends Controller {
 			
 			addWeixinLog($result, "接收订单支付成功的OPENID");
 			if ($result['status']) {
-				$openidlist = split(",", $result['info']['value']);
+				$openidlist = explode(",", $result['info']['value']);
 				foreach ($openidlist as $openid) {
 					$wxapi -> sendTextToFans($openid, $text);
 				}

@@ -44,7 +44,7 @@ class UserController extends ShopController{
 		if(IS_GET){
 			$datatype = I('get.datatype',0);
 			$this->assign("datatype",$datatype);
-			$this->display();
+			$this->theme($this->themeType)->display();
 		}
 		
 	}
