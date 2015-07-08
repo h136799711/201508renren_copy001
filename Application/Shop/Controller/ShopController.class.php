@@ -70,6 +70,7 @@ class ShopController extends  Controller {
 			'score'=>0,
 			'wxaccount_id'=>1,
 			'exp'=>100,
+            'groupid'=>11,
 		);
 		
 //		$this->wxapi = new \Common\Api\WeixinApi('wx5f9ed360f5da5370','4a0e3e50c8e9137c4873689b8ee99124');

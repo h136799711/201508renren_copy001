@@ -160,32 +160,32 @@
 <block name="area_body">
 	<div class="header">
 		<div class="am-topbar am-topbar-default am-topbar-fixed-top">我的资料</div>
-		<div class="user-banner">
-			<img class="am-responsive-width" src="__IMG__/user-banner/banner.jpg" alt="banner" />
-		</div>
-		<div class="logo-wrp" >
-			<div class="user-logo am-inline-block">
-				<img class="" src="{$userinfo.avatar}" alt="logo" />
-				<span class="logo-circle"></span>
-				<span class="logo-rank">V{$rank['loop']}会员</span>
-			</div>
-			<div class="username">
-			<span >{$userinfo.nickname}</span>			
+        <div class="user-banner">
+            <img class="am-responsive-width" src="__IMG__/user-banner/banner.jpg" alt="banner" />
+        </div>
+        <div class="logo-wrp" >
+            <div class="user-logo am-inline-block">
+                <img class="" src="{$userinfo.avatar}" alt="logo" />
+                <span class="logo-circle"></span>
+                <span class="logo-rank">V{$rank['loop']}会员</span>
+            </div>
+            <div class="username">
+                <span >{$userinfo.nickname}</span>
 			<span class="rank">
 				<for start="0" end="$rank['loop']">
-					<i class="rank rank-{$rank['type']}"></i>
-				</for>
+                    <i class="rank rank-{$rank['type']}"></i>
+                </for>
 			</span>
-			</div>
-			<div class="mb-os">
-				<ul class="am-cf">
-					<li><a href="{:U('Shop/User/order',array('datatype'=>1))}">{$tobepaid}<br/>待付款</a></li>
-					<li><a href="{:U('Shop/User/order',array('datatype'=>2))}">{$tobeshipped}<br/>待发货</a></li>
-					<li><a href="{:U('Shop/User/order',array('datatype'=>3))}">{$tobereceipt}<br/>待收货</a></li>
-					<li><a href="{:U('Shop/User/order',array('datatype'=>4))}">{$tobeeval}<br/>待评价</a></li>
-				</ul>
-			</div>
-		</div>
+            </div>
+            <div class="mb-os">
+                <ul class="am-cf">
+                    <li><a href="{:U('Shop/User/order',array('datatype'=>1))}">{$tobepaid}<br/>待付款</a></li>
+                    <li><a href="{:U('Shop/User/order',array('datatype'=>2))}">{$tobeshipped}<br/>待发货</a></li>
+                    <li><a href="{:U('Shop/User/order',array('datatype'=>3))}">{$tobereceipt}<br/>待收货</a></li>
+                    <li><a href="{:U('Shop/User/order',array('datatype'=>4))}">{$tobeeval}<br/>待评价</a></li>
+                </ul>
+            </div>
+        </div>
 	</div>
 	
 	<div class="quick-menu">

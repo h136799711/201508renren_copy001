@@ -124,11 +124,10 @@ class IndexController extends ShopController{
 		
 		//获取首页4格活动
 		$result = $this->getFourGrid();
-
         $this->assign("meta_title",$this->getStoreName());
 
 		$this->assign("fourgrid",$result['info']['list']);
-
+        $this->assign("isDistributor",$this->isDistributor());
 		$this->theme($this->themeType)->display();
 	}
 
@@ -138,7 +137,7 @@ class IndexController extends ShopController{
 
         // 如果是分销商，显示分销商名称
         if($this->isDistributor()){
-            $name = $this->userinfo['nickname'];
+            $name = $this->userinfo['nickname'].'的店铺';
         }
 
         return $name;
