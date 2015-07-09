@@ -56,11 +56,11 @@ class WithdrawController extends AdminController{
     public function query(){
 
         $arr = getDataRange(3);
-
+		//dump($arr);
         $uid = I('uid',0);
         $where = array();
         $params = array();
-        $status = I('status',-1);
+        $status = I('status',"");
         if($uid != 0){
             $where['uid'] = $uid;
             $params['uid'] = $uid;
@@ -92,7 +92,7 @@ class WithdrawController extends AdminController{
 		//dump($where);
 		//dump($result);
 		
-        ifFailedLogRecord($result,__FILE__.__LINE__);
+       ifFailedLogRecord($result,__FILE__.__LINE__);
 
         $list = $this->type2dtree($result['info']['list']);
 
