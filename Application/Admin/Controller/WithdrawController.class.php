@@ -80,8 +80,8 @@ class WithdrawController extends AdminController{
         }
 
         $where['create_time'] = array( array('EGT', $startdatetime), array('elt', $enddatetime), 'and');
-
-        if(!empty($status) && $status != -1 ){
+		//dump(!empty($status));
+       	if($status!=""&& $status != -1 ){
             $where['status'] = $status;
         }
 
@@ -89,13 +89,15 @@ class WithdrawController extends AdminController{
         $order = " update_time asc ";
 
         $result = apiCall(WithdrawApi::QUERY,array($where,$page,$order,$params));
-
+		//dump($where);
+		//dump($result);
+		
         ifFailedLogRecord($result,__FILE__.__LINE__);
 
         $list = $this->type2dtree($result['info']['list']);
 
         $list = int_to_string($list,"status",array(0=>"待审","1"=>"通过",2=>"驳回"));
-
+		$this->assign("status",$status);
         $this->assign("list",$list);
         $this->assign("show",$result['info']['show']);
         $this->assign("startdatetime",$startdatetime);
@@ -126,8 +128,8 @@ class WithdrawController extends AdminController{
     }
 
     public function pass(){
-        //$id = I('get.id',0);
-        $id=11;
+        $id = I('get.id',0);
+       // $id=11;
         if(empty($id)){
             $this->error("ID 参数缺失!");
         }

@@ -74,7 +74,7 @@ class WithdrawApi extends Api{
 			if($result2['status']){
 				$map=array(
 				'uid'=>$result['info'][0]['uid'],
-				'before_money'=>$array['account_balance'],
+				'before_money'=>(float)$array['account_balance']+(float)$result['info'][0]['money'],
 				'plus'=>0,
 				'minus'=>$result['info'][0]['money'],
 				'after_money'=>$array['account_balance'],
