@@ -13,7 +13,8 @@ use Common\Api\Api;
 use Shop\Model\WalletHisModel;
 
 class WalletHisApi extends Api{
-
+	const ADD="Shop/WalletHis/add";
+	
     protected function _init(){
         $this->model = new WalletHisModel();
     }

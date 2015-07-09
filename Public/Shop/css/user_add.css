@@ -4,7 +4,7 @@
 .div_main {
     width: 95%;
     margin: 0 auto;
-    text-align: center;
+   /* text-align: center;*/
     height:15rem;
 }
 
@@ -39,4 +39,5 @@
 	margin-top:0.7rem;
 }
 
+.error{color: red; font-size: 0.3rem;}
 

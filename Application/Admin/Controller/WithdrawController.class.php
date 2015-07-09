@@ -126,18 +126,26 @@ class WithdrawController extends AdminController{
     }
 
     public function pass(){
-        $id = I('get.id',0);
+        //$id = I('get.id',0);
+        $id=11;
         if(empty($id)){
             $this->error("ID 参数缺失!");
         }
-
-        $result = apiCall(WithdrawApi::SAVE_BY_ID,array($id,array('status'=>WithdrawModel::PASS)));
+		$map=array(
+			'id'=>$id
+		);
+		
+		$result=apiCall(WithdrawApi::PASS_WITHDRAW,array($map));
+		
+        /*$result = apiCall(WithdrawApi::SAVE_BY_ID,array($id,array('status'=>WithdrawModel::PASS)));*/
 
         ifFailedLogRecord($result,__FILE__.__LINE__);
 
         $this->success("操作成功!");
 
     }
+	
+	
 
     public function deny(){
         $id = I('get.id',0);

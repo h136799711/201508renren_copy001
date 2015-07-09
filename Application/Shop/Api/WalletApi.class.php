@@ -13,7 +13,7 @@ use Common\Api\Api;
 use Shop\Model\WalletModel;
 use Shop\Model\WithdrawModel;
 use Shop\Api\WithdrawApi;
-use Shop\Api\WalletHisApiApi;
+use Shop\Api\WalletHisApi;
 
 class WalletApi extends Api{
 	const GET_INFO_If_NOT_EXIST_THEN_ADD="Shop/Wallet/getInfoIfNotExistThenAdd";
@@ -21,7 +21,10 @@ class WalletApi extends Api{
 	const PLUS="Shop/Wallet/plus";
 	
 	const MINUS="Shop/Wallet/minus";
-
+	
+	const SAVE_BY_ID="Shop/Wallet/saveByID";
+	
+	const QUERY_NO_PAGING="Shop/Wallet/queryNoPaging";
 
     protected function _init(){
         $this->model = new WalletModel();
@@ -86,10 +89,10 @@ class WalletApi extends Api{
 	 * 减佣金
 	 */
 	public function minus($map){
-		$lastResult=array{
+		$lastResult=array(
 			'status'=>false,
 			'info'=>'提取失败'
-		};
+		);
 		//先判断一下余额是否够减★★★★★★★★★★★★★★★★★★★★★★★★★★
 		
 		$trans = M();
@@ -144,7 +147,7 @@ class WalletApi extends Api{
 					'create_time'=>time(),
 					'reason'=>$map['reason'],
 				);
-				$result=apiCall(WalletHisApiApi::ADD,array($entity));
+				$result=apiCall(WalletHisApi::ADD,array($entity));
 				
 				if($result['status']){
 					$trans->commit();//提交事务

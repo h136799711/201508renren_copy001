@@ -65,12 +65,37 @@ class UserController extends ShopController{
 	
 	
 	public function add(){
-		$map=array(
+		if(IS_GET){
+			$map=array(
 			'parentid'=>27,
-		);
-		$result=apiCall(DatatreeApi::QUERY_NO_PAGING,array($map));
-		$this->assign('accountType',$result['info']);
-		$this->theme($this->themeType)->display();
+			);
+			$result=apiCall(DatatreeApi::QUERY_NO_PAGING,array($map));
+			$this->assign('accountType',$result['info']);
+			$this->theme($this->themeType)->display();
+		}else if(IS_AJAX){
+			/*dump();
+			dump();
+			dump(I('accountName'));
+			dump(I('bankBranch'));
+			dump(I('cashAccount'));*/
+			$map=array(
+				'uid'=>$this->userinfo['uid'],
+				'money'=>I('money'),
+				'accountType'=>I('accountType'),
+				'accountName'=>I('accountName'),
+				'bankBranch'=>I('bankBranch'),
+				'cashAccount'=>I('cashAccount'),
+				'reason'=>'提现'
+			);
+			$result=apiCall(WalletApi::MINUS,array($map));
+			if($result['status']){
+				$this->success('操作成功',U('Shop/Index/index'));
+			}else{
+				LogRecord($result['info'], __FILE__.__LINE__);
+				$this->error($result['info']);
+			}
+		}
+		
 		/*$map=array(
 			'uid'=>$this->userinfo['uid'],
 			'money'=>50,

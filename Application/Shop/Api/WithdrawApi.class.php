@@ -11,6 +11,7 @@ namespace Shop\Api;
 
 use Common\Api\Api;
 use Shop\Model\WithdrawModel;
+use Shop\Api\WalletApi;
 
 class WithdrawApi extends Api{
 
@@ -44,8 +45,60 @@ class WithdrawApi extends Api{
      */
     const DELETE = "Shop/Withdraw/delete";
 
+	const PASS_WITHDRAW="Shop/Withdraw/passWithdraw";
+
     protected function _init(){
         $this->model = new WithdrawModel();
     }
+	
+	
+	/**
+	 * 审核通过
+	 */
+	public function passWithdraw($map){
+		
+		$trans = M();
+        $trans->startTrans(); //开启事务
+		
+		$result=apiCall(WithdrawApi::SAVE_BY_ID,array($map['id'],array('status'=>WithdrawModel::PASS)));
+		if($result['status']){
+			$result=apiCall(WithdrawApi::QUERY_NO_PAGING,array($map));
+			$map=array(
+				'uid'=>$result['info'][0]['uid'],
+			);
+			$result1=apiCall(WalletApi::QUERY_NO_PAGING,array($map));
+			$array=$result1['info'][0];
+			$array['frozen_funds']=(float)$array['frozen_funds']-(float)$result['info'][0]['money'];
+			
+			$result2=apiCall(WalletApi::SAVE_BY_ID,array($array['id'],$array));
+			if($result2['status']){
+				$map=array(
+				'uid'=>$result['info'][0]['uid'],
+				'before_money'=>$array['account_balance'],
+				'plus'=>0,
+				'minus'=>$result['info'][0]['money'],
+				'after_money'=>$array['account_balance'],
+				'create_time'=>time(),
+				'reason'=>'审核通过'
+				);
+				$result=apiCall(WalletHisApi::ADD,array($map));
+				if($result['status']){
+					$trans->commit();//提交事务
+					return $result;
+				}else{
+					$trans->rollback();//回滚事务
+					return $result['info'];
+				}
+			}else{
+				$trans->rollback();//回滚事务
+				return $result2['info'];
+			}
+			
+		}else{
+			$trans->rollback();//回滚事务
+			return $result['info'];
+		}
+		
+	}
 
 }
