@@ -11,12 +11,13 @@ namespace Shop\Api;
 use Shop\Model\OrdersModel;
 use Shop\Model\OrderStatusHistoryModel;
 
+
 /**
  * 订单状态变更接口
  * Class OrdersStatusApi
  * @package Shop\Api
  */
-class OrderStatusApi {
+class OrderStatusApi{
 
     /**
      * 待支付－》货到付款状态变更
@@ -124,6 +125,23 @@ class OrderStatusApi {
         }
 
     }
+
+	/**
+	 * 返回错误结构
+	 * @return array('status'=>boolean,'info'=>Object)
+	 */
+	protected function returnErr($info) {
+		return array('status' => false, 'info' => $info);
+	}
+	
+	/**
+	 * 返回成功结构
+	 * @return array('status'=>boolean,'info'=>Object)
+	 */
+	protected function returnSuc($info) {
+		return array('status' => true, 'info' => $info);
+	}
+	
 
     /**
      * 订单发货操作

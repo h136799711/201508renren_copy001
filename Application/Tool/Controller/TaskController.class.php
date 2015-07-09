@@ -23,7 +23,7 @@ class TaskController extends Controller{
 		}else{
 			echo "Cached-Time: ". date("Y-m-d H:i:s",$prev_pro_time);
 			//缓冲处理
-//			exit();
+			exit();
 		}
 		
 		$this->getConfig();

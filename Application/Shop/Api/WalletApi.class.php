@@ -24,6 +24,11 @@ class WalletApi extends Api{
 	
 	const SAVE_BY_ID="Shop/Wallet/saveByID";
 	
+	/**
+	 * 改数字字段
+	 */
+	const SETINC="Shop/Wallet/setInc";
+	
 	const QUERY_NO_PAGING="Shop/Wallet/queryNoPaging";
 
     protected function _init(){
