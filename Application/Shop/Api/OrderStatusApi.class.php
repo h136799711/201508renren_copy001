@@ -585,15 +585,15 @@ class OrderStatusApi{
 		$saveEntity = array('order_status'=>OrdersModel::ORDER_CANCEL);
 		$result = $this->model->create($saveEntity,2);
 		if($result === false){
-			return $this->apiReturnErr($this->model->getError());
+			return $this->returnErr($this->model->getError());
 		}
 		$result = $this->model->where($map)->lock(true)->save();
 //		addWeixinLog($this->model->getLastSql(),"[自动变更订单待确认、待支付为已取消SQL]");
 		if($result === FALSE){
 			$error = $this->model->getDbError();
-			return $this->apiReturnErr($error);
+			return $this->returnErr($error);
 		}else{
-			return $this->apiReturnSuc($result);
+			return $this->returnSuc($result);
 		}
 	}
 
@@ -609,15 +609,15 @@ class OrderStatusApi{
 		$saveEntity = array('order_status'=>OrdersModel::ORDER_RECEIPT_OF_GOODS);
 		$result = $this->model->create($saveEntity,2);
 		if($result === false){
-			return $this->apiReturnErr($this->model->getError());
+			return $this->returnErr($this->model->getError());
 		}
 		$result = $this->model->where($map)->lock(true)->save();
 //		addWeixinLog($this->model->getLastSql(),"[自动变更订单已发货为已收货SQL]");
 		if($result === FALSE){
 			$error = $this->model->getDbError();
-			return $this->apiReturnErr($error);
+			return $this->returnErr($error);
 		}else{
-			return $this->apiReturnSuc($result);
+			return $this->returnSuc($result);
 		}
 	}
 
@@ -644,15 +644,15 @@ class OrderStatusApi{
 		$saveEntity = array('order_status'=>OrdersModel::ORDER_COMPLETED);
 		$result = $this->model->create($saveEntity,2);
 		if($result === false){
-			return $this->apiReturnErr($this->model->getError());
+			return $this->returnErr($this->model->getError());
 		}
 		$result = $this->model->where($map)->lock(true)->save();
 //		addWeixinLog($this->model->getLastSql(),"[自动变更订单已收货为已完成SQL]");
 		if($result === FALSE){
 			$error = $this->model->getDbError();
-			return $this->apiReturnErr($error);
+			return $this->returnErr($error);
 		}else{
-			return $this->apiReturnSuc($result);
+			return $this->returnSuc($result);
 		}
 	}
 	

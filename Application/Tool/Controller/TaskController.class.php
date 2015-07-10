@@ -56,10 +56,14 @@ class TaskController extends Controller{
 		addWeixinLog(get_client_ip(0,true),"合法用户");
 		ignore_user_abort(true); // 后台运行
 		set_time_limit(0); // 取消脚本运行时间的超时上限
-//		
+//	
+			
 		$this->toRecieved();
+		
 		$this->toCompleted();
+		
 		$this->toCancel();
+		
 	}
 	
 	
