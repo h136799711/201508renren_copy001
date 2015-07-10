@@ -8,7 +8,8 @@
 
 namespace Tool\Controller;
 use Think\Controller;
-
+use Shop\Api\OrderStatusApi;
+use Admin\Api\ConfigApi;
 /**
  * 任务运行
  */
@@ -68,7 +69,8 @@ class TaskController extends Controller{
 	private function toCancel(){
 		
 		$interval = 3600*1;//1小时
-		$result = apiCall("Tool/Orders/orderStatusToCancel",array($interval));
+		
+		$result = apiCall(OrderStatusApi::ORDER_STATUS_TO_CANCEL,array($interval));
 		if(!$result['status']){
 			LogRecord($result['info'], __FILE__.__LINE__);
 		}else{
@@ -85,7 +87,8 @@ class TaskController extends Controller{
 	 */
 	private function toRecieved(){
 		$interval = 24*3600*30;//30天
-		$result = apiCall("Tool/Orders/orderStatusToRecieved",array($interval));
+		
+		$result = apiCall(OrderStatusApi::ORDER_STATUS_TO_RECIEVED,array($interval));
 		if(!$result['status']){
 			LogRecord($result['info'], __FILE__.__LINE__);
 		}else{
@@ -101,7 +104,7 @@ class TaskController extends Controller{
 	 */
 	private function toCompleted(){
 		$interval = 24*3600*15;//15天
-		$result = apiCall("Tool/Orders/orderStatusToCompleted",array($interval));
+		$result = apiCall(OrderStatusApi::ORDER_STATUS_TO_COMPLETED,array($interval));
 		if(!$result['status']){
 			LogRecord($result['info'], __FILE__.__LINE__);
 		}else{
@@ -121,7 +124,7 @@ class TaskController extends Controller{
 		if ($config === false) {
 			$map = array();
 			$fields = 'type,name,value';
-			$result = apiCall('Admin/Config/queryNoPaging', array($map, false, $fields));
+			$result = apiCall(ConfigApi::QUERY_NO_PAGING, array($map, false, $fields));
 			if ($result['status']) {
 				$config = array();
 				if (is_array($result['info'])) {

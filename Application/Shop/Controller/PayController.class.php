@@ -43,7 +43,7 @@ class PayController extends ShopController {
 
         $commission = new CommissionCountApi();
 
-        $commission->add($this->userinfo['id'],$ids);
+        $commission->add($ids);
 
         //TODO: 转移到插件中
         tag("send_to_msg_user",array($id, $text));

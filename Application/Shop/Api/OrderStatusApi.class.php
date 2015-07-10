@@ -7,7 +7,7 @@
  */
 
 namespace Shop\Api;
-
+use Shop\Api\OrdersApi;
 use Shop\Model\OrdersModel;
 use Shop\Model\OrderStatusHistoryModel;
 
@@ -47,6 +47,25 @@ class OrderStatusApi{
      * 订单评价－》完成 状态变更
      */
     const EVALUATION = "Shop/OrderStatus/evaluation";
+	
+	
+	/**
+	 * 更新状态=》已取消
+	 */
+	const ORDER_STATUS_TO_CANCEL = "Shop/OrderStatus/orderStatusToCancel";
+	
+	/**
+	 * 更新状态=》已收货
+	 */
+	const ORDER_STATUS_TO_RECIEVED = "Shop/OrderStatus/orderStatusToRecieved";
+	
+	/**
+	 * 更新状态=》已完成
+	 */
+	const ORDER_STATUS_TO_COMPLETED = "Shop/OrderStatus/orderStatusToCompleted";
+	
+	
+	
 
     /**
      *
@@ -546,6 +565,99 @@ class OrderStatusApi{
             return $this->returnErr($return);
         }
     }
+
+
+
+/****************************以下为原OrdersApi内容*******************************/
+
+	
+
+	 /**
+       * 设置订单状态
+       * TODO：需要记录状态变更日志
+       * @param $interval 判断的间隔时间 秒 为单位
+       * @return array
+       */
+	public function orderStatusToCancel($interval){
+		$map['updatetime'] = array('lt',time()-$interval);
+		$map['order_status'] = OrdersModel::ORDER_TOBE_CONFIRMED;
+		$map['pay_status'] = OrdersModel::ORDER_TOBE_PAID;
+		$saveEntity = array('order_status'=>OrdersModel::ORDER_CANCEL);
+		$result = $this->model->create($saveEntity,2);
+		if($result === false){
+			return $this->apiReturnErr($this->model->getError());
+		}
+		$result = $this->model->where($map)->lock(true)->save();
+//		addWeixinLog($this->model->getLastSql(),"[自动变更订单待确认、待支付为已取消SQL]");
+		if($result === FALSE){
+			$error = $this->model->getDbError();
+			return $this->apiReturnErr($error);
+		}else{
+			return $this->apiReturnSuc($result);
+		}
+	}
+
+      /**
+       * 设置订单状态
+       * TODO：需要记录状态变更日志
+       * @param $interval 判断的间隔时间 秒 为单位
+       * @return array
+       */
+	public function orderStatusToRecieved($interval){
+		$map['updatetime'] = array('lt',time()-$interval);
+		$map['order_status'] = OrdersModel::ORDER_SHIPPED;
+		$saveEntity = array('order_status'=>OrdersModel::ORDER_RECEIPT_OF_GOODS);
+		$result = $this->model->create($saveEntity,2);
+		if($result === false){
+			return $this->apiReturnErr($this->model->getError());
+		}
+		$result = $this->model->where($map)->lock(true)->save();
+//		addWeixinLog($this->model->getLastSql(),"[自动变更订单已发货为已收货SQL]");
+		if($result === FALSE){
+			$error = $this->model->getDbError();
+			return $this->apiReturnErr($error);
+		}else{
+			return $this->apiReturnSuc($result);
+		}
+	}
+
+      /**
+       *
+       * 设置订单状态
+       * TODO：需要记录状态变更日志
+       * @param $interval 判断的间隔时间 秒 为单位
+       *
+       * @return array
+       */
+	public function orderStatusToCompleted($interval){
+		$map['updatetime'] = array('lt',time()-$interval);
+		$map['order_status'] = OrdersModel::ORDER_RECEIPT_OF_GOODS;
+		$result=apiCall(OrdersApi::QUERY_NO_PAGING,array($map));
+		foreach($result['info'] as $order){
+			$ids[]=$order['id'];
+		}
+		//如果有超过时间的且状态为已收货，佣金发放
+		if(count($ids)>0){
+			apiCall(CommissionCountApi::ADD,array($ids));
+		}
+		
+		$saveEntity = array('order_status'=>OrdersModel::ORDER_COMPLETED);
+		$result = $this->model->create($saveEntity,2);
+		if($result === false){
+			return $this->apiReturnErr($this->model->getError());
+		}
+		$result = $this->model->where($map)->lock(true)->save();
+//		addWeixinLog($this->model->getLastSql(),"[自动变更订单已收货为已完成SQL]");
+		if($result === FALSE){
+			$error = $this->model->getDbError();
+			return $this->apiReturnErr($error);
+		}else{
+			return $this->apiReturnSuc($result);
+		}
+	}
+	
+	
+	
 
 
 }
