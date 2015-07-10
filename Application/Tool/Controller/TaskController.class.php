@@ -21,6 +21,7 @@ class TaskController extends Controller{
 		$prev_pro_time = S('TASK_PROCESS_TIME');
 		if($prev_pro_time === false){
 			S('TASK_PROCESS_TIME',time(),20*60);
+			//S('TASK_PROCESS_TIME',time(),60);
 		}else{
 			echo "Cached-Time: ". date("Y-m-d H:i:s",$prev_pro_time);
 			//缓冲处理
@@ -87,6 +88,7 @@ class TaskController extends Controller{
 	 */
 	private function toRecieved(){
 		$interval = 24*3600*30;//30天
+		//$interval = 60;//30天
 		
 		$result = apiCall(OrderStatusApi::ORDER_STATUS_TO_RECIEVED,array($interval));
 		if(!$result['status']){
