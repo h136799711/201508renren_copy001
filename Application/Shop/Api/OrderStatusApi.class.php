@@ -10,7 +10,7 @@ namespace Shop\Api;
 use Shop\Api\OrdersApi;
 use Shop\Model\OrdersModel;
 use Shop\Model\OrderStatusHistoryModel;
-
+use Distributor\Api\CommissionCountApi;
 
 /**
  * 订单状态变更接口

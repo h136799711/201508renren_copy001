@@ -105,7 +105,8 @@ class TaskController extends Controller{
 	 * 1. 订单[已收货]－》检测 time() - updatetime > 指定时间，暂定15天 满足条件变更为订单[已收货]
 	 */
 	private function toCompleted(){
-		$interval = 24*3600*15;//15天
+		//$interval = 24*3600*15;//15天
+		//$interval = 60;//1分钟前
 		$result = apiCall(OrderStatusApi::ORDER_STATUS_TO_COMPLETED,array($interval));
 		if(!$result['status']){
 			LogRecord($result['info'], __FILE__.__LINE__);
