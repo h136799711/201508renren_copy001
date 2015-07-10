@@ -2,15 +2,13 @@
 namespace Distributor\Controller;
 use Distributor\Api\CommissionCountApi;
 use Think\Controller;
+use Distributor\Api\GroupAccessApi;
 
 class TestController extends Controller{
 	
 	public function index(){
-		$uid=224;
-		$id_arr=array(
-			'order_id'=>1,
-		);
-		$result=apiCall(CommissionCountApi::ADD,array($uid,$id_arr));
-		dump($result);
+		$id_arr=array(1);
+		apiCall(CommissionCountApi::ADD,array($id_arr));
+		dump('完成');
 	}
 }

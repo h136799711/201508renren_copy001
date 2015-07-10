@@ -13,6 +13,7 @@ use Shop\Api\OrdersApi;
 use Shop\Api\WalletApi;
 use Shop\Api\WalletHisApi;
 use Weixin\Api\WxuserFamilyApi;
+use Distributor\Api\GroupAccessApi;
 
 
 /**
@@ -31,9 +32,9 @@ class CommissionCountApi implements ICommissionCountInterface{
     {
     	//遍历订单ID集合
     	foreach($id_arr as $id){
-    		$map{
+    		$map=array(
     			'id'=>$id
-    		}
+    		);
 			
 			//获取订单
     		$result=apiCall(OrdersApi::QUERY_NO_PAGING,array($map));
@@ -41,15 +42,17 @@ class CommissionCountApi implements ICommissionCountInterface{
 			$wxuser_id=$result['info'][0]['wxuser_id'];
 			//获取订单价格
 			$price=$result['info'][0]['price'];
-			$map{
+			$map=array(
     			'id'=>$wxuser_id
-    		}
+    		);
 			
 			//获取wxuser信息
 			$result=apiCall(WxuserApi::QUERY_NO_PAGING,array($map));
 			
 			//获取uid
 			$uid=$result['info'][0]['uid'];
+			//获取下单用户昵称
+			$nickname=$result['info'][0]['nickname'];
 			
 	    	$map=array(
 	    		'uid'=>$uid
@@ -74,8 +77,30 @@ class CommissionCountApi implements ICommissionCountInterface{
 				$map=array(
 					'uid'=>$u,
 				);
-				$result=apiCall(WxuserApi::QUERY_NO_PAGING,array($map));
-				//查出分销商等级，明日再弄
+				$wxuserInfo=apiCall(WxuserApi::QUERY_NO_PAGING,array($map));
+				//查出分销商等级
+				$map=array(
+					'wxuser_group_id'=>$wxuserInfo['info'][0]['groupid'],
+				);
+				$groupAccess=apiCall(GroupAccessApi::QUERY_NO_PAGING,array($map));
+				$commission=(float)$groupAccess['info'][0]['percent']*(float)$price; //佣金提成比例*价格=佣金
+				$map=array(
+					'uid'=>$u
+				);
+				$WalletInfo=apiCall(WalletApi::QUERY_NO_PAGING,array($map));
+				$result=apiCall(WalletApi::SETINC,array($map,'account_balance',$commission)); //添加佣金
+				
+				$percent=(float)$groupAccess['info'][0]['percent']*100;
+				$map=array(
+					'uid'=>$u,
+					'before_money'=>$WalletInfo['info'][0]['account_balance'],
+					'plus'=>$commission,
+					'minus'=>0,
+					'after_money'=>(float)$WalletInfo['info'][0]['account_balance']+(float)$commission,
+					'create_time'=>time(),
+					'reason'=>'用户'.$nickname.'(ID:'.$wxuser_id.')'.'下单，分销商'.$wxuserInfo['info'][0]['nickname'].'(ID:'.$u.')获得佣金'.$commission.'元('.$percent.'%)',
+				);
+				$result=apiCall(WalletHisApi::ADD,array($map));
 			}
 			
 			

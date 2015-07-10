@@ -14,5 +14,5 @@ interface ICommissionCountInterface {
      * @param $uid 佣金得利者ID
      * @param $total_fee 总费用
      */
-    function add($uid,$total_fee);
+    function add($total_fee);
 }
