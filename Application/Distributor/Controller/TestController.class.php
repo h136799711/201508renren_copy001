@@ -2,7 +2,7 @@
 namespace Distributor\Controller;
 use Distributor\Api\CommissionCountApi;
 use Think\Controller;
-use Distributor\Api\GroupAccessApi;
+use Admin\Api\GroupAccessApi;
 
 class TestController extends Controller{
 	

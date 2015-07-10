@@ -13,7 +13,7 @@ use Shop\Api\OrdersApi;
 use Shop\Api\WalletApi;
 use Shop\Api\WalletHisApi;
 use Weixin\Api\WxuserFamilyApi;
-use Distributor\Api\GroupAccessApi;
+use Admin\Api\GroupAccessApi;
 
 
 /**
