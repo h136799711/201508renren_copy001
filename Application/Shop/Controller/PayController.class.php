@@ -38,6 +38,7 @@ class PayController extends ShopController {
         $result = apiCall(OrderStatusApi::CASH_ON_DELIVERY, array($ids,false,$this->userinfo['id']));
 
         if (!$result['status']) {
+        	dump($result['info']);
             $this -> error($result['info']);
         }
 
@@ -46,7 +47,7 @@ class PayController extends ShopController {
         $commission->add($ids);
 
         //TODO: 转移到插件中
-        tag("send_to_msg_user",array($id, $text));
+       // tag("send_to_msg_user",array($id, $text));
 //        $wxuserid = $this->userinfo['id'];
 //
 //        $text = "用户ID:$wxuserid,时间:" . date("Y-m-d H:i:s",time()) . ",订单ID:" . rtrim(I('post.id', 0),"-") . ",选择了货到付款,请登录后台查看订单。";
@@ -90,24 +91,30 @@ class PayController extends ShopController {
      */
     public function pay() {
         //订单ID
+        
+        
         $ids = I('get.id', 0);
-
+		//
         $ids = rtrim($ids, "-");
         $ids_arr = explode("-", $ids);
         if (count($ids_arr) == 0) {
             $this -> error("参数错误！");
         }
+		
         $map = array();
         $map['id'] = array('in', $ids_arr);
         $result = apiCall(OrdersInfoViewApi::QUERY_NO_PAGING, array($map));
         //TODO: 判断订单状态是否为待支付
+       // dump($result['status']);
         if ($result['status']) {
 
             $order_list = $result['info'];
 
             $payConfig = C('WXPAY_CONFIG');
             $payConfig['jsapicallurl'] = getCurrentURL();
+			//dump($payConfig);
             addWeixinLog($payConfig,"配置信息");
+			
             $items = array();
             $total_fee = 0;
             $total_express = 0.0;
@@ -128,15 +135,18 @@ class PayController extends ShopController {
                 $attach .= $order['id'].'_';
                 array_push($items, $item);
             }
+			
             $total_fee = $total_fee + $total_express;
             if ($total_fee <= 0) {
                 $this -> error("支付金额不能小于0！");
             }
 
 			$total_fee = 1;
-
+			
             //测试时
-            $this -> setWxpayConfig($payConfig, $trade_no, $body, $total_fee,$attach);
+           $this -> setWxpayConfig($payConfig, $trade_no, $body, $total_fee,$attach);
+			
+			//dump($payConfig);
             $this -> assign("total_express", $total_express);
             $this -> assign("ids", I('get.id', 0));
             $this -> assign("total_fee", ($total_fee + $total_express));

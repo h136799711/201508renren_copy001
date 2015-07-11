@@ -70,10 +70,13 @@
 					</ul>-->
 				</form>
 				<div class="footer-menu am-text-right ">
-					<a href="#" onclick="choose();"  class="am-btn am-btn-sm  am-block am-btn-danger">确定</a>
+					<a href="javascript:void(0)" onclick="choose();"  class="am-btn am-btn-sm  am-block am-btn-danger">确定</a>
 				</div>
 		</div>
 		<script type="text/javascript" src="__CDN__/jquery/2.1.1/jquery.min.js"></script>
+		<script type="text/javascript" src="__CDN__/amazeui/2.3.0/js/amazeui.min.js"></script>
+		<script type="text/javascript" src="__CDN__/common/mobile.js"></script>
+		
 		<script type="text/javascript">
 			
 			function choose(){
@@ -88,14 +91,39 @@
 					$.ajax({
 						url:url,
 						type:'post',
+						//datyType:'json',
 						data:{id:ids},
 					}).done(function(data){
+						alertMsg(data);
 						if(data.status){
+							alertMsg(data.info);
 							window.location.href = "{:U('Shop/User/order')}";
 						}else{
-							alert(data.info);
+							alertMsg(data.info);
 						}
-					});
+					}).error(function(XMLHttpRequest, textStatus, errorThrown){
+						 alert(XMLHttpRequest.status);
+                        alert(XMLHttpRequest.readyState);
+                        alert(textStatus);
+					})
+					;
+					
+					/*$.ajax({
+						url:url,
+						type:'post',
+						data:{id:ids},
+						success:function(data){
+							console.info(data);
+							//alert(data.info) 
+							if(data.status==1){
+								alert(data.info);
+								//window.location.href = "{:U('Shop/User/order')}";
+							}else{
+								alert(data.info);
+							}
+						}
+					});*/
+					
 				}
 			}
 		</script>

@@ -161,7 +161,8 @@
 					</div>
 					
 					<div class="order-info am-link-muted am-text-right  am-padding-sm">
-						共<span class="am-text-secondary">{:count($vo['products'])}</span>件商品 合计: <span class="am-text-secondary js_item">{:number_format($vo['total_price'],2)}<span>
+						<!--{:count($vo['products'])}-->
+						共<span class="am-text-secondary">{$item.count}</span>件商品 合计: <span class="am-text-secondary js_item">{:number_format($vo['total_price'],2)}<span>
 					</div>
             		</div>
 				</volist>
@@ -184,7 +185,7 @@
 </block>
 
 <block name="area_footer">
-	<include file="partial/footermenu" />
+	<include file="style1/partial/footermenu" />
 	<script>
 	//变更商品数目，选择商品时 计算商品总价
 	

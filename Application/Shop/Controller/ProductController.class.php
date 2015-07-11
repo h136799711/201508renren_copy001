@@ -122,7 +122,7 @@ class ProductController extends ShopController {
 		if(IS_GET){
 			$groupid = I('get.id',0);
 			$this->assign("groupid",$groupid);
-			$this->display();
+			$this ->theme($this->themeType)->display();
 			
 		}elseif(IS_AJAX){
 			$p = I('post.p',0);

@@ -140,6 +140,7 @@ class OrdersApi extends Api
                 'area' => $entity['area'],
                 'wxno' => $entity['wxno'],
                 'detailinfo' => $entity['detailinfo'],
+                'notes'=>''
             );
             $model = new OrdersContactinfoModel();
             $result = $model->create($orderContactInfo, 1);
@@ -181,7 +182,8 @@ class OrdersApi extends Api
                     'post_price' => $vo['post_price'] * 100.0,
                     'sku_id' => '',
                     'sku_desc' => '',
-                    'createtime' => $currentTime
+                    'createtime' => $currentTime,
+                    'pay_status'=>0
                 );
 
                 if (intval($vo['has_sku']) == 1) {

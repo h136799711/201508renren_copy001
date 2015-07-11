@@ -73,11 +73,6 @@ class UserController extends ShopController{
 			$this->assign('accountType',$result['info']);
 			$this->theme($this->themeType)->display();
 		}else if(IS_AJAX){
-			/*dump();
-			dump();
-			dump(I('accountName'));
-			dump(I('bankBranch'));
-			dump(I('cashAccount'));*/
 			$map=array(
 				'uid'=>$this->userinfo['uid'],
 				'money'=>I('money'),

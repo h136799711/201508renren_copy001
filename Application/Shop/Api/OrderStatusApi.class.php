@@ -97,13 +97,14 @@ class OrderStatusApi{
             if($result['pay_status'] !=  OrdersModel::ORDER_TOBE_PAID){
                 return $this->returnErr("当前订单状态无法变更！");
             }
-
+			//dump($result['orderid']);
             $entity = array(
                 'reason'=>"用户选择货到付款支付!",
-                'orders_id'=>$result['orderid'],
+                'orders_id'=>$result['id'],
                 'operator'=>$uid,
                 'status_type'=>'PAY',
                 'cur_status'=>$result['pay_status'],
+                'isauto'=>1,
                 'next_status'=> OrdersModel::ORDER_CASH_ON_DELIVERY,
             );
 

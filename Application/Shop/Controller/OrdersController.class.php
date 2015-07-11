@@ -233,25 +233,26 @@ class OrdersController extends ShopController {
 
 		}
 
-
+		//dump($fromsession);
 		if (intval($fromsession) == 1) {
 			if (!session("?confirm_order_info")) {
 				$this -> redirect('Shop/Index/index');
 			}
 			//从session中取
 			$list = session("confirm_order_info");
+			//dump($list);
 			if (is_null($list)) {
 				$this -> redirect('Shop/Index/index');
 			}
-		} else {
 
+		} else {
+			//dump($p_id_arr);
 			if (count($p_id_arr) == 0) {
 				LogRecord("参数错误", __FILE__ . __LINE__);
 				$this -> error("参数错误！");
 			}
-
+			//dump($p_id_arr);
 			//获取商品信息
-
 			$product_list = $this -> getProductList($p_id_arr);
 			//获取商品SKU信息
 			unset($map['id']);
@@ -281,6 +282,8 @@ class OrdersController extends ShopController {
 			$all_express = 0.0;
 			$tmp_store = array();
 			//遍历商品列表
+			//dump($product_list);
+			
 			foreach ($product_list as &$vo) {
 
 				//
@@ -415,6 +418,8 @@ class OrdersController extends ShopController {
 				$i++;
 				//				dump($entity['items']['products']);
 				//				exit();
+				
+				//dump($entity);
 				$result = apiCall(OrdersApi::ADD_ORDER, array($entity));
 				//				addWeixinLog($result,'订单3333');
 				if (!$result['status']) {
@@ -430,7 +435,7 @@ class OrdersController extends ShopController {
 			session("confirm_order_info", null);
 
 			$this -> success("订单保存成功，前往支付！", C('SITE_URL') . "/index.php/Shop/Pay/pay/id/$ids?showwxpaytitle=1");
-
+			
 		} else {
 			LogRecord("禁止访问！", __FILE__ . __LINE__);
 			$this -> error("禁止访问！");

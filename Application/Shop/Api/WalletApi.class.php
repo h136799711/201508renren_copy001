@@ -111,14 +111,14 @@ class WalletApi extends Api{
 		
 		$wallet = $this->model->where($map)->find();
 		
-		if((float)$wallet['account_balance']<(float)$map['money']){
+		if((float)$wallet['account_balance']/100<(float)$map['money']){
 			$lastResult['info']='余额不足，不能提取';
 			return $lastResult;
 		}
 		$beforeMoney=$wallet['account_balance'];
-		$wallet['account_balance']=(float)$wallet['account_balance']-(float)$map['money'];
+		$wallet['account_balance']=(float)$wallet['account_balance']-(float)$map['money']*100;
 		//$wallet['account_balance']=$wallet['account_balance']-$map['money'];
-		$wallet['frozen_funds']=(float)$wallet['frozen_funds']+(float)$map['money'];
+		$wallet['frozen_funds']=(float)$wallet['frozen_funds']+(float)$map['money']*100;
 		$afterMoney=$wallet['account_balance'];
 		$result=$this->saveByID($wallet['id'], $wallet);
 		//如果修改失败则回滚
@@ -126,7 +126,7 @@ class WalletApi extends Api{
 		if($result['status']){
 			$entity=array(
 				'uid'=>$map['uid'],
-				'money'=>$map['money'],
+				'money'=>(float)$map['money']*100,
 				'create_time'=>time(),
 				'status'=>0,
 				'reason'=>'',
@@ -147,9 +147,10 @@ class WalletApi extends Api{
 					'uid'=>$map['uid'],
 					'before_money'=>$beforeMoney,
 					'plus'=>0,
-					'minus'=>$map['money'],
+					'minus'=>(float)$map['money']*100,
 					'after_money'=>$afterMoney,
 					'create_time'=>time(),
+					'dtree_type'=>getDatatree('COMMISSION_WITHDRAW'),
 					'reason'=>$map['reason'],
 				);
 				$result=apiCall(WalletHisApi::ADD,array($entity));

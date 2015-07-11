@@ -79,6 +79,7 @@ class WithdrawApi extends Api{
 				'minus'=>$result['info'][0]['money'],
 				'after_money'=>$array['account_balance'],
 				'create_time'=>time(),
+				'dtree_type'=>getDatatree('COMMISSION_CHECK_PASS'),
 				'reason'=>'审核通过'
 				);
 				$result=apiCall(WalletHisApi::ADD,array($map));

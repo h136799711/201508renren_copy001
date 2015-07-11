@@ -99,7 +99,8 @@ class CommissionCountApi implements ICommissionCountInterface{
 					'minus'=>0,
 					'after_money'=>(float)$WalletInfo['info'][0]['account_balance']+(float)$commission,
 					'create_time'=>time(),
-					'reason'=>'用户'.$nickname.'(ID:'.$wxuser_id.')'.'下单(ID:'.$id.')，分销商'.$wxuserInfo['info'][0]['nickname'].'(ID:'.$u.')获得佣金'.$commission.'元('.$percent.'%)',
+					'dtree_type'=>getDatatree('COMMISSION_ORDER_FINISH'),
+					'reason'=>'用户'.$nickname.'(ID:'.$wxuser_id.')'.'下单(ID:'.$id.')，分销商'.$wxuserInfo['info'][0]['nickname'].'(ID:'.$u.')获得佣金'.$commission.'分('.$percent.'%)',
 				);
 				$result=apiCall(WalletHisApi::ADD,array($map));
 			}

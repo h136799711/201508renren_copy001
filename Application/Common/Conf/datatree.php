@@ -23,5 +23,12 @@ return array(
 		'INDEX_4_ACTIVTIY'=>19,//首页4格活动
         'ADVERT_POSITION'=>31,//广告父类
         'SHOP_INDEX_ADVERT'=>32,//首页广告
+        
+        //以下为佣金出入情况
+        //'commission'
+        'COMMISSION_WITHDRAW'=>32, //提现
+        'COMMISSION_ORDER_FINISH'=>33,//订单完成
+        'COMMISSION_CHECK_PASS'=>34, //审核通过
+        
 	)
 );

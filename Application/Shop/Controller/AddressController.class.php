@@ -31,13 +31,14 @@ class AddressController extends ShopController{
 		
 		$this->assign("list",$result['info']['list']);
 		
-		$this->display();
+		$this ->theme($this->themeType)->display();
 		
 	}
 	
 	public function add(){
 		if(IS_GET){
-
+		
+			
             cookie("__forward__",$_SERVER['HTTP_REFERER']);
 			$map = array();
 			$map['wxuserid'] = $this->userinfo['id'];
@@ -61,7 +62,7 @@ class AddressController extends ShopController{
 				}
 				$this->assign("area",$area['info']);
 			}
-            dump($result['info']);
+            //dump($result['info']);
 			$this->assign("address",$result['info']);
 			
 			$result = apiCall(ProvinceApi::QUERY_NO_PAGING, array());
@@ -71,7 +72,7 @@ class AddressController extends ShopController{
 			}
 			$this->assign("provinces",$result['info']);
 			$this->assign("back_url",cookie("__forward__"));
-			$this->display();
+			$this ->theme($this->themeType)->display();
 		}else{
 			$id = I('post.id',0,'intval');
 			$province = I('post.province','');
@@ -108,8 +109,7 @@ class AddressController extends ShopController{
 			if(!$result['status']){
 				$this->error($result['info']);
 			}
-
-			$this->success("操作成功!~",cookie("__forward__"));
+			$this->success("操作成功!~",cookie("__forward__").'?fromsession=1');
 			
 		}
 	}

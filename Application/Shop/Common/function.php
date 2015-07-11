@@ -135,21 +135,21 @@ function getStoreLevel($exp){
 function getTaobaoOrderStatus($status) {
 	
 	switch($status) {
-		case \Common\Model\OrdersModel::ORDER_COMPLETED :
+		case \Shop\Model\OrdersModel::ORDER_COMPLETED :
 			return "交易成功";
-		case \Common\Model\OrdersModel::ORDER_RETURNED :
+		case \Shop\Model\OrdersModel::ORDER_RETURNED :
 			return "已退货";
-		case \Common\Model\OrdersModel::ORDER_SHIPPED :
+		case \Shop\Model\OrdersModel::ORDER_SHIPPED :
 			return "卖家已发货";
-		case \Common\Model\OrdersModel::ORDER_TOBE_CONFIRMED :
+		case \Shop\Model\OrdersModel::ORDER_TOBE_CONFIRMED :
 			return "等待卖家确认";
-		case \Common\Model\OrdersModel::ORDER_TOBE_SHIPPED :
+		case \Shop\Model\OrdersModel::ORDER_TOBE_SHIPPED :
 			return "等待卖家发货";
-		case \Common\Model\OrdersModel::ORDER_CANCEL :
+		case \Shop\Model\OrdersModel::ORDER_CANCEL :
 			return "交易关闭";
-		case \Common\Model\OrdersModel::ORDER_RECEIPT_OF_GOODS :
+		case \Shop\Model\OrdersModel::ORDER_RECEIPT_OF_GOODS :
 			return "买家已收货";
-		case \Common\Model\OrdersModel::ORDER_BACK :
+		case \Shop\Model\OrdersModel::ORDER_BACK :
 			return "卖家退回了该订单";
 		default :
 			return "未知";
