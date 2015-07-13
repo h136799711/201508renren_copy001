@@ -11,6 +11,7 @@ use Shop\Api\OrdersApi;
 use Shop\Model\OrdersModel;
 use Admin\Api\DatatreeApi;
 use Shop\Api\WalletApi;
+use Shop\Api\WalletHisApi;
 
 
 class UserController extends ShopController{
@@ -103,6 +104,21 @@ class UserController extends ShopController{
 		);
 		apiCall(WalletApi::MINUS,array($map));*/
 		
+		
+	}
+
+	/**
+	 * 提现记录
+	 */
+	public function withdrawRecord(){
+		$map=array(
+			'uid'=>$this->userinfo['uid'],
+			'dtree_type'=>getDatatree('COMMISSION_WITHDRAW'),
+		);
+		$order="create_time desc";
+		$result=apiCall(WalletHisApi::QUERY_NO_PAGING,array($map,$order));
+		$this->assign('recordList',$result['info']);
+		$this->theme($this->themeType)->display();
 		
 	}
 	

@@ -104,7 +104,7 @@ class OrderStatusApi{
                 'operator'=>$uid,
                 'status_type'=>'PAY',
                 'cur_status'=>$result['pay_status'],
-                'isauto'=>1,
+                'isauto'=>0,
                 'next_status'=> OrdersModel::ORDER_CASH_ON_DELIVERY,
             );
 
@@ -188,9 +188,10 @@ class OrderStatusApi{
 
         $entity = array(
             'reason'=>"订单发货操作!",
-            'orders_id'=>$result['orderid'],
+            'orders_id'=>$result['id'],
             'operator'=>$uid,
             'status_type'=>'ORDER',
+            'isauto'=>0,
             'cur_status'=>$result['order_status'],
             'next_status'=> OrdersModel::ORDER_SHIPPED,
         );
@@ -254,9 +255,10 @@ class OrderStatusApi{
 
         $entity = array(
             'reason'=>"订单确认操作!",
-            'orders_id'=>$result['orderid'],
+            'orders_id'=>$result['id'],
             'operator'=>$uid,
             'status_type'=>'ORDER',
+            'isauto'=>0,
             'cur_status'=>$result['order_status'],
             'next_status'=> OrdersModel::ORDER_TOBE_SHIPPED,
         );
@@ -323,6 +325,7 @@ class OrderStatusApi{
             'orders_id'=>$result['orderid'],
             'operator'=>$uid,
             'status_type'=>'ORDER',
+            'isauto'=>0,
             'cur_status'=>$result['order_status'],
             'next_status'=> OrdersModel::ORDER_BACK,
         );
@@ -386,8 +389,9 @@ class OrderStatusApi{
 
         $entity = array(
             'reason'=>"确认收货操作!",
-            'orders_id'=>$result['orderid'],
+            'orders_id'=>$result['id'],
             'operator'=>$uid,
+            'isauto'=>0,
             'status_type'=>'ORDER',
             'cur_status'=>$result['order_status'],
             'next_status'=>OrdersModel::ORDER_RECEIPT_OF_GOODS,
@@ -457,6 +461,7 @@ class OrderStatusApi{
             'orders_id'=>$result['orderid'],
             'operator'=>$uid,
             'status_type'=>'ORDER',
+            'isauto'=>0,
             'cur_status'=>$result['order_status'],
             'next_status'=>Model\OrdersModel::ORDER_RETURNED,
         );
@@ -526,6 +531,7 @@ class OrderStatusApi{
             'orders_id'=>$result['orderid'],
             'operator'=>$uid,
             'status_type'=>'COMMENT',
+            'isauto'=>0,
             'cur_status'=>$result['order_status'],
             'next_status'=>OrdersModel::ORDER_COMPLETED,
         );

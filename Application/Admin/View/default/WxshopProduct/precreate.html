@@ -136,10 +136,12 @@
 				//	
 				var data = $ele.attr("data-id");
 				getCates();
+			
 				if(index < 4){
 					window.postTimeout = setTimeout(function(){
-						window.ajax_post = $.post("{:U('Admin/Wxshop/cate')}",{cateid:data}).done(function(data){
+						window.ajax_post = $.post("{:U('Admin/Store/cate')}",{cateid:data}).done(function(data){
 //							console.log(data.info == null);
+						
 						if(data.info == null){
 							$("#js_submit").removeClass("disabled");
 							$(".js_catelist"+(index+1)).addClass("hidden");
@@ -161,7 +163,6 @@
 							$("#js_submit").addClass("disabled");
 						}
 					});
-					
 					},300);
 				}
 				
@@ -224,11 +225,17 @@
 				},300);
 			});
 			$(".js_catelist0 a").click(function(ev){
+				
 				$ele = $(ev.target);
+				
 				cateClick(0,$ele);
+				//alert($ele.text);
+				
 				
 			});
+	
 			$(".js_sec_1").click(function(ev){
+				//alert();
 				$ele = $(ev.target);
 				cateClick(1,$ele);
 			});

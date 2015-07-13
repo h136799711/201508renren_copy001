@@ -449,16 +449,16 @@ class OrdersController extends ShopController {
 	public function evaluation(){
 		if(IS_GET){
 			$id = I('get.id',0,'intval');
-			$result = apiCall(OrdersApi::QUERY_NO_PAGING , array(array( 'orders_id'=>$id )));
+			$result = apiCall(OrdersApi::QUERY_NO_PAGING , array(array( 'id'=>$id )));
 			
 			if(!$result['status']){
 				$this->error($result['info']);
 			}
-//			dump($result);
-			$this->assign("items",$result['info']);
-			$this->theme($this->themeType)->display();
+			dump($result);
+
+			//$this->assign("items",$result['info']);
+			//$this->theme($this->themeType)->display();
 		}else{
-			
 			$orders_id = I('get.id',0,'intval');
 			$pid_arr = I("post.pid",array());
 			$score_arr = I("post.score",array());

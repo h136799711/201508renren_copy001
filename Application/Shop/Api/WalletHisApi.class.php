@@ -15,6 +15,8 @@ use Shop\Model\WalletHisModel;
 class WalletHisApi extends Api{
 	const ADD="Shop/WalletHis/add";
 	
+	const QUERY_NO_PAGING="Shop/WalletHis/queryNoPaging";
+	
     protected function _init(){
         $this->model = new WalletHisModel();
     }

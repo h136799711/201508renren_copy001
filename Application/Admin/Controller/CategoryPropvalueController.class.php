@@ -34,7 +34,7 @@ class CategoryPropvalueController extends AdminController{
 		
 		$order = " id asc ";
 		//
-		$result = apiCall(CategoryPropvalueApi::GET_INFO,array($map,$page,$order,$params));
+		$result = apiCall(CategoryPropvalueApi::QUERY,array($map,$page,$order,$params));
 		
 		//
 		if($result['status']){

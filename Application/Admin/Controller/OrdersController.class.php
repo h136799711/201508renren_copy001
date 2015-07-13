@@ -212,8 +212,9 @@ class OrdersController extends AdminController {
 		}
 
 		//		$map['createtime'] = array( array('EGT', $startdatetime), array('elt', $enddatetime), 'and');
-		$map['pay_status'] = OrdersModel::ORDER_PAID;
-
+		//$map['pay_status'] = OrdersModel::ORDER_PAID;
+		
+		$map['pay_status']=OrdersModel::ORDER_CASH_ON_DELIVERY;
 		$page = array('curpage' => I('get.p', 0), 'size' => C('LIST_ROWS'));
 		$order = " createtime desc ";
 
