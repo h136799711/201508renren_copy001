@@ -62,7 +62,7 @@ class OrderCommentApi extends Api{
      * @param $text_arr 评价内容
      * @return array
      */
-	public function addArray($orders_id,$uid,$pid_arr,$score_arr,$text_arr){
+	public function addArray($orders_id,$uid,$pid_arr,$score_arr,$logistics_service_arr,$delivery_speed_arr,$service_attitude_arr,$text_arr){
 		
 		$this->model->startTrans();
 		
@@ -75,10 +75,16 @@ class OrderCommentApi extends Api{
 				'product_id'=>$id,
 				'orders_id'=>$orders_id,
 				'score'=>$score_arr[$key],
+				'logistics_service'=>$logistics_service_arr[$key],
+				'delivery_speed'=>$delivery_speed_arr[$key],
+				'service_attitude'=>$service_attitude_arr[$key],
 				'comment'=>$text_arr[$key],
 				'user_id'=>$uid,
 				'createtime'=>$nowtime
 			);
+			
+			
+			
 			
 			if($this->model->create($entity,1)){
 				
@@ -88,6 +94,7 @@ class OrderCommentApi extends Api{
 					$flag = false;
 					$error = $this->model->getDbError();
 				}else{
+					apiCall(OrdersApi::SAVE_BY_ID,array($orders_id,array('comment_status'=>1)));
 					array_push($insert_ids,$result);
 				}
 				

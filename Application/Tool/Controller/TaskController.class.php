@@ -60,6 +60,8 @@ class TaskController extends Controller{
 			
 		$this->toRecieved();
 		
+		$this->toAutoEvaluation();
+		
 		$this->toCompleted();
 		
 		$this->toCancel();
@@ -73,7 +75,7 @@ class TaskController extends Controller{
 	 */
 	private function toCancel(){
 		
-		$interval = 3600*1;//1小时
+		$interval =C('INTERVAL_CANCEL');//1小时
 		
 		$result = apiCall(OrderStatusApi::ORDER_STATUS_TO_CANCEL,array($interval));
 		if(!$result['status']){
@@ -91,7 +93,7 @@ class TaskController extends Controller{
 	 * 1. 订单[已发货]－》检测 time() - updatetime > 指定时间，暂定30天 满足条件变更为订单[已发货]
 	 */
 	private function toRecieved(){
-		$interval = 24*3600*30;//30天
+		$interval =C('INTERVAL_RECIEVED');//30天
 		//$interval = 60;//30天
 		
 		$result = apiCall(OrderStatusApi::ORDER_STATUS_TO_RECIEVED,array($interval));
@@ -109,7 +111,7 @@ class TaskController extends Controller{
 	 * 1. 订单[已收货]－》检测 time() - updatetime > 指定时间，暂定15天 满足条件变更为订单[已收货]
 	 */
 	private function toCompleted(){
-		$interval = 24*3600*15;//15天
+		$interval =C('INTERVAL_COMPLETED');//15天
 		//$interval = 60;//1分钟前
 		$result = apiCall(OrderStatusApi::ORDER_STATUS_TO_COMPLETED,array($interval));
 		if(!$result['status']){
@@ -120,6 +122,28 @@ class TaskController extends Controller{
 			}
 		}
 	}
+	
+	
+	/**
+	 * 
+	 * 自动评价
+	 */
+	private function toAutoEvaluation(){
+		
+		$interval =C('INTERVAL_AUTO_EVALUATION');//15天
+		
+		$result = apiCall(OrderStatusApi::ORDER_STATUS_TO_AUTO_EVALUATION,array($interval));
+		if(!$result['status']){
+			LogRecord($result['info'], __FILE__.__LINE__);
+		}else{
+			if($result['info'] > 0){
+				addWeixinLog("更新订单为自动评价影响记录数：".$result['info'],'0');
+			}
+		}
+	}
+	
+	
+	
 	
 	
 	/**

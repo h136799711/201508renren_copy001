@@ -639,6 +639,7 @@ class OrderStatusApi{
 	public function orderStatusToCompleted($interval){
 		$map['updatetime'] = array('lt',time()-$interval);
 		$map['order_status'] = OrdersModel::ORDER_RECEIPT_OF_GOODS;
+		$map['comment_status']=array('NEQ',OrdersModel::ORDER_TOBE_EVALUATE);//评价状态不为0
 		$result=apiCall(OrdersApi::QUERY_NO_PAGING,array($map));
 		foreach($result['info'] as $order){
 			$ids[]=$order['id'];
@@ -655,6 +656,28 @@ class OrderStatusApi{
 		}
 		$result = $this->model->where($map)->lock(true)->save();
 //		addWeixinLog($this->model->getLastSql(),"[自动变更订单已收货为已完成SQL]");
+		if($result === FALSE){
+			$error = $this->model->getDbError();
+			return $this->returnErr($error);
+		}else{
+			return $this->returnSuc($result);
+		}
+	}
+	
+	/**
+	 * 自动评价
+	 */
+	public function toAutoEvaluation($interval){
+		$map['updatetime'] = array('lt',time()-$interval);
+		$map['order_status'] = OrdersModel::ORDER_RECEIPT_OF_GOODS;
+		$map['comment_status']=OrdersModel::ORDER_TOBE_EVALUATE;
+		
+		$saveEntity = array('comment_status'=>OrdersModel::ORDER_SYSTEM_EVALUATED);
+		$result = $this->model->create($saveEntity,2);
+		if($result === false){
+			return $this->returnErr($this->model->getError());
+		}
+		$result = $this->model->where($map)->lock(true)->save();
 		if($result === FALSE){
 			$error = $this->model->getDbError();
 			return $this->returnErr($error);

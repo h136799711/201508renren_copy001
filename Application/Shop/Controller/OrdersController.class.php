@@ -130,6 +130,7 @@ class OrdersController extends ShopController {
 				'price' => number_format($vo['price']/100.0,2), //订单总价
 				'storeid' => $vo['storeid'], 
 				'order_status'=>$vo['order_status'],
+				'comment_status'=>$vo['comment_status'],
 				'order_status_desc'=> getTaobaoOrderStatus($vo['order_status']),
 				'pay_status'=>$vo['pay_status'],
 				'_items' => array(), //商品列表
@@ -193,6 +194,7 @@ class OrdersController extends ShopController {
 		}
 		
 		if(IS_POST){
+			//dump($result_list);
 			$this->success($result_list);
 		}else{
 			$this->error("禁止访问！");
@@ -454,18 +456,29 @@ class OrdersController extends ShopController {
 			if(!$result['status']){
 				$this->error($result['info']);
 			}
-			dump($result);
-
-			//$this->assign("items",$result['info']);
-			//$this->theme($this->themeType)->display();
+			$map=array(
+				'orders_id'=>$result['info'][0]['id'],
+			);
+			$item=apiCall(OrdersItemApi::QUERY_NO_PAGING,array($map));
+			
+			//dump($item);
+			$result['info'][0]['img']=$item['info'][0]['img'];
+			$result['info'][0]['name']=$item['info'][0]['name'];
+			$result['info'][0]['p_id']=$item['info'][0]['p_id'];
+			//dump($result);
+			$this->assign("items",$result['info']);
+			$this->theme($this->themeType)->display();
 		}else{
 			$orders_id = I('get.id',0,'intval');
 			$pid_arr = I("post.pid",array());
 			$score_arr = I("post.score",array());
+			$logistics_service_arr = I("post.logistics_service",array());
+			$delivery_speed_arr = I("post.delivery_speed",array());
+			$service_attitude_arr = I("post.service_attitude",array());
 			$text_arr = I("post.text",array());
+		
 			
-			
-			$result = apiCall(OrderCommentApi::Add_ARRAY , array($orders_id,$this->userinfo['id'],$pid_arr,$score_arr,$text_arr));
+			$result = apiCall(OrderCommentApi::Add_ARRAY , array($orders_id,$this->userinfo['id'],$pid_arr,$score_arr,$logistics_service_arr,$delivery_speed_arr,$service_attitude_arr,$text_arr));
 
 			if(!$result['status']){
 				$this->error($result['info']);

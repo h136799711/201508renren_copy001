@@ -26,9 +26,13 @@ return array(
         
         //以下为佣金出入情况
         //'commission'
-        'COMMISSION_WITHDRAW'=>32, //提现
-        'COMMISSION_ORDER_FINISH'=>33,//订单完成
-        'COMMISSION_CHECK_PASS'=>34, //审核通过
+        //'COMMISSION_WITHDRAW'=>32, //提现
+        //'COMMISSION_ORDER_FINISH'=>33,//订单完成
+        //'COMMISSION_CHECK_PASS'=>34, //审核通过
+        
+        // 'COMMISSION_WITHDRAW'=>34, //提现
+        //'COMMISSION_ORDER_FINISH'=>36,//订单完成
+        //'COMMISSION_CHECK_PASS'=>35, //审核通过
         
 	)
 );

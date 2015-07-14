@@ -196,7 +196,26 @@
 		 					¥{:number_format($vo['price']/100.0,2)}
 		 				</div>
 		 			</div>
-	      			<label for="doc-ipt-pwd-1" class="am-fl">订单评价：</label>
+		 			
+		 			<label for="doc-ipt-pwd-1" class="am-fl">评价分数：</label>
+	      			<div class="J_rate_plugin">      				
+						
+						<div class="oc-star-n"> 
+							<ul class="star5">  
+								<li val="1"> star1 </li>  
+								<li val="2"> star2 </li>  
+								<li val="3"> star3 </li>
+								<li val="4"> star4 </li>  
+								<li val="5"> star5 </li>  
+							</ul> 
+						</div>
+						<input type="hidden" name="pid[]" class="pid"  value="{$vo.p_id}">
+						<input type="hidden" name="score[]" class="score"  value="5">
+	      			</div>
+		 			
+		 			<br  />
+		 			
+	      			<label for="doc-ipt-pwd-1" class="am-fl">物流服务：</label>
 	      			<div class="J_rate_plugin">      				
 						
 						<div class="oc-star-n"> 
@@ -209,9 +228,40 @@
 							</ul> 
 						</div>
 						
-						<input type="hidden" name="pid[]" class="pid"  value="{$vo.p_id}">
-						<input type="hidden" name="score[]" class="score"  value="5">
+						<input type="hidden" name="logistics_service[]" class="score"  value="5">
 	      			</div>
+	      			<br />
+	      			<label for="doc-ipt-pwd-1" class="am-fl">发货速度：</label>
+	      			<div class="J_rate_plugin">      				
+						
+						<div class="oc-star-n"> 
+							<ul class="star5">  
+								<li val="1"> star1 </li>  
+								<li val="2"> star2 </li>  
+								<li val="3"> star3 </li>
+								<li val="4"> star4 </li>  
+								<li val="5"> star5 </li>  
+							</ul> 
+						</div>
+						<input type="hidden" name="delivery_speed[]" class="score"  value="5">
+	      			</div>
+	      			<br />
+	      			<label for="doc-ipt-pwd-1" class="am-fl">服务态度：</label>
+	      			<div class="J_rate_plugin">      				
+						
+						<div class="oc-star-n"> 
+							<ul class="star5">  
+								<li val="1"> star1 </li>  
+								<li val="2"> star2 </li>  
+								<li val="3"> star3 </li>
+								<li val="4"> star4 </li>  
+								<li val="5"> star5 </li>  
+							</ul> 
+						</div>
+						<input type="hidden" name="service_attitude[]" class="score"  value="5">
+	      			</div>
+	      			
+	      			
 	      			
 			 		<div class="am-form-group">
 			 			<textarea class="text am-form-control"  name="text[]" rows="5"></textarea>	 			

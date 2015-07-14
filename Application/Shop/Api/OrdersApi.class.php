@@ -114,6 +114,7 @@ class OrdersApi extends Api
             'price' => $entity['price'],
             'note' => $entity['note'],
             'orderid' => $entity['orderid'],
+            'comment_status'=>0,
 //				'items'=>'',
             'items' => serialize($entity['items']),
         );

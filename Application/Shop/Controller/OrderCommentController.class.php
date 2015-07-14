@@ -14,12 +14,12 @@ class OrderCommentController extends ShopController{
 	public function index(){
 		if(IS_POST){
 			$productid = I('post.productid',0);
-			
+			//dump($productid);
 			$map = array('product_id'=>$productid);
 			$page = array('curpage'=>I('post.p',0),'size'=>20);
 			$order = " createtime desc ";
 			$result = apiCall("Shop/OrderComment/query",array($map,$page,$order));
-			
+			//dump($result);
 			if(!$result['status']){
 				$this->error($result['info']);
 			}
@@ -36,8 +36,8 @@ class OrderCommentController extends ShopController{
 			
 			if(count($user_ids) > 0){
 				
-				$result = apiCall("Shop/Wxuser/queryNoPaging",array($map));
-				
+				$result = apiCall("Weixin/Wxuser/queryNoPaging",array($map));
+				//dump($result);
 				if(!$result['status']){
 					$this->error($result['info']);
 				}
@@ -56,10 +56,9 @@ class OrderCommentController extends ShopController{
 					$vo['_userinfo'] = $user_info[$vo['user_id']];
 				}
 			}
-			
-//			dump($result_info);
+		
 //			echo json_encode($result_info);
-			
+			//dump($result_info);
 			$this->success($result_info);
 		}
 	}

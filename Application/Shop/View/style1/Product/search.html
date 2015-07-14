@@ -204,7 +204,7 @@
 					<div class="p-name">{$vo.name}</div>
 					<div class="p-price am-text-danger">¥{:number_format($vo['price']/100.0,1)}</div>
 					<div class="p-sales">月销: {$vo['_sales']}</div>
-					<div class="p-store">{$vo.storename} {$vo.loc_province} {$vo.loc_city}</div>
+					<div class="p-store" style="font-size: 12px">{$vo.storename} {$vo.loc_province} {$vo.loc_city}</div>
 				</div>
 			</div>
 			</a>
@@ -230,7 +230,7 @@
 			itemHtml += "<div class='p-name'>"+item.name+"</div>";
 			itemHtml += "<div class='p-price am-text-danger'>¥"+(item.price/100.0)+"</div>";
 			itemHtml += "<div class='p-sales'>月销: "+item._sales+"</div>";
-			itemHtml += "<div class='p-store'>"+item.storename+item.loc_province+item.loc_city+"</div>";
+			itemHtml += "<div class='p-store' style='font-size: 12px'>"+item.storename+item.loc_province+item.loc_city+"</div>";
 			itemHtml += "</div></a>";
 			$ele.html(itemHtml);
 		}

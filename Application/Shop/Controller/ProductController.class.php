@@ -198,6 +198,7 @@ class ProductController extends ShopController {
 			$this -> assign("details", json_decode($details));
 			$this -> assign("banners", $banners);
 			$this -> assign("product", $result['info']);
+			//dump($result['info']);
 			$result = apiCall(StoreApi::GET_INFO, array( array('id' => $result['info']['storeid'])));
 			
 			if ($result['status']) {

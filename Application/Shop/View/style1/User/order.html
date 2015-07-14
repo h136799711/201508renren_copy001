@@ -245,7 +245,7 @@
               
               {{#eq pay_status 5}}
               
-              <span class="am-text-xs">您选择了货到付款,请准备好现金，送货员马上就到！</span><br/>
+              <span class="am-text-xs">您选择了货到付款,请准备好现金，<br />送货员马上就到！</span><br/>
               {{/eq}}
               
               {{#eq order_status 3}}
@@ -258,9 +258,13 @@
               <a href="{:U('Shop/Orders/confirmReceive')}?id={{orderid}}" data-tip="确定收到货了?" class="ajax-get confirm am-btn-xs am-btn am-btn-primary">确认收货</a>
               {{/eq}}
               
-              {{#eq order_status 5}}
-              <a href="{:U('Shop/Orders/evaluation')}?id={{orderid}}" class="am-btn-xs am-btn am-btn-secondary">订单评价</a>
-              {{/eq}}
+              
+               
+              {{#eqs order_status 5 comment_status 0}}
+               
+              	<a href="{:U('Shop/Orders/evaluation')}?id={{orderid}}" class="am-btn-xs am-btn am-btn-secondary">订单评价</a>
+              
+              {{/eqs}}
               
               
               {{#eq order_status 12}}
@@ -285,6 +289,18 @@
              return options.inverse(this);
            }
          }
+		
+		
+		function eqs(v1,v2,v3,v4,options){
+           if(v1 == v2&&v3==v4){
+             //满足添加继续执行
+             return options.fn(this);
+           }else{
+             //不满足条件执行
+             return options.inverse(this);
+           }
+         }
+
 
 	    
 		
@@ -302,6 +318,7 @@
 			var source  = $("#ordertemplate").html();
 			window.boye.template = Handlebars.compile(source);
 			Handlebars.registerHelper("eq",eq);
+			Handlebars.registerHelper("eqs",eqs);
 			
 			$('#tabs').find('a').on('opened.tabs.amui', function(e) {
 				console.log('[%s] 选项卡打开了', $(this).text());
