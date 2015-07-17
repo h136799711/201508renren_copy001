@@ -284,6 +284,11 @@
 	      <img src="__IMG__/logo.png?v=2" alt="logo"  />
 	    </a>
 	  </div>
+	  
+	  
+	  
+	  
+	  
 	  <div class="js_top_search top-search-wrp col-10">
 	  	<span class="i-search"><i class="am-icon-search"></i>搜索商品、店铺</span>
 	  	<input disabled="disabled" type="text" class="am-form-control top-search " value="" name="q" />
@@ -348,13 +353,7 @@
 	</div>
 	
 	
-	<div class="ad ad0">
-		<if condition="count($ads) gt 0">
-		<a href="{$ads[0].url}" ><img src="__IMG__/p640x200.jpg" class="lazy" data-original="{$ads[0].img|default='__IMG__/ad_default.jpg?v=1.0'}" alt="{$ads[0].title}" /></a>
-		<else />
-		<img src="__IMG__/ad_default.jpg?v=1.0"  alt="广告位招租" />
-		</if>
-	</div>
+	
 	<div class="demo">
                       <!--
                       	作者：hebiduhebi@126.com
@@ -384,18 +383,28 @@
 		</div>
 	</div>
 	
-	<!--
-    	作者：hebiduhebi@126.com
-    	时间：2015-04-22
-    	描述：首页嵌入广告02
-    -->
-	<div class="ad ad1">
+	<div class="ad ad0">
+		<if condition="count($ads) gt 0">
+		<a href="{$ads[0].url}" ><img src="__IMG__/p640x200.jpg" class="lazy" data-original="{$ads[0].img|default='__IMG__/ad_default.jpg?v=1.0'}" alt="{$ads[0].title}" /></a>
+		<else />
+		<img src="__IMG__/ad_default.jpg?v=1.0"  alt="广告位招租" />
+		</if>
+	</div>
+	  <div class="ad ad1">
 		<if condition="count($ads) gt 1">
 		<a href="{$ads[1].url}" ><img src="{$ads[1].img|default='__IMG__/ad_default.jpg?v=1.0'}" alt="{$ads[1].title}" /></a>
 		<else />
 		<img src="__IMG__/ad_default.jpg?v=1.0" alt="广告位招租"  class="lazy" />
 		</if>
 	</div>
+	  
+	
+	<!--
+    	作者：hebiduhebi@126.com
+    	时间：2015-04-22
+    	描述：首页嵌入广告02
+    -->
+	
 	<div class="am-text-center" style="margin: 0.2rem 0;border-bottom: 1px solid #E2CCCC;">推荐商品</div>
 	<div class="product-list grid">
 		<volist name="recommend_products" id="vo">

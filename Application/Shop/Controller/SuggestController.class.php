@@ -30,9 +30,9 @@ class SuggestController extends ShopController{
 			}
 
 			$entity = array(
-				'suggestion'=>$text,
-				'text'=>'',
-				'process_status'=>'',
+				//'suggestion'=>$text,
+				'text'=>$text,
+				'process_status'=>0,
 				'name'=>$name,
 				'tel'=>$phone,
                 'email'=>'',

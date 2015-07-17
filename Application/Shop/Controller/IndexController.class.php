@@ -131,6 +131,7 @@ class IndexController extends ShopController{
 		$this->theme($this->themeType)->display();
 	}
 
+
     private function getStoreName(){
         //默认当前公众号名
         $name = $this->wxaccount['wxname'];
