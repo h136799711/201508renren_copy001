@@ -38,7 +38,13 @@ class WeixinPromotionAddon extends Addon
         return true;
     }
 
-    //实现的admin_index钩子方法
+    /**
+     * 关键词
+     * keyword     =>    _plugin_promotion
+     * data        =>    array('fans'=>粉丝信息)
+     * wxaccount   =>    公众号信息
+     * @param $param
+     */
     public function WeixinInnerProcess(&$param)
     {
         addWeixinLog($param,"插件二维码参数!");
