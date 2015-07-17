@@ -46,7 +46,7 @@ class ShopController extends  Controller {
 			$this->getWxuser($url);
 		}
 		
-		if(empty($this->userinfo)){
+		if(empty($this->userinfo) || $this->userinfo['subscribed'] == 0){
 			$this->display("Error:please_subscribe");
 //			$this->error("请先关注公众号，无法获取到用户信息！");
 			exit();
