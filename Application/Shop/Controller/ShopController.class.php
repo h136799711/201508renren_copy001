@@ -36,8 +36,8 @@ class ShopController extends  Controller {
 		}
 		C('SHOW_PAGE_TRACE', false);//设置不显示trace
 		$this -> refreshWxaccount();
-		//$debug = true;
-		$debug = false;
+		$debug = true;
+		//$debug = false;
 		
 		if($debug){
 			$this->getDebugUser();
@@ -46,7 +46,8 @@ class ShopController extends  Controller {
 			$this->getWxuser($url);
 		}
 		
-		if(empty($this->userinfo) || $this->userinfo['subscribed'] == 0){
+		//if(empty($this->userinfo) || $this->userinfo['subscribed'] == 0){
+		if(empty($this->userinfo)){	
 			$this->display("Error:please_subscribe");
 //			$this->error("请先关注公众号，无法获取到用户信息！");
 			exit();

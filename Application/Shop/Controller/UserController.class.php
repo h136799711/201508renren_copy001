@@ -12,6 +12,7 @@ use Shop\Model\OrdersModel;
 use Admin\Api\DatatreeApi;
 use Shop\Api\WalletApi;
 use Shop\Api\WalletHisApi;
+use Addons\WeixinPromotion\WeixinPromotionAddon;
 
 
 class UserController extends ShopController{
@@ -169,6 +170,22 @@ class UserController extends ShopController{
 		}
 		
 		return $result['info'];
+	}
+
+	//获得二维码
+	public function getQrcode(){
+		$WeixinPromotionAddon=new WeixinPromotionAddon();
+		$param=array(
+			'keyword'=>'_plugin_promotion',
+			'data'=>array(
+				'fans'=>$this->userinfo,
+				'wxaccount'=>$this->wxaccount,
+			)
+		);
+		$WeixinPromotionAddon->WeixinInnerProcess($param);
+		/*$this->assign("id",$this->userinfo['id']);
+		$this->theme($this->themeType)->display();*/
+		//dump(apiCall("Addons/WeixinPromotion/WeixinPromoti
 	}
 	
 	
