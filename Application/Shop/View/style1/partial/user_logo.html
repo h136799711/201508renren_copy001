@@ -14,4 +14,33 @@
                 </for>
 			</span>
     </div>
+    <style type="text/css">
+    	.user_logo_ul li{float:left;margin-left: 1.5rem;padding-top:0.2rem;text-align: center;}
+    	a.a_top:link {color:#999}		/* 未访问的链接 */
+		a.a_top:visited {color:#999}	/* 已访问的链接 */
+		a.a_top:hover {color:#999}	/* 鼠标移动到链接上 */
+		a.a_top:active {color:#999}
+    </style>
+    
+   
+   <ul class="user_logo_ul">
+   		<a class="a_top" href="{:U('Shop/Product/search')}">
+   			<li>{$count}<br />
+   				全部商品
+   			</li>
+   		</a>
+   		<a class="a_top" href="{:U('Shop/Product/search')}">
+   			<li>
+   				<font class="am-icon-star"></font><br />
+	
+   				收藏本店
+   			</li>
+   		</a>
+   		<a class="a_top" href="{:U('Shop/User/getQrcode')}">
+   			<li>
+   			<font class="am-icon-barcode"></font><br />
+   				二维码
+   			</li>
+   		</a>
+   </ul>
 </div>

@@ -36,7 +36,7 @@ class IndexController extends ShopController{
 				'id'=>$this->userinfo['id'],
 			);
 			$userInfo= apiCall(WxuserApi::QUERY_NO_PAGING,array($map));
-			$userInfo['info']['groupid']=11;
+			$userInfo['info']['groupid']=13;
 			//dump($userInfo['info']);
 			$result=apiCall(WxuserApi::SAVE_BY_ID,array($this->userinfo['id'],$userInfo['info']));
 			
@@ -133,6 +133,84 @@ class IndexController extends ShopController{
         $this->assign("isDistributor",$this->isDistributor());
 		$this->theme($this->themeType)->display();
 	}
+
+
+
+	/**
+	 * 我的小店
+	 */
+	public function myStore(){
+		//dump($this->);
+		
+		$map= array(
+			'uid'=>$this->wxaccount['uid'],
+			'storeid'=>-1,
+			'position'=>getDatatree("SHOP_INDEX_BANNERS")
+		);
+		
+		$page = array(
+			'curpage'=>0,
+			'size'=>8
+		);
+		$order = "createtime desc";
+		$params = false;
+		
+		$result = apiCall(BannersApi::QUERY,array($map,$page,$order,$params));
+//		dump($result);
+		if(!$result['status']){
+			$this->error($result['info']);
+		}
+		
+		$this->assign("banners",$result['info']['list']);
+		
+		$map= array('parentid'=>C("DATATREE.STORE_TYPE"));
+		$result = apiCall(DatatreeApi::QUERY,array($map,$page,$order,$params));
+		
+		if(!$result['status']){
+			$this->error($result['info']);
+		}
+
+		$this->assign("store_types",$result['info']['list']);
+		
+		// 获取推荐商品
+		$result = $this->getProducts();
+		if($result['status'] && is_array($result['info'])){
+			$this->assign("recommend_products",$result['info']['list']);
+		}
+		
+		$ads  = $this->getAds();
+		
+		$this->assign("ads",$ads['info']['list']);
+		
+		//获取推荐店铺
+		$result = $this->getRecommendStore();
+		
+		$this->assign("rec_stores",$result['info']['list']);
+		
+		//获取首页4格活动
+		$result = $this->getFourGrid();
+        $this->assign("meta_title",$this->getStoreName());
+
+		$this->assign("fourgrid",$result['info']['list']);
+        $this->assign("isDistributor",$this->isDistributor());
+		
+		//获取当前商品总数
+		$map=array(
+			'onshelf'=>1
+		);
+		$count=apiCall(ProductApi::COUNT,array($map));
+		
+		$this->assign('count',$count['info']);
+		
+		$this->theme($this->themeType)->display();
+	}
+
+
+
+
+
+
+
 
 
     private function getStoreName(){

@@ -36,7 +36,7 @@ class ShopController extends  Controller {
 		}
 		C('SHOW_PAGE_TRACE', false);//设置不显示trace
 		$this -> refreshWxaccount();
-//		$debug = true;
+		//$debug = true;
 		$debug = false;
 		
 		if($debug){
@@ -47,6 +47,7 @@ class ShopController extends  Controller {
 		}
 
 //		dump($this->userinfo);
+		//if(empty($this->userinfo)){
 		if(empty($this->userinfo) || $this->userinfo['subscribed'] == 0){
 			$this->display("Error:please_subscribe");
 //			$this->error("请先关注公众号，无法获取到用户信息！");
@@ -142,7 +143,7 @@ class ShopController extends  Controller {
 				$result = apiCall(WxuserApi::GET_INFO , array($map));
 				if($result['status']){
 					//
-                    dump($result);
+                   // dump($result);
 					$this -> userinfo = $result['info'];
 					session("global_user", $result['info']);
 				}else{
