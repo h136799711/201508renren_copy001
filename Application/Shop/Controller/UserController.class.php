@@ -174,7 +174,7 @@ class UserController extends ShopController{
 
 	//获得二维码
 	public function getQrcode(){
-        $file = realpath(__ROOT__)."/Uploads/Qrcode/qrcode_uid".$this->userinfo['id'].".jpg";
+        $file = realpath(__ROOT__)."/Uploads/Qrcode/qrcode_uid".$this->userinfo['uid'].".jpg";
 //        dump(($file));
 //        dump(realpath($file));
 //
