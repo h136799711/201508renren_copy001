@@ -68,6 +68,7 @@
 			<div class="p-price" >
 				<p class="">¥{:number_format($product['price']/100,1)}</p>
 				<p class="lgray p-ori-price">价格:<del>¥{:number_format($product['ori_price']/100,1)}</del></p>
+				
 			</div>
 			<ul class="am-avg-sm-3 am-list p-extra lgray">
 				<li class="am-text-left" ><if condition="$product['attrext_ispostfree'] eq 1" >包邮<else/>{$express_str}</if></li>
@@ -75,7 +76,10 @@
 				<li class="am-text-center">月销：{$monthlySales}</li>
 				<li class="am-text-right">{$product.loc_city}</li>
 			</ul>
+			<!--<button type="button" class="am-btn am-btn-success am-btn-xs" onclick='toURL("{:U('Shop/Index/distributor')}")'>我要分销</button>-->
+			
 		</div>
+		
 		<!--
         	作者：hebiduhebi@126.com
         	时间：2015-05-07
@@ -755,6 +759,12 @@
 		}
 		
 	</script>
+	
+	<!--<script type="text/javascript">
+		function toURL(){
+			
+		}
+	</script>-->
 	
 </block>
 

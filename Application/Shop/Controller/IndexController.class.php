@@ -33,12 +33,12 @@ class IndexController extends ShopController{
 		}else if(IS_AJAX){
 			
 			$map=array(
-				'id'=>18,
+				'id'=>$this->userinfo['id'],
 			);
 			$userInfo= apiCall(WxuserApi::QUERY_NO_PAGING,array($map));
 			$userInfo['info']['groupid']=11;
 			//dump($userInfo['info']);
-			$result=apiCall(WxuserApi::SAVE_BY_ID,array(18,$userInfo['info']));
+			$result=apiCall(WxuserApi::SAVE_BY_ID,array($this->userinfo['id'],$userInfo['info']));
 			
 			$entity=array(
 				'name'=>I("name"),
@@ -49,6 +49,7 @@ class IndexController extends ShopController{
 				'wxaccount_id'=>1
 			);
 			$result=apiCall(DistributorInfoApi::ADD,array($entity));
+			session('[destroy]'); // 删除session
 			$this->success('操作成功',U('Shop/Index/index'));
 		}
     }
@@ -77,6 +78,8 @@ class IndexController extends ShopController{
 	 * 首页
 	 */
 	public function index(){
+		//dump($this->);
+		
 		$map= array(
 			'uid'=>$this->wxaccount['uid'],
 			'storeid'=>-1,
