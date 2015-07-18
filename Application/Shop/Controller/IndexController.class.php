@@ -135,6 +135,75 @@ class IndexController extends ShopController{
 	}
 
 
+
+	/**
+	 * 我的小店
+	 */
+	public function myStore(){
+		//dump($this->);
+		
+		$map= array(
+			'uid'=>$this->wxaccount['uid'],
+			'storeid'=>-1,
+			'position'=>getDatatree("SHOP_INDEX_BANNERS")
+		);
+		
+		$page = array(
+			'curpage'=>0,
+			'size'=>8
+		);
+		$order = "createtime desc";
+		$params = false;
+		
+		$result = apiCall(BannersApi::QUERY,array($map,$page,$order,$params));
+//		dump($result);
+		if(!$result['status']){
+			$this->error($result['info']);
+		}
+		
+		$this->assign("banners",$result['info']['list']);
+		
+		$map= array('parentid'=>C("DATATREE.STORE_TYPE"));
+		$result = apiCall(DatatreeApi::QUERY,array($map,$page,$order,$params));
+		
+		if(!$result['status']){
+			$this->error($result['info']);
+		}
+
+		$this->assign("store_types",$result['info']['list']);
+		
+		// 获取推荐商品
+		$result = $this->getProducts();
+		if($result['status'] && is_array($result['info'])){
+			$this->assign("recommend_products",$result['info']['list']);
+		}
+		
+		$ads  = $this->getAds();
+		
+		$this->assign("ads",$ads['info']['list']);
+		
+		//获取推荐店铺
+		$result = $this->getRecommendStore();
+		
+		$this->assign("rec_stores",$result['info']['list']);
+		
+		//获取首页4格活动
+		$result = $this->getFourGrid();
+        $this->assign("meta_title",$this->getStoreName());
+
+		$this->assign("fourgrid",$result['info']['list']);
+        $this->assign("isDistributor",$this->isDistributor());
+		$this->theme($this->themeType)->display();
+	}
+
+
+
+
+
+
+
+
+
     private function getStoreName(){
         //默认当前公众号名
         $name = $this->wxaccount['wxname'];
