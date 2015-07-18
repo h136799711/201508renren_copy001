@@ -100,7 +100,7 @@ class WeixinPromotionAddon extends Addon
         addWeixinLog("有权限生成二维码","WeixinInnerProcess");
         $this -> wxapi = new WeixinApi($appid, $appsecret);
 
-        $relativefile = $this->getQrcode($fans['id']);
+        $relativefile = $this->getQrcode($fans['uid']);
 
         if(!file_exists(realpath($relativefile))){
             return array('status'=>false,'info'=>'微信永久二维码生成失败，请重试！');
@@ -108,12 +108,12 @@ class WeixinPromotionAddon extends Addon
         //
         $realfile = $this->getPublicityPicture($fans,$relativefile);
 
-        $media_id = S("PromotioncodePlugin_".$fans['id']);
+        $media_id = S("PromotioncodePlugin_".$fans['uid']);
         if(empty($media_id)){
             $media_id = $this -> wxapi->uploadMaterial($realfile);
             if($media_id['status']){
                 $media_id = $media_id['msg']->media_id;
-                S("PromotioncodePlugin_".$fans['id'],$media_id,3600);
+                S("PromotioncodePlugin_".$fans['uid'],$media_id,3600);
                 return array('status'=>true,'info'=>$media_id);
             }else{
                 return array('status'=>false,'info'=>'微信接口上传二维码失败，请重试！');
@@ -135,7 +135,7 @@ class WeixinPromotionAddon extends Addon
         $bgpath = realpath($this->config['bgImg']);
         $tmppath = realpath($this->config['tmpFolder']) . '/';
 
-        $savefilename = $this->config['mergeFolder'] .'/qrcode_uid'.$fans['id'] . ".jpg";
+        $savefilename = $this->config['mergeFolder'] .'/qrcode_uid'.$fans['uid'] . ".jpg";
         //TODO: 判断是否已生成过，是则返回
         //需要合成的图片
         $arr = array(
