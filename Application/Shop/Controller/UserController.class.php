@@ -174,24 +174,36 @@ class UserController extends ShopController{
 
 	//获得二维码
 	public function getQrcode(){
-		$WeixinPromotionAddon=new WeixinPromotionAddon();
-		$param=array(
-			'keyword'=>'_plugin_promotion',
-			'data'=>array(
-				'fans'=>$this->userinfo,
-				'wxaccount'=>$this->wxaccount,
-			),
-            'result'=>''
-		);
+        $file = realpath(__ROOT__)."/Uploads/Qrcode/qrcode_uid".$this->userinfo['id'].".jpg";
+//        dump(($file));
+//        dump(realpath($file));
+//
+//        //TODO: 判断文件是否存在
+//        dump(file_exists(($file)));
+        if(!file_exists($file)){
 
-        /**
-         * 微信关键词处理，插件
-         */
-        tag("WeixinInnerProcess",$param);
+            $param=array(
+                'keyword'=>'_plugin_promotion',
+                'data'=>array(
+                    'fans'=>$this->userinfo,
+                    'wxaccount'=>$this->wxaccount,
+                ),
+                'result'=>''
+            );
 
-        $return = $param['result'];
-        dump($return);
+            /**
+             * 微信关键词处理，插件
+             */
+            tag("WeixinInnerProcess",$param);
 
+            $return = $param['result'];
+
+
+        }
+
+        $this->assign("id",$this->userinfo['id']);
+
+        $this->theme($this->themeType)->display();
 //        tag
 		/*$this->assign("id",$this->userinfo['id']);
 		$this->theme($this->themeType)->display();*/
