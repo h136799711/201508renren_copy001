@@ -36,7 +36,7 @@ class IndexController extends ShopController{
 				'id'=>$this->userinfo['id'],
 			);
 			$userInfo= apiCall(WxuserApi::QUERY_NO_PAGING,array($map));
-			$userInfo['info']['groupid']=11;
+			$userInfo['info']['groupid']=13;
 			//dump($userInfo['info']);
 			$result=apiCall(WxuserApi::SAVE_BY_ID,array($this->userinfo['id'],$userInfo['info']));
 			
@@ -193,6 +193,15 @@ class IndexController extends ShopController{
 
 		$this->assign("fourgrid",$result['info']['list']);
         $this->assign("isDistributor",$this->isDistributor());
+		
+		//获取当前商品总数
+		$map=array(
+			'onshelf'=>1
+		);
+		$count=apiCall(ProductApi::COUNT,array($map));
+		
+		$this->assign('count',$count['info']);
+		
 		$this->theme($this->themeType)->display();
 	}
 

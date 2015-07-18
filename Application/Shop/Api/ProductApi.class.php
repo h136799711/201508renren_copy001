@@ -57,7 +57,7 @@ class ProductApi extends Api{
      */
     const GET_INFO = "Shop/Product/getInfo";
 
-
+	const COUNT="Shop/Product/count";
 
 	protected function _init(){
 		$this->model = new ProductModel();
