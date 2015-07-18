@@ -36,8 +36,8 @@ class ShopController extends  Controller {
 		}
 		C('SHOW_PAGE_TRACE', false);//设置不显示trace
 		$this -> refreshWxaccount();
-		$debug = true;
-		//$debug = false;
+//		$debug = true;
+		$debug = false;
 		
 		if($debug){
 			$this->getDebugUser();
@@ -45,9 +45,9 @@ class ShopController extends  Controller {
 			$url = getCurrentURL();
 			$this->getWxuser($url);
 		}
-		
-		//if(empty($this->userinfo) || $this->userinfo['subscribed'] == 0){
-		if(empty($this->userinfo)){	
+
+//		dump($this->userinfo);
+		if(empty($this->userinfo) || $this->userinfo['subscribed'] == 0){
 			$this->display("Error:please_subscribe");
 //			$this->error("请先关注公众号，无法获取到用户信息！");
 			exit();
@@ -108,8 +108,8 @@ class ShopController extends  Controller {
 				if ($result['status']) {
 					$this -> refreshWxuser($result['info']);
 				} else {
-					$this -> userinfo = null;
-				}
+                    $this->error($result['info']);
+                }
 			}
 		}
 	}
@@ -118,6 +118,7 @@ class ShopController extends  Controller {
 	 * 刷新粉丝信息
 	 */
 	private function refreshWxuser($userinfo) {
+
 		$wxuser = array();
 		$uid = $this -> wxaccount['uid'];
 //		$wxuser['wxaccount_id'] = intval($this -> wxaccount['id']);
@@ -140,13 +141,18 @@ class ShopController extends  Controller {
 			}else{
 				$result = apiCall(WxuserApi::GET_INFO , array($map));
 				if($result['status']){
-					
+					//
+                    dump($result);
 					$this -> userinfo = $result['info'];
 					session("global_user", $result['info']);
-				}
+				}else{
+                    $this->error("个人用户信息获取失败！");
+                }
 			}
 
-		}
+		}else{
+            $this->error("系统参数错误！");
+        }
 
 	}
 

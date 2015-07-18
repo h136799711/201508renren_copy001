@@ -180,9 +180,19 @@ class UserController extends ShopController{
 			'data'=>array(
 				'fans'=>$this->userinfo,
 				'wxaccount'=>$this->wxaccount,
-			)
+			),
+            'result'=>''
 		);
-		$WeixinPromotionAddon->WeixinInnerProcess($param);
+
+        /**
+         * 微信关键词处理，插件
+         */
+        tag("WeixinInnerProcess",$param);
+
+        $return = $param['result'];
+        dump($return);
+
+//        tag
 		/*$this->assign("id",$this->userinfo['id']);
 		$this->theme($this->themeType)->display();*/
 		//dump(apiCall("Addons/WeixinPromotion/WeixinPromoti
