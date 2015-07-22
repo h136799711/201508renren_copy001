@@ -440,7 +440,7 @@ function fsockopenRequest($url,$post_data = array(),$method="POST", $cookie = ar
 	}else{
 		$header .= "\r\n";
 	}
-	dump($header);
+//	dump($header);
 	fwrite($fp, $header);
 	//TODO: 从返回结果来判断是否成功
 	//		$result = "";

@@ -207,7 +207,7 @@ class PayController extends ShopController {
             $input -> SetOut_trade_no($trade_no);
             $input -> SetTotal_fee($total_fee);
             $input -> SetTime_start(date("YmdHis"));
-            $input -> SetTime_expire(date("YmdHis", time() + 10));
+            $input -> SetTime_expire(date("YmdHis", time() + 10*60));
 //			$input -> SetGoods_tag("test");
             $input -> SetNotify_url($config['NOTIFYURL']);
             $input -> SetTrade_type("JSAPI");

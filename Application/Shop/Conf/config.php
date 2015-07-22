@@ -30,6 +30,7 @@ return array(
         'SSLKEYPATH'=>'/alidata/8rawcert/10027619/apiclient_cert.pem',
         'CURL_PROXY_HOST' => "0.0.0.0",
         'CURL_PROXY_PORT' => '0',
-        'REPORT_LEVENL' => 1
+        'REPORT_LEVENL' => 1,
+		'PROCESS_URL'=>'http://renren.itboye.com/index.php/Shop/WxpayNotify/aysncNotify?key=hebidu',//异步处理地址
     ),
 );
