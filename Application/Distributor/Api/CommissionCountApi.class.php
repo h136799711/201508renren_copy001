@@ -59,6 +59,11 @@ class CommissionCountApi implements ICommissionCountInterface{
 	    		'uid'=>$uid
 			);
 			$uids=array();
+			
+			$referrer=$result['info'][0]['referrer'];
+			
+			
+			/*
 			$family=apiCall(WxuserFamilyApi::QUERY_NO_PAGING,array($map));
 			if($family['info'][0]['parent_1']!=0){
 				$uids[]=$family['info'][0]['parent_1'];
@@ -71,7 +76,11 @@ class CommissionCountApi implements ICommissionCountInterface{
 			}
 			if($family['info'][0]['parent_4']!=0){
 				$uids[]=$family['info'][0]['parent_4'];
-			}
+			}*/
+			
+			
+			
+			
 			
 			//获取所有分销商信息
 			foreach($uids as $u){

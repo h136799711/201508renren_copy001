@@ -141,10 +141,11 @@ class PayController extends ShopController {
                 $this -> error("支付金额不能小于0！");
             }
 
-			$total_fee = 1;
+			//$total_fee = 1;
 			
+			//dump($total_fee);
             //测试时
-           $this -> setWxpayConfig($payConfig, $trade_no, $body, $total_fee,$attach);
+           	$this -> setWxpayConfig($payConfig, $trade_no, $body, $total_fee,$attach);
 			
 			//dump($payConfig);
             $this -> assign("total_express", $total_express);

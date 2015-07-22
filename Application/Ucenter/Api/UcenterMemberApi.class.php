@@ -14,7 +14,8 @@ use Ucenter\Model\UcenterMemberModel;
  */
 class UcenterMemberApi extends Api{
 	const ADD="Ucenter/UcenterMember/add";
-	
+	const QUERY_NO_PAGING="Ucenter/UcenterMember/queryNoPaging";
+	const DELETE="Ucenter/UcenterMember/delete";
 	
 	protected function _init(){
 		$this->model = new UcenterMemberModel();
