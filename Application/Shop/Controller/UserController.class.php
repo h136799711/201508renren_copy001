@@ -201,7 +201,7 @@ class UserController extends ShopController{
 
         }
 
-        $this->assign("id",$this->userinfo['id']);
+        $this->assign("id",$this->userinfo['uid']);
 
         $this->theme($this->themeType)->display();
 //        tag

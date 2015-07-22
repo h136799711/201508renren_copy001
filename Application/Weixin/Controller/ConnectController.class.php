@@ -436,10 +436,12 @@ class ConnectController extends WeixinController {
 	}
 
 	//======================================其它辅助方法
-	
-	/**
-	 * 插入粉丝信息
-	 */
+
+    /**
+     * 插入粉丝信息
+     * @param int $referrer
+     * @param int $is_add
+     */
 	private function addWxuser($referrer = 0,$is_add=0) {
 
 		$openid = $this -> getOpenID();

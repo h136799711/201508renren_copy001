@@ -112,7 +112,9 @@ class AccountApi implements IAccount
                 $wxuser[$vo] = '';
             }
         }
+        addWeixinLog($wxuser,"[测试wxuser 推荐人]设置之前");
         if(!isset($wxuser['referrer'])) $wxuser['referrer'] = 0;
+        addWeixinLog($wxuser,"[测试wxuser 推荐人]设置之后");
         if(!isset($wxuser['sex'])) $wxuser['sex'] = 0;
         if(!isset($wxuser['subscribed'])) $wxuser['subscribed'] = 0;
         if(!isset($wxuser['subscribe_time'])) $wxuser['subscribe_time'] = time();

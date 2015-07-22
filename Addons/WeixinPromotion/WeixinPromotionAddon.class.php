@@ -58,7 +58,7 @@ class WeixinPromotionAddon extends Addon
         $data = $param['data'];
 
         $this->config = $this->getConfig();
-
+        $this->config['codeprefix'] = "UID_";
         if(empty($data['fans']) ){
             LogRecord("fans参数为empty", "[PromotioncodePlugin]".__LINE__);
             $param['result'] = array("缺失粉丝信息-二维码推广插件[调用失败]","text");
