@@ -464,7 +464,6 @@ class ConnectController extends WeixinController {
 		$wxuser['openid'] = $openid;
 		$wxuser['nickname'] = '';
 		$wxuser['avatar'] = '';
-		$wxuser['referrer'] = $referrer;
 		$wxuser['sex'] = 0;
 		$wxuser['province'] = '';
 		$wxuser['country'] = '中国';
@@ -487,9 +486,11 @@ class ConnectController extends WeixinController {
 
 		//判断是否已记录
 		if ($is_add === 0 && is_array($result['info'])) {
+
 			//更新
 			$result = apiCall(WxuserApi::SAVE, array($map, $wxuser));
 		} else {
+            $wxuser['referrer'] = $referrer;
 			//注册
             $entity = array(
                 'username'=>$openid,

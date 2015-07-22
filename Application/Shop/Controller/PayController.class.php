@@ -141,7 +141,7 @@ class PayController extends ShopController {
                 $this -> error("支付金额不能小于0！");
             }
 
-			//$total_fee = 1;
+			$total_fee = 1;
 			
 			//dump($total_fee);
             //测试时
@@ -193,6 +193,7 @@ class PayController extends ShopController {
         try {
 
             $jsApiParameters = "";
+//            dump($config);
             //①、获取用户openid
             $tools = new Api\Wxpay\JsApi($config);
 
@@ -206,7 +207,7 @@ class PayController extends ShopController {
             $input -> SetOut_trade_no($trade_no);
             $input -> SetTotal_fee($total_fee);
             $input -> SetTime_start(date("YmdHis"));
-            $input -> SetTime_expire(date("YmdHis", time() + 60*30));
+            $input -> SetTime_expire(date("YmdHis", time() + 10));
 //			$input -> SetGoods_tag("test");
             $input -> SetNotify_url($config['NOTIFYURL']);
             $input -> SetTrade_type("JSAPI");
@@ -214,12 +215,14 @@ class PayController extends ShopController {
             WxPayApi::setConfig($config);
             $order = WxPayApi::unifiedOrder($input);
 
-            if(isset($order['return_code']) && $order['return_code'] == 'FAIL'){
-                    $this->error($order['return_msg']);
+            if(isset($order['return_code']) && $order['result_code'] == 'FAIL'){
+                $this->error($order['err_code_des']);
             }
+
 
             addWeixinLog($order,"GETJsApiParameters");
             $jsApiParameters = $tools -> GetJsApiParameters($order);
+
             $this -> assign("jsApiParameters", $jsApiParameters);
 
         } catch(WxPayException $sdkexcep) {

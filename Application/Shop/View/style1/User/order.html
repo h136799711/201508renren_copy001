@@ -239,7 +239,7 @@
               	5. 全部 － 删除订单［］
               -->
               {{#eq pay_status 0}}
-              <a href="{:U('Shop/OnlinePay/pay')}?id={{orderid}}" class="am-btn-xs am-btn am-btn-primary">立即支付</a>
+              <a href="{:U('Shop/Pay/pay')}?id={{orderid}}" class="am-btn-xs am-btn am-btn-primary">立即支付</a>
               <a href="{:U('Shop/Orders/cancelOrder')}?id={{orderid}}" data-tip="确定取消订单?操作无法恢复!" class="ajax-get confirm am-btn-xs am-btn am-btn-default">取消订单</a>              
 	  		 {{/eq}}
               
