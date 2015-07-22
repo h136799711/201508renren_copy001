@@ -196,7 +196,7 @@ class WxuserController extends AdminController {
 			$groupid = I('get.groupid', 0);
 			$id = I('get.uid', 0);
 
-			$result = apiCall(WxuserApi::SAVE_BY_ID, array($id, array('groupid' => 0)));
+			$result = apiCall(WxuserApi::SAVE_BY_ID, array($id, array('groupid' => 1)));
 
 			if ($result['status']) {
 				$this -> success(L('RESULT_SUCCESS'), U('Admin/WxuserGroup/subMember', array('groupid' => $groupid)));

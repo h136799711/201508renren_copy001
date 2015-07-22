@@ -43,6 +43,8 @@ class MemberApi extends Api{
      *
      */
     const QUERY_BY_GROUP = "Admin/Member/queryByGroup";
+	
+	const QUERY_NO_PAGING = "Admin/Member/queryNoPaging";
 
 	//初始化
 	protected function _init(){
