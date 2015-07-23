@@ -64,7 +64,7 @@ class OrderStatusApi{
 	 */
 	const ORDER_STATUS_TO_COMPLETED = "Shop/OrderStatus/orderStatusToCompleted";
 	
-	
+	const ORDER_STATUS_TO_AUTO_EVALUATION="Shop/OrderStatus/toAutoEvaluation";
 	
 
     /**
@@ -644,6 +644,7 @@ class OrderStatusApi{
 		foreach($result['info'] as $order){
 			$ids[]=$order['id'];
 		}
+		addWeixinLog($ids,"ceshi");
 		//如果有超过时间的且状态为已收货，佣金发放
 		if(count($ids)>0){
 			apiCall(CommissionCountApi::ADD,array($ids));

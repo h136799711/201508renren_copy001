@@ -20,6 +20,5 @@ return array(
 
     'SHOW_PAGE_TRACE'=>false,
     
-	
-
+	'REFERRER_NUM'=>3, //可获得佣金层次
 );

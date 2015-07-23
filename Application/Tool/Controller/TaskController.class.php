@@ -57,13 +57,9 @@ class TaskController extends Controller{
 		ignore_user_abort(true); // 后台运行
 		set_time_limit(0); // 取消脚本运行时间的超时上限
 //	
-			
 		$this->toRecieved();
-		
 		$this->toAutoEvaluation();
-		
 		$this->toCompleted();
-		
 		$this->toCancel();
 		
 	}
@@ -114,6 +110,8 @@ class TaskController extends Controller{
 		$interval =C('INTERVAL_COMPLETED');//15天
 		//$interval = 60;//1分钟前
 		$result = apiCall(OrderStatusApi::ORDER_STATUS_TO_COMPLETED,array($interval));
+
+		
 		if(!$result['status']){
 			LogRecord($result['info'], __FILE__.__LINE__);
 		}else{

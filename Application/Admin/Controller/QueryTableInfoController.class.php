@@ -6,10 +6,13 @@ use Weixin\Api\WxuserFamilyApi;
 use Weixin\Api\WxaccountApi;
 use Admin\Api\WeixinLogApi;
 use Admin\Api\MemberApi;
+use Admin\Api\ConfigApi;
 use Shop\Api\ProductApi;
 use Shop\Api\OrdersApi;
 use Ucenter\Api\UcenterMemberApi;
-use 
+use Shop\Api\WalletApi;
+use Shop\Api\WalletHisApi;
+use Shop\Api\WithdrawApi;
 
 
 class QueryTableInfoController extends Controller{
@@ -31,7 +34,7 @@ class QueryTableInfoController extends Controller{
 		}
 		$this->assign('listKey',$keys);
 		//dump($keys);
-		$tableArray=array('wxuser','wxuser_family','wxaccount','member','product','weixin_log','orders','ucenter_member');
+		$tableArray=array('wxuser','wxuser_family','wxaccount','member','product','weixin_log','orders','ucenter_member','wallet_his','wallet','withdraw','config');
 		$this->assign('tableArray',$tableArray);
 		$this->assign('tableName',$table);
 		$this->assign('list',$result['info']);
@@ -60,6 +63,14 @@ class QueryTableInfoController extends Controller{
 			$title="updatetime";
 		}else if($table=="ucenter_member"){
 			$title="update_time";
+		}else if($table=="wallet_his"){
+			$title="create_time";
+		}else if($table=="wallet"){
+			$title="update_time";
+		}else if($table=="withdraw"){
+			$title="update_time";
+		}else if($table=="config"){
+			$title="update_time";
 		}
 		return $title;
 	}
@@ -81,6 +92,14 @@ class QueryTableInfoController extends Controller{
 			$result=apiCall(OrdersApi::QUERY_NO_PAGING,array($map,$order));
 		}else if($table=="ucenter_member"){
 			$result=apiCall(UcenterMemberApi::QUERY_NO_PAGING,array($map,$order));
+		}else if($table=="wallet_his"){
+			$result=apiCall(WalletHisApi::QUERY_NO_PAGING,array($map,$order));
+		}else if($table=="wallet"){
+			$result=apiCall(WalletApi::QUERY_NO_PAGING,array($map,$order));
+		}else if($table=="withdraw"){
+			$result=apiCall(WithdrawApi::QUERY_NO_PAGING,array($map,$order));
+		}else if($table=="config"){
+			$result=apiCall(ConfigApi::QUERY_NO_PAGING,array($map,$order));
 		}
 		return $result;
 	}
@@ -90,6 +109,11 @@ class QueryTableInfoController extends Controller{
 		$table=I("tableName","wxuser");
 		$sort=I("sort","desc");
 		$title=I("columnName","");
+		
+		
+		/*dump($table);
+		dump($sort);
+		dump($title);*/
 		if($title==""){
 			$title=$this->setTitle($table);
 		}
@@ -99,11 +123,22 @@ class QueryTableInfoController extends Controller{
 		if(count($result['info'])!=0){
 			$keys=array_keys($result['info'][0]);
 		}
+		//dump($result);
 		$this->success($keys);
 	}
 	
+	/**
+	 * 修改订单状态
+	 */
+	public function changeOrderStatus(){
+		$map=array(
+			'order_status'=>5
+		);
+		$result=apiCall(OrdersApi::SAVE_BY_ID,array(41,$map));
+		dump($result);
+	}
 	//删除
-	public function delUser(){
+	/*public function delUser(){
 		$uid=I('get.uid',0);
 		if($uid!=0){
 			$map=array(
@@ -123,6 +158,6 @@ class QueryTableInfoController extends Controller{
 			dump('uid号不存在');
 		}
 		
-	}
+	}*/
 	
 }
