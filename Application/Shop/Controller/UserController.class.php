@@ -13,6 +13,7 @@ use Admin\Api\DatatreeApi;
 use Shop\Api\WalletApi;
 use Shop\Api\WalletHisApi;
 use Addons\WeixinPromotion\WeixinPromotionAddon;
+use Weixin\Api\WxuserApi;
 
 
 class UserController extends ShopController{
@@ -208,6 +209,17 @@ class UserController extends ShopController{
 		/*$this->assign("id",$this->userinfo['id']);
 		$this->theme($this->themeType)->display();*/
 		//dump(apiCall("Addons/WeixinPromotion/WeixinPromoti
+	}
+	
+	/**
+	 * 我推荐的人
+	 */
+	public function myChild(){
+		$map=array(
+			'referrer'=>$this->userinfo['uid'],
+		);
+		$result=apiCall(WxuserApi::QUERY_NO_PAGING,array($map));
+		$this->success($result['info']);
 	}
 	
 	

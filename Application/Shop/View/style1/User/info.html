@@ -2,9 +2,6 @@
 
 <block name="area_header">
 	<style type="text/css">
-	
-		
-		
 		.header{
 			background: #FFFFFF;
 			margin-bottom: 15px;
@@ -179,6 +176,34 @@
 			  font-size: 0.6rem;
 		}
 	</style>
+	<script type="text/javascript">
+		var i=0;
+		function toWatchChild(){
+			if(i==0){
+				$('#i_myChild').removeClass('am-icon-chevron-right').addClass('am-icon-chevron-down');
+				$('.childList').empty();
+				$.ajax({
+					type:"get",
+					url:"{:U('Shop/User/myChild')}",
+					success:function(data){
+						for(var k=0;k<data.info.length;k++){
+							$('.childList').append(
+							"<li class='am-cf' style='width: 88%;margin-left:10%;margin-top:2px;padding:0.1rem'>"+
+							"<img  src='"+
+							data.info[k]['avatar']+"' style='width:2rem;height:2rem;border-radius:50%'/>"
+							+"<span style='margin-left: 5rem;'>"+data.info[k]['nickname']+"</span>"+"</li>");
+						}
+					}
+				});
+				i=1;
+			}else{
+				$('#i_myChild').removeClass('am-icon-chevron-down').addClass('am-icon-chevron-right');
+				$('.childList').empty();
+				i=0;
+			
+			}
+		}
+	</script>
 </block>
 
 <block name="area_body">
@@ -217,9 +242,20 @@
 		  <li class="am-cf"><a href="{:U('Shop/User/order')}"><i class="icon am-icon-reorder"></i>我的订单<i class="am-fr am-icon-chevron-right"></i></a> </li>
 		</ul>
 		
+		<ul class="am-list goto-order" style="margin-bottom: 0;">
+		  <li class="am-cf"><a href="javascript:void(0)" onclick="toWatchChild()"><i class="icon am-icon-group"></i>我推荐的人<i id="i_myChild" class="am-fr am-icon-chevron-right"></i></a> </li>
+		</ul>
+		
+		<ul class="childList" style="margin-top: 0;list-style: none;background:#EEEEEE;">
+		
+		</ul>
+		
 		<ul class="am-list goto-order">
 		  <li class="am-cf"><a href="{:U('Shop/User/withdraw')}"><i class="icon am-icon-cny"></i>提现<i class="am-fr am-icon-chevron-right"></i></a> </li>
 		</ul>
+		
+		
+		
 		<ul class="am-list suggest">
 		  <li class="am-cf"><a href="{:U('Shop/Suggest/add')}"><i class="icon am-icon-question-circle"></i>帮助与反馈<i class="am-fr am-icon-chevron-right"></i></a> </li>
 		</ul>

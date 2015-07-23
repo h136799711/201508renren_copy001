@@ -162,22 +162,34 @@ class ShoppingCartController extends ShopController{
 		foreach($this->cart[$item['storeid']] as &$vo){				
 			
 			if($vo['p_id'] == $item['p_id']){
-//				dump($vo);
+				//dump($vo['p_id']);
+				
+				$map1=array(
+					'id'=>$vo['p_id'],
+				);
+				$result1=apiCall(ProductApi::QUERY_NO_PAGING,array($map1));
+				//dump($result1);
+				$sum=(int)$result1['info'][0]['quantity'];
+				//dump($sum);
 				if((intval($vo['has_sku']) == 1 && $vo['sku_id'] == $item['sku_id'])){
 					$vo['count'] = $vo['count'] + $count;
+					if($vo['count']>$sum){
+						$vo['count']=$sum;
+					}
 					$exsit = true;
 					break;
 				}
 				elseif($vo['has_sku'] == 0){
 					$vo['count'] = $vo['count'] + $count;
+					if($vo['count']>$sum){
+						$vo['count']=$sum;
+					}
 					$exsit = true;
 					break;
 				}
 			}
 		}
-		
-//		dump($exsit);
-//		dump($this->cart[$item['storeid']]);
+
 //		exit();
 		if(!$exsit){	
 			if(!isset($this->cart[$product['storeid']])){

@@ -12,7 +12,7 @@
 		
 		<script type="text/javascript" src="__CDN__/jquery/2.1.1/jquery.min.js"></script>
 		<script type="text/javascript">
-			$(function(){
+			/*$(function(){
 				
 			})
 			
@@ -33,13 +33,14 @@
 						
 					}
 				});
-			}
+			}*/
 		</script>
 	</head>
 	
 	
 	<body>
-		<form action="{:U(Admin/QueryTableInfo/index)}">
+		
+		<form action="{:U(Admin/QueryTableInfo/index)}" method="post">
 			<select name="tableName" onchange="changeTable(this)">
 				
 				<volist name="tableArray" id="ta">
@@ -50,8 +51,8 @@
 					value="{$ta}">{$ta}</option>
 				</volist>
 			</select>
-			
-			
+			<input type="hidden" name="type" value="1"/>
+			<!--
 			<select name="columnName">
 				<volist name="listKey" id="lk">
 					<option value="{$lk}"
@@ -74,22 +75,28 @@
 						selected="selected"
 					</eq>
 				>升序</option>
-			</select>
+			</select>-->
 			<input type="submit" value="查询" />
 		</form>
 		<table border="1">
-			<tr>
-			<volist name="listKey" id="lk">
-				<th>{$lk}</th>
-			</volist>
-			</tr>
-			<volist name="list" id="l">
-				<tr>
-					<volist name="listKey" id="lk">
-						<td>{$l[$lk]}</td>
-					</volist>
-				</tr>
-			</volist>
+				<empty name="list" >
+					<tr>
+						<td>暂无数据</td>
+					</tr>
+					<else />
+					<tr>
+						<volist name="listKey" id="lk">
+							<th>{$lk}</th>
+						</volist>
+					</tr>
+					<volist name="list" id="l">
+					<tr>
+						<volist name="listKey" id="lk">
+							<td>{$l[$lk]}</td>
+						</volist>
+					</tr>
+				</volist>
+				</empty>
 		</table>
 	</body>
 </html>
