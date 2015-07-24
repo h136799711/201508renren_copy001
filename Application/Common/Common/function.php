@@ -29,6 +29,7 @@ function is_administrator($uid = null) {
 	return $uid && (intval($uid) === C('USER_ADMINISTRATOR'));
 }
 
+
 /**
  * apiCall
  * @param $url
@@ -38,8 +39,15 @@ function is_administrator($uid = null) {
  */
 function apiCall($url, $vars=array(), $layer = 'Api') {
 	//TODO:考虑使用func_get_args 获取参数数组
+    $ret = R($url, $vars, $layer);
+    if(!$ret){
+        return array('status'=>false,'info'=>'无法调用'.$url);
+    }
+	//return $ret;
 	return R($url, $vars, $layer);
 }
+
+
 
 /**
  * 记录日志，系统运行过程中可能产生的日志

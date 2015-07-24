@@ -58,6 +58,9 @@ class ProductApi extends Api{
     const GET_INFO = "Shop/Product/getInfo";
 
 	const COUNT="Shop/Product/count";
+	
+	//减少库存
+	const SET_DEC="Shop/Product/setDec";
 
 	protected function _init(){
 		$this->model = new ProductModel();

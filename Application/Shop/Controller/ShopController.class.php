@@ -36,8 +36,8 @@ class ShopController extends  Controller {
 		}
 		C('SHOW_PAGE_TRACE', false);//设置不显示trace
 		$this -> refreshWxaccount();
-		//$debug = true;
-		$debug = false;
+		$debug = true;
+		//$debug = false;
 		
 		if($debug){
 			$this->getDebugUser();
@@ -47,8 +47,8 @@ class ShopController extends  Controller {
 		}
 
 //		dump($this->userinfo);
-		//if(empty($this->userinfo)){
-		if(empty($this->userinfo) || $this->userinfo['subscribed'] == 0){
+		if(empty($this->userinfo)){
+		//if(empty($this->userinfo) || $this->userinfo['subscribed'] == 0){
 			$this->display("Error:please_subscribe");
 //			$this->error("请先关注公众号，无法获取到用户信息！");
 			exit();
@@ -64,7 +64,7 @@ class ShopController extends  Controller {
 	private function getDebugUser(){
 		$this->userinfo = array(
 			'id'=>1,
-            'uid'=>224,
+            'uid'=>16,
             'openid'=>'on1gxt-HCbKcX4r56QwXVrBvpFoA',
 //			'openid'=>'oxGH0sgeUkH4g8aowy0452xJnX1o',
 			'nickname'=>'老胖子何必都',

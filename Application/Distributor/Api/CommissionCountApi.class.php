@@ -9,6 +9,7 @@
 namespace Distributor\Api;
 use Weixin\Api\WxuserApi;
 use Admin\Api\WxuserGroupApi;
+use Admin\Api\ConfigApi;
 use Shop\Api\OrdersApi;
 use Shop\Api\WalletApi;
 use Shop\Api\WalletHisApi;
@@ -30,6 +31,12 @@ class CommissionCountApi implements ICommissionCountInterface{
      */
     function add($id_arr)
     {
+    	//
+    	$map=array(
+			'name'=>'REFERRER_NUM',
+		);
+    	$rNresult=apiCall(ConfigApi::QUERY_NO_PAGING,array($map));
+		$referrerNum= $rNresult['info'][0]['value'];
     	//遍历订单ID集合
     	foreach($id_arr as $id){
     		//dump($id);
@@ -54,34 +61,32 @@ class CommissionCountApi implements ICommissionCountInterface{
 			$uid=$result['info'][0]['uid'];
 			//获取下单用户昵称
 			$nickname=$result['info'][0]['nickname'];
-			
+			/*
 	    	$map=array(
 	    		'uid'=>$uid
-			);
+			);*/
 			$uids=array();
-			
-			$referrer=$result['info'][0]['referrer'];
-			
-			
-			/*
-			$family=apiCall(WxuserFamilyApi::QUERY_NO_PAGING,array($map));
-			if($family['info'][0]['parent_1']!=0){
-				$uids[]=$family['info'][0]['parent_1'];
+			for($i=0;$i<$referrerNum;$i++){
+				addWeixinLog($result['info'][0]['referrer'],"上级");
+				if($i==0){
+					
+					if($result['info'][0]['referrer']==0){ //不存在推荐人,跳出
+						break;
+					}
+					
+					$uids[]=$result['info'][0]['referrer'];
+				}else{
+					$map=array(
+						'uid'=>$uids[$i-1],
+					);
+					$resultx=apiCall(WxuserApi::QUERY_NO_PAGING,array($map));
+					if($resultx['info'][0]['referrer']==0){  //不存在推荐人,跳出
+						break;
+					}
+					$uids[]=$resultx['info'][0]['referrer'];
+				}
 			}
-			if($family['info'][0]['parent_2']!=0){
-				$uids[]=$family['info'][0]['parent_2'];
-			}
-			if($family['info'][0]['parent_3']!=0){
-				$uids[]=$family['info'][0]['parent_3'];
-			}
-			if($family['info'][0]['parent_4']!=0){
-				$uids[]=$family['info'][0]['parent_4'];
-			}*/
-			
-			
-			
-			
-			
+		
 			//获取所有分销商信息
 			foreach($uids as $u){
 				$map=array(
