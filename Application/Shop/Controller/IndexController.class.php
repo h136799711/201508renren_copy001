@@ -73,7 +73,9 @@ class IndexController extends ShopController{
 		$this->assign("showstartpage",$showStartPage);
 		
 	}
-	
+
+
+
 	/**
 	 * 首页
 	 */
@@ -116,6 +118,20 @@ class IndexController extends ShopController{
 			$this->assign("recommend_products",$result['info']['list']);
 		}
 		
+		
+		// 获取最新商品
+		$result = $this->getNewProducts();
+		if($result['status'] && is_array($result['info'])){
+			$this->assign("new_products",$result['info']['list']);
+		}
+
+
+		// 获取热门商品
+		$result = $this->getHotProducts();
+		if($result['status'] && is_array($result['info'])){
+			$this->assign("hot_products",$result['info']['list']);
+		}
+		
 		$ads  = $this->getAds();
 		
 		$this->assign("ads",$ads['info']['list']);
@@ -133,6 +149,10 @@ class IndexController extends ShopController{
         $this->assign("isDistributor",$this->isDistributor());
 		$this->theme($this->themeType)->display();
 	}
+
+
+
+
 
 
 
@@ -293,6 +313,36 @@ class IndexController extends ShopController{
 		$order = "updatetime desc";
 		$map = array('onshelf'=>ProductModel::STATUS_ONSHELF);
 		$group_id = getDatatree("WXPRODUCTGROUP_RECOMMEND");
+		
+		$result = apiCall(ProductApi::QUERY_BY_GROUP, array($group_id,$map));
+		if(!$result['status']){
+			LogRecord($result['info'], __FILE__.__LINE__);	
+		}
+		
+		return $result;
+	}
+
+
+	public function getNewProducts(){
+		$page = array('curpage'=>0,'size'=>10);
+		$order = "updatetime desc";
+		$map = array('onshelf'=>ProductModel::STATUS_ONSHELF);
+		$group_id = getDatatree("WXPRODUCTGROUP_NEW");
+		
+		$result = apiCall(ProductApi::QUERY_BY_GROUP, array($group_id,$map));
+		if(!$result['status']){
+			LogRecord($result['info'], __FILE__.__LINE__);	
+		}
+		
+		return $result;
+	}
+	
+	
+	public function getHotProducts(){
+		$page = array('curpage'=>0,'size'=>10);
+		$order = "updatetime desc";
+		$map = array('onshelf'=>ProductModel::STATUS_ONSHELF);
+		$group_id = getDatatree("WXPRODUCTGROUP_HOT");
 		
 		$result = apiCall(ProductApi::QUERY_BY_GROUP, array($group_id,$map));
 		if(!$result['status']){

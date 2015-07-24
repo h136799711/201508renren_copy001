@@ -36,7 +36,7 @@ class PayController extends ShopController {
         $ids = rtrim($ids, "-");
         $ids = explode("-", $ids);
         $result = apiCall(OrderStatusApi::CASH_ON_DELIVERY, array($ids,false,$this->userinfo['id']));
-
+		
         if (!$result['status']) {
         	dump($result['info']);
             $this -> error($result['info']);
@@ -44,7 +44,7 @@ class PayController extends ShopController {
 
         $commission = new CommissionCountApi();
 
-        $commission->add($ids);
+       	$commission->add($ids);
 
         //TODO: 转移到插件中
        // tag("send_to_msg_user",array($id, $text));

@@ -24,7 +24,7 @@
 				<input type="hidden" name="id" value="{$vo.id}" />
 				<fieldset>
 					<legend>
-						数据字典－添加</legend>
+						数据字典－修改</legend>
 					<div class="form-group">
 						<label for="inputtitle" class="col-md-2 col-lg-2 control-label">名称</label>
 						<div class="col-md-10 col-lg-10">
@@ -65,7 +65,13 @@
 							<div class="help-block">(请输入排序，从大到小排序)</div>
 						</div>
 					</div>
-					
+					<div class="form-group">
+						<label for="inputtitle" class="col-md-2 col-lg-2 control-label">关联</label>
+						<div class="col-md-10 col-lg-10">
+							<input type="text" class="required form-control input-short" value="{$vo.code}" name="code"  placeholder="">
+							<div class="help-block">(选填)</div>
+						</div>
+					</div>
 					<div class="form-group">
 						<label for="inputtitle" class="col-md-2 col-lg-2 control-label">备注</label>
 						<div class="col-md-10 col-lg-10">

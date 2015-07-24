@@ -13,6 +13,8 @@ return array(
 	'DATATREE'=>array(
 		'STORE_TYPE'=>2,//店铺类别
 		'WXPRODUCTGROUP'=>13, //商品分组
+		'WXPRODUCTGROUP_HOT'=>15, //首页热门商品
+		'WXPRODUCTGROUP_NEW'=>14, //首页最新商品
 		'WXPRODUCTGROUP_RECOMMEND'=>16, //首页推荐商品
 		'SHOP_INDEX_BANNERS'=>18, //首页轮播图片
 		'SHOP_INDEX_RECOMMEND_STORE'=>20, //首页推荐店铺
