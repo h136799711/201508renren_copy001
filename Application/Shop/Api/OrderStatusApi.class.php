@@ -11,6 +11,8 @@ use Shop\Api\OrdersApi;
 use Shop\Model\OrdersModel;
 use Shop\Model\OrderStatusHistoryModel;
 use Distributor\Api\CommissionCountApi;
+use Shop\Api\OrdersItemApi;
+use Shop\Api\ProductApi;
 
 /**
  * 订单状态变更接口
@@ -291,6 +293,26 @@ class OrderStatusApi{
 
 
         if($flag){
+        	//订单确认库存减少
+        	$map=array(
+				'orders_id'=>$id,
+			);
+			$result=apiCall(OrdersItemApi::QUERY_NO_PAGING,array($map));
+			//dump($result);
+			$count=(int)$result['info'][0]['count'];
+			//dump($count);
+			
+			$map=array(
+				'id'=>$result['info'][0]['p_id'],
+			);
+			$result=apiCall(ProductApi::SET_DEC,array($map,'quantity',$count));
+			
+			//dump($result);
+			//quantity
+			if(!$result['status']){
+				$this->model->rollback();
+            	return $this->returnErr($result[info]);
+			}
             $this->model->commit();
             return $this->returnSuc($return);
         }else{
