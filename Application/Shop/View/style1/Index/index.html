@@ -410,9 +410,9 @@
     
     
 	<div style="width: 100%;margin-top: 20px;background: white;padding-top:0.2rem;padding-bottom:0.2rem;">
-		<span style="background:red; padding:0.3rem 0.1rem;"></span>
+		<span style="background:green; padding:0.3rem 0.1rem;"></span>
 		<span style="padding-top:0.3rem;padding-bottom:0.3rem;padding-left:5px;font-weight: bold;">最新商品</span>
-		<a class="a_more" href="javascript:alertMsg('别急,开发中')"><span style="margin-left:65%;">更多<span class="am-icon-caret-square-o-right" style="color:#FF0000;"></span></span></a>
+		<a class="a_more" href="{:U('Shop/Product/search')}"><span style="margin-left:65%;">更多<span class="am-icon-caret-square-o-right" style="color:green"></span></span></a>
 	</div>
 	<div class="product-list grid">
 		<volist name="new_products" id="vo">
@@ -422,7 +422,7 @@
 						<div class="p-main-img" ><img src="__IMG__/p240x240.jpg" data-original="{$vo.main_img}" class="lazy" alt="{$vo.name}"/></div>
 						<div class="p-name" >{$vo.name}</div>
 						<div class="p-price" >¥{:number_format($vo['price']/100,1)}<del>¥{:number_format($vo['ori_price']/100,1)}</del></div>
-						<i class="zk">{:number_format(10.0*($vo['price']/$vo['ori_price']),1)}折</i>
+						<i class="zk">New</i>
 						</a>
 					</div>
 				</div>
@@ -431,9 +431,9 @@
 	
 	
 	<div style="width: 100%;margin-top: 20px;background: white;padding-top:0.2rem;padding-bottom:0.2rem;">
-		<span style="background:green; padding:0.3rem 0.1rem;"></span>
+		<span style="background:red; padding:0.3rem 0.1rem;"></span>
 		<span style="padding-top:0.3rem;padding-bottom:0.3rem;padding-left:5px;font-weight: bold;">热门商品</span>
-		<a href="javascript:alertMsg('别急,开发中')"><span style="margin-left: 65%;">更多<span class="am-icon-caret-square-o-right" style="color:green"></span></span>
+		<a  class="a_more" href="{:U('Shop/Product/search')}"><span style="margin-left: 65%;">更多<span class="am-icon-caret-square-o-right" style="color:red"></span></span>
 		</a>
 	</div>
 	<div class="product-list grid">
@@ -444,7 +444,7 @@
 						<div class="p-main-img" ><img src="__IMG__/p240x240.jpg" data-original="{$vo.main_img}" class="lazy" alt="{$vo.name}"/></div>
 						<div class="p-name" >{$vo.name}</div>
 						<div class="p-price" >¥{:number_format($vo['price']/100,1)}<del>¥{:number_format($vo['ori_price']/100,1)}</del></div>
-						<i class="zk">{:number_format(10.0*($vo['price']/$vo['ori_price']),1)}折</i>
+						<i class="zk">Hot！！！</i>
 						</a>
 					</div>
 				</div>
@@ -458,7 +458,7 @@
 	<div style="width: 100%;margin-top: 20px;background: white;padding-top:0.2rem;padding-bottom:0.2rem;">
 		<span style="background:blue; padding:0.3rem 0.1rem;"></span>
 		<span style="padding-top:0.3rem;padding-bottom:0.3rem;padding-left:5px;font-weight: bold;">推荐商品</span>
-		<a href="javascript:alertMsg('别急,开发中')"><span style="margin-left:65%;">更多<span class="am-icon-caret-square-o-right" style="color:blue;"></span></span>
+		<a  class="a_more" href="{:U('Shop/Product/search')}"><span style="margin-left:65%;">更多<span class="am-icon-caret-square-o-right" style="color:blue;"></span></span>
 		</a>
 	</div>
 	<div class="product-list grid">
