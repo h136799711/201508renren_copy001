@@ -64,7 +64,7 @@ class ShopController extends  Controller {
 	private function getDebugUser(){
 		$this->userinfo = array(
 			'id'=>1,
-            'uid'=>16,
+            'uid'=>224,
             'openid'=>'on1gxt-HCbKcX4r56QwXVrBvpFoA',
 //			'openid'=>'oxGH0sgeUkH4g8aowy0452xJnX1o',
 			'nickname'=>'老胖子何必都',

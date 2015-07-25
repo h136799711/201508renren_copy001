@@ -180,22 +180,34 @@
 		var i=0;
 		function toWatchChild(){
 			if(i==0){
-				$('#i_myChild').removeClass('am-icon-chevron-right').addClass('am-icon-chevron-down');
 				$('.childList').empty();
+				var k=true;
 				$.ajax({
 					type:"get",
 					url:"{:U('Shop/User/myChild')}",
 					success:function(data){
-						for(var k=0;k<data.info.length;k++){
+						if(data.info!=null){
+							for(var k=0;k<data.info.length;k++){
 							$('.childList').append(
 							"<li class='am-cf' style='width: 88%;margin-left:10%;margin-top:2px;padding:0.1rem'>"+
 							"<img  src='"+
 							data.info[k]['avatar']+"' style='width:2rem;height:2rem;border-radius:50%'/>"
 							+"<span style='margin-left: 5rem;'>"+data.info[k]['nickname']+"</span>"+"</li>");
+							}
+						}else{
+							alertMsg('您还没有推荐任何人<br />快去推荐啦！♪(^∇^*)');
+							k=false;
 						}
 					}
 				});
-				i=1;
+				if(!k){
+					//$('#i_myChild').removeClass('am-icon-chevron-down').addClass('am-icon-chevron-right');
+					//i=0;
+				}else{
+					$('#i_myChild').removeClass('am-icon-chevron-right').addClass('am-icon-chevron-down');
+					i=1;
+				}
+				
 			}else{
 				$('#i_myChild').removeClass('am-icon-chevron-down').addClass('am-icon-chevron-right');
 				$('.childList').empty();
