@@ -318,26 +318,26 @@
 		<if condition="count($fourgrid) gt 3"> 
 		<div class="col-6 text-center grid-1" style="border: 1px solid #F0F0EE;height: 4rem;  border-left: 0px;background: #FFFFFF;">
 			<a href="{$fourgrid[0]['url']}">
-			<img src="{$fourgrid[0]['img']}" alt="{$fourgrid[0]['title']}" class="am-responsive-width lazy"/>
+			<img src="{$fourgrid[0]['img']}" alt="{$fourgrid[0]['title']}" class="am-responsive-width lazy"  style="width: 100%;height: 100%"/>
 			</a>
 		</div>
 		<div class=" text-center" >			
   
 			<div class="col-3 text-center grid-2" >
 				<a href="{$fourgrid[0]['url']}">
-				<img  src="{$fourgrid[1]['img']}" alt="{$fourgrid[1]['title']}" class="am-responsive-width lazy" />
+				<img  src="{$fourgrid[1]['img']}" alt="{$fourgrid[1]['title']}" class="am-responsive-width lazy"  style="width: 100%;height: 100%" />
 				</a>
 			</div>
 			<div class="col-3 text-center grid-3"  >
 				<a href="{$fourgrid[0]['url']}">
-				<img src="{$fourgrid[2]['img']}" alt="{$fourgrid[2]['title']}" class="am-responsive-width lazy" />
+				<img src="{$fourgrid[2]['img']}" alt="{$fourgrid[2]['title']}" class="am-responsive-width lazy"  style="width: 100%;height: 100%" />
 				</a>
 			</div>
 		</div>
 		<div class=" text-center" >
 			<div class="col-6 text-center grid-4"  >
 				<a href="{$fourgrid[0]['url']}">
-				<img  src="{$fourgrid[3]['img']}" alt="{$fourgrid[3]['title']}" class="am-responsive-width lazy" />
+				<img  src="{$fourgrid[3]['img']}" alt="{$fourgrid[3]['title']}" class="am-responsive-width lazy"  style="width: 100%;height: 100%"/>
 				</a>
 			</div>
 		</div>
@@ -354,7 +354,7 @@
                       	时间：2015-04-23
                       	描述：TODO 活动
                       --></div>
-	
+	<!--
 	<div class="layer grid" style="display: none;">
 		<div class="layer-title">优质商家</div>
 		<div class="layer-cont">
@@ -376,7 +376,8 @@
 
 		</div>
 	</div>
-	
+	-->
+
 	<div class="ad ad0">
 		<if condition="count($ads) gt 0">
 		<a href="{$ads[0].url}" ><img src="__IMG__/p640x200.jpg" class="lazy" data-original="{$ads[0].img|default='__IMG__/ad_default.jpg?v=1.0'}" alt="{$ads[0].title}" /></a>
@@ -384,6 +385,8 @@
 		<img src="__IMG__/ad_default.jpg?v=1.0"  alt="广告位招租" />
 		</if>
 	</div>
+<!--
+
 	  <div class="ad ad1">
 		<if condition="count($ads) gt 1">
 		<a href="{$ads[1].url}" ><img src="{$ads[1].img|default='__IMG__/ad_default.jpg?v=1.0'}" alt="{$ads[1].title}" /></a>
@@ -391,118 +394,171 @@
 		<img src="__IMG__/ad_default.jpg?v=1.0" alt="广告位招租"  class="lazy" />
 		</if>
 	</div>
-	  
+		-->
 	
 	<!--
     	作者：hebiduhebi@126.com
     	时间：2015-04-22
     	描述：首页嵌入广告02
     -->
-	
-	<div class="am-text-center" style="margin: 0.2rem 0;border-bottom: 1px solid #E2CCCC;">推荐商品</div>
-	<div class="product-list grid">
-		<volist name="recommend_products" id="vo">
-				<div class="product-wrp col-6">
-					<div class="product-item">
-						<a href="{:U('Shop/Product/detail',array('id'=>$vo['id']))}">
-						<div class="p-main-img" ><img src="__IMG__/p240x240.jpg" data-original="{$vo.main_img}" class="lazy" alt="{$vo.name}"/></div>
-						<div class="p-name" >{$vo.name}</div>
-						<div class="p-price" >¥{:number_format($vo['price']/100,1)}<del>¥{:number_format($vo['ori_price']/100,1)}</del></div>
-						<i class="zk">{:number_format(10.0*($vo['price']/$vo['ori_price']),1)}折</i>
-						</a>
-					</div>
-				</div>
-		</volist>
-	</div>
-	<include  file="style1/partial/footermenu" />
-	<footer data-am-widget="footer" class="am-footer am-footer-default" data-am-footer="{  }">
-			<div class="am-footer-switch">
+
+
+<div style="width: 100%;margin-top: 20px;background: white;padding-top:0.2rem;padding-bottom:0.2rem;">
+	<span style="background:green; padding:0.3rem 0.1rem;"></span>
+	<span style="padding-top:0.3rem;padding-bottom:0.3rem;padding-left:5px;font-weight: bold;">最新商品</span>
+	<a class="a_more" href="{:U('Shop/Product/search')}"><span style="margin-left:65%;">更多<span class="am-icon-caret-square-o-right" style="color:green"></span></span></a>
+</div>
+<div class="product-list grid">
+	<volist name="new_products" id="vo">
+		<div class="product-wrp col-6">
+			<div class="product-item">
+				<a href="{:U('Shop/Product/detail',array('id'=>$vo['id']))}">
+					<div class="p-main-img" ><img src="__IMG__/p240x240.jpg" data-original="{$vo.main_img}" class="lazy" alt="{$vo.name}"/></div>
+					<div class="p-name" >{$vo.name}</div>
+					<div class="p-price" >¥{:number_format($vo['price']/100,1)}<del>¥{:number_format($vo['ori_price']/100,1)}</del></div>
+					<i class="zk">New</i>
+				</a>
 			</div>
-			<div class="am-footer-miscs ">
-				<p>由
-					<a href="http://www.itboye.com" title="杭州博也网络科技" target="_blank" class="">杭州博也网络科技</a>提供技术支持</p>
-				<p>&copy;2013-{:date('Y')} Version {:C('APP_VERSION')} {:C('WEBSITE_OWNER')}</p>
-				<p>{:C('WEBSITE_ICP')}</p>
-				<p>{__RUNTIME__}</p>
-			</div>
-		</footer>
-		<div data-am-widget="gotop" class="am-gotop am-gotop-fixed">
-		  <a href="#top" title="回到顶部">
-		    <span class="am-gotop-title">顶部</span>
-		    <i class="am-gotop-icon am-icon-chevron-up"></i>
-		  </a>
 		</div>
-		
-	
-	<script type="text/javascript">
-			function appendItem(item){
-				//TODO: 首页商品加载
-			}
-		function appendList(){		
-			if(window.ajaxing ){
-				console.log("cache");
-				return ;	
-			}
-			window.ajaxing = false;
-			$.ajax({
-				type:'post',
-				url:"{:U('Shop/Product/search')}",
-				data:{p:window.myshop.p},
-				dataType:"json",
-				beforeSend:function(){
-					window.ajaxing = true;
-				}
-			}).always(function(){
-				window.ajaxing = false;
-			}).done(function(data){
-				
-				if(data.status){
-					window.myshop.p++;
-					if(data.info){						
-						for(var i=0;i<data.info.length;i++){
-							console.log(data.info[i]);
-							appendItem(data.info[i]);
-						}
-				
-					}else{
-						//TODO: 没有数据了
-						
-					}
-					
-					
-				}else{
-					alertMsg(data.info);
-				}
-			});
+	</volist>
+</div>
+
+
+<div style="width: 100%;margin-top: 20px;background: white;padding-top:0.2rem;padding-bottom:0.2rem;">
+	<span style="background:red; padding:0.3rem 0.1rem;"></span>
+	<span style="padding-top:0.3rem;padding-bottom:0.3rem;padding-left:5px;font-weight: bold;">热门商品</span>
+	<a  class="a_more" href="{:U('Shop/Product/search')}"><span style="margin-left: 65%;">更多<span class="am-icon-caret-square-o-right" style="color:red"></span></span>
+	</a>
+</div>
+<div class="product-list grid">
+	<volist name="hot_products" id="vo">
+		<div class="product-wrp col-6">
+			<div class="product-item">
+				<a href="{:U('Shop/Product/detail',array('id'=>$vo['id']))}">
+					<div class="p-main-img" ><img src="__IMG__/p240x240.jpg" data-original="{$vo.main_img}" class="lazy" alt="{$vo.name}"/></div>
+					<div class="p-name" >{$vo.name}</div>
+					<div class="p-price" >¥{:number_format($vo['price']/100,1)}<del>¥{:number_format($vo['ori_price']/100,1)}</del></div>
+					<i class="zk">Hot！！！</i>
+				</a>
+			</div>
+		</div>
+	</volist>
+</div>
+
+
+
+
+
+<div style="width: 100%;margin-top: 20px;background: white;padding-top:0.2rem;padding-bottom:0.2rem;">
+	<span style="background:blue; padding:0.3rem 0.1rem;"></span>
+	<span style="padding-top:0.3rem;padding-bottom:0.3rem;padding-left:5px;font-weight: bold;">推荐商品</span>
+	<a  class="a_more" href="{:U('Shop/Product/search')}"><span style="margin-left:65%;">更多<span class="am-icon-caret-square-o-right" style="color:blue;"></span></span>
+	</a>
+</div>
+<div class="product-list grid">
+	<volist name="recommend_products" id="vo">
+		<div class="product-wrp col-6">
+			<div class="product-item">
+				<a href="{:U('Shop/Product/detail',array('id'=>$vo['id']))}">
+					<div class="p-main-img" ><img src="__IMG__/p240x240.jpg" data-original="{$vo.main_img}" class="lazy" alt="{$vo.name}"/></div>
+					<div class="p-name" >{$vo.name}</div>
+					<div class="p-price" >¥{:number_format($vo['price']/100,1)}<del>¥{:number_format($vo['ori_price']/100,1)}</del></div>
+					<i class="zk">{:number_format(10.0*($vo['price']/$vo['ori_price']),1)}折</i>
+				</a>
+			</div>
+		</div>
+	</volist>
+</div>
+
+
+<include  file="style1/partial/footermenu" />
+<footer data-am-widget="footer" class="am-footer am-footer-default" data-am-footer="{  }">
+	<div class="am-footer-switch">
+	</div>
+	<div class="am-footer-miscs ">
+		<p>由
+			<a href="http://www.itboye.com" title="杭州博也网络科技" target="_blank" class="">杭州博也网络科技</a>提供技术支持</p>
+		<p>&copy;2013-{:date('Y')} Version {:C('APP_VERSION')} {:C('WEBSITE_OWNER')}</p>
+		<p>{:C('WEBSITE_ICP')}</p>
+		<p>{__RUNTIME__}</p>
+	</div>
+</footer>
+<div data-am-widget="gotop" class="am-gotop am-gotop-fixed">
+	<a href="#top" title="回到顶部">
+		<span class="am-gotop-title">顶部</span>
+		<i class="am-gotop-icon am-icon-chevron-up"></i>
+	</a>
+</div>
+
+
+<script type="text/javascript">
+	function appendItem(item){
+		//TODO: 首页商品加载
+	}
+	function appendList(){
+		if(window.ajaxing ){
+			console.log("cache");
+			return ;
 		}
-	
-	
-		$(function(){
-			$(".start-page").height($(window).height());
-			$(".start-page").css("top",$(window).scrollTop());
-			
-			$(".js_top_search").on("tap",function(){
-				window.location.href = "{:U('Shop/Product/search')}";
-			});
-			$(".js_top_search").on("click",function(){
-				window.location.href = "{:U('Shop/Product/search')}";
-			});
-			$("img.lazy").lazyload({effect : 'fadeIn'});
-			
-			
-			window.myshop = { p : 1 };
-			$(window).on("scroll",function(ev){
-				if($(document).height() - $(window).height() - $(window).scrollTop() < 50){
-//					console.log("trigger");
-					appendList();
+		window.ajaxing = false;
+		$.ajax({
+			type:'post',
+			url:"{:U('Shop/Product/search')}",
+			data:{p:window.myshop.p},
+			dataType:"json",
+			beforeSend:function(){
+				window.ajaxing = true;
+			}
+		}).always(function(){
+			window.ajaxing = false;
+		}).done(function(data){
+
+			if(data.status){
+				window.myshop.p++;
+				if(data.info){
+					for(var i=0;i<data.info.length;i++){
+						console.log(data.info[i]);
+						appendItem(data.info[i]);
+					}
+
+				}else{
+					//TODO: 没有数据了
+
 				}
+
+
+			}else{
+				alertMsg(data.info);
+			}
+		});
+	}
+
+
+	$(function(){
+		$(".start-page").height($(window).height());
+		$(".start-page").css("top",$(window).scrollTop());
+
+		$(".js_top_search").on("tap",function(){
+			window.location.href = "{:U('Shop/Product/search')}";
+		});
+		$(".js_top_search").on("click",function(){
+			window.location.href = "{:U('Shop/Product/search')}";
+		});
+		$("img.lazy").lazyload({effect : 'fadeIn'});
+
+
+		window.myshop = { p : 1 };
+		$(window).on("scroll",function(ev){
+			if($(document).height() - $(window).height() - $(window).scrollTop() < 50){
+//					console.log("trigger");
+				appendList();
+			}
 //				console.log(ev);
-			});
-		})
-		
-	</script>
-	
-		<script type="text/html" src="{:U('Tool/Task/index')}"></script>
+		});
+	})
+
+</script>
+
+<script type="text/html" src="{:U('Tool/Task/index')}"></script>
 </body>
 </html>
-

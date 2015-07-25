@@ -110,7 +110,7 @@
 			  
 		}
 		.ad img{
-			height: 1.5rem;
+			height: 2rem;
 			width: 100%;
 		}
 		.activity {
@@ -276,11 +276,6 @@
 <body class="theme-default theme-shop ">
 
 
-
-
-
-
-
 <if condition=" $isDistributor ">
 </if>
 	<header class="am-header am-header-default grid">
@@ -295,6 +290,7 @@
 	  	<input disabled="disabled" type="text" class="am-form-control top-search " value="" name="q" />
 	  </div>
 	</header>
+
 	<div data-am-widget="slider" class="am-slider am-slider-a5" data-am-slider='{&quot;directionNav&quot;:false}'>
 	  <ul class="am-slides">
 	  	<volist name="banners" id="vo">
@@ -306,6 +302,7 @@
 	  	</volist>
 	  </ul>
 	</div>
+
 	<!---->
 	<!--<div class="store_types grid " style="display: none;">-->
 		<!--<volist name="store_types" id="vo">-->
@@ -325,26 +322,26 @@
 		<if condition="count($fourgrid) gt 3"> 
 		<div class="col-6 text-center grid-1" style="border: 1px solid #F0F0EE;height: 4rem;  border-left: 0px;background: #FFFFFF;">
 			<a href="{$fourgrid[0]['url']}">
-			<img src="{$fourgrid[0]['img']}" alt="{$fourgrid[0]['title']}" class="am-responsive-width lazy"/>
+			<img src="{$fourgrid[0]['img']}" alt="{$fourgrid[0]['title']}" class="am-responsive-width lazy" style="width: 100%;height: 100%"/>
 			</a>
 		</div>
 		<div class=" text-center" >			
   
 			<div class="col-3 text-center grid-2" >
 				<a href="{$fourgrid[0]['url']}">
-				<img  src="{$fourgrid[1]['img']}" alt="{$fourgrid[1]['title']}" class="am-responsive-width lazy" />
+				<img  src="{$fourgrid[1]['img']}" alt="{$fourgrid[1]['title']}" class="am-responsive-width lazy"style="width: 100%;height: 100%" />
 				</a>
 			</div>
 			<div class="col-3 text-center grid-3"  >
 				<a href="{$fourgrid[0]['url']}">
-				<img src="{$fourgrid[2]['img']}" alt="{$fourgrid[2]['title']}" class="am-responsive-width lazy" />
+				<img src="{$fourgrid[2]['img']}" alt="{$fourgrid[2]['title']}" class="am-responsive-width lazy"style="width: 100%;height: 100%" />
 				</a>
 			</div>
 		</div>
 		<div class=" text-center" >
 			<div class="col-6 text-center grid-4"  >
 				<a href="{$fourgrid[0]['url']}">
-				<img  src="{$fourgrid[3]['img']}" alt="{$fourgrid[3]['title']}" class="am-responsive-width lazy" />
+				<img  src="{$fourgrid[3]['img']}" alt="{$fourgrid[3]['title']}" class="am-responsive-width lazy" style="width: 100%;height: 100%"/>
 				</a>
 			</div>
 		</div>
@@ -361,7 +358,7 @@
                       	时间：2015-04-23
                       	描述：TODO 活动
                       --></div>
-	
+	<!--
 	<div class="layer grid" style="display: none;">
 		<div class="layer-title">优质商家</div>
 		<div class="layer-cont">
@@ -383,7 +380,7 @@
 
 		</div>
 	</div>
-	
+	-->
 	<div class="ad ad0">
 		<if condition="count($ads) gt 0">
 		<a href="{$ads[0].url}" ><img src="__IMG__/p640x200.jpg" class="lazy" data-original="{$ads[0].img|default='__IMG__/ad_default.jpg?v=1.0'}" alt="{$ads[0].title}" /></a>
@@ -391,16 +388,6 @@
 		<img src="__IMG__/ad_default.jpg?v=1.0"  alt="广告位招租" />
 		</if>
 	</div>
-	
-	
-	<div class="ad ad1" style="margin-top:0.5rem;">
-		<if condition="count($ads) gt 1">
-		<a href="{$ads[1].url}" ><img src="{$ads[1].img|default='__IMG__/ad_default.jpg?v=1.0'}" alt="{$ads[1].title}" /></a>
-		<else />
-		<img src="__IMG__/ad_default.jpg?v=1.0" alt="广告位招租"  class="lazy" />
-		</if>
-	</div>
-	  
 	
 	<!--
     	作者：hebiduhebi@126.com
