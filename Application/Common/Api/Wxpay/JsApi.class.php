@@ -87,6 +87,7 @@ class JsApi
 		$jsapi->setConfig($this->config);
 		$jsapi->SetAppid($UnifiedOrderResult["appid"]);
 		$timeStamp = time();
+        $timeStamp = "$timeStamp";
 		$jsapi->SetTimeStamp($timeStamp);
 		$jsapi->SetNonceStr(WxPayApi::getNonceStr());
 		$jsapi->SetPackage("prepay_id=" . $UnifiedOrderResult['prepay_id']);
