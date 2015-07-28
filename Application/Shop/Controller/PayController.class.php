@@ -46,14 +46,20 @@ class PayController extends ShopController {
 
        	$commission->add($ids);
 
-        //TODO: 转移到插件中
-       // tag("send_to_msg_user",array($id, $text));
-//        $wxuserid = $this->userinfo['id'];
-//
-//        $text = "用户ID:$wxuserid,时间:" . date("Y-m-d H:i:s",time()) . ",订单ID:" . rtrim(I('post.id', 0),"-") . ",选择了货到付款,请登录后台查看订单。";
-//        $id = C('STORE_ID');
-//
-//        $this->sendToWxaccount($id, $text);
+        //==========================监听发送消息开始
+        $userid = $this->userinfo['id'];
+        $openid = C('WXPAY_OPENID');
+        $openid = explode(",",$openid);
+        $text = "用户ID:$userid,时间:" . date("Y-m-d H:i:s",time()) . ",订单ID:" . rtrim(I('post.id', 0),"-") . ",选择了货到付款,请登录后台查看订单。";
+        $params = array(
+            'appid'=>$this->wxaccount['appid'],
+            'appsecret'=>$this->wxaccount['appsecret'],
+            'text'=>$text,
+            'openid'=>$openid,
+        );
+        tag("send_msg_to_user",$params);
+        //==========================监听发送消息点结束
+
 
         $this -> success("操作成功！");
     }
