@@ -79,6 +79,7 @@ class IndexController extends ShopController{
 	/**
 	 * 首页
 	 */
+	/*
 	public function index(){
 		//dump($this->);
 		
@@ -145,11 +146,15 @@ class IndexController extends ShopController{
 		$result = $this->getFourGrid();
         $this->assign("meta_title",$this->getStoreName());
 
+		$this->assign('g_id_new',getDatatree("WXPRODUCTGROUP_NEW"));
+		$this->assign('g_id_hot',getDatatree("WXPRODUCTGROUP_HOT"));
+		$this->assign('g_id_recommend',getDatatree("WXPRODUCTGROUP_RECOMMEND"));
+
 		$this->assign("fourgrid",$result['info']['list']);
         $this->assign("isDistributor",$this->isDistributor());
 		$this->theme($this->themeType)->display();
 	}
-
+*/
 
 
 
@@ -159,12 +164,9 @@ class IndexController extends ShopController{
 	/**
 	 * 我的小店
 	 */
-	public function myStore(){
-		//dump($this->);
-//dump($this->);
-
-		//dump($this->);
-
+	public function index(){
+		$isStore=I('isStore',0);
+		$this->assign('isStore',$isStore);
 		$map= array(
 			'uid'=>$this->wxaccount['uid'],
 			'storeid'=>-1,
@@ -235,6 +237,11 @@ class IndexController extends ShopController{
 			'onshelf'=>1
 		);
 		$count=apiCall(ProductApi::COUNT,array($map));
+
+
+		$this->assign('g_id_new',getDatatree("WXPRODUCTGROUP_NEW"));
+		$this->assign('g_id_hot',getDatatree("WXPRODUCTGROUP_HOT"));
+		$this->assign('g_id_recommend',getDatatree("WXPRODUCTGROUP_RECOMMEND"));
 
 		$this->assign('count',$count['info']);
 

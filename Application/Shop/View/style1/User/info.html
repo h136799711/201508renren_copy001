@@ -61,14 +61,16 @@
 		.quick-menu .am-list>li>a{
 			padding: 5px 10px;
   			-webkit-tap-highlight-color: rgba(240,240,240,0.7);
-  			color: #E5428C;
+  			color:#666;
   			height: 40px;
  			line-height: 30px;
   			font-size: 14px;
 			
 		}
+
+
 		.quick-menu .am-list>li>a:visited{
-			color: #E5428C;
+			color:#666;
 		}
 		
 		.quick-menu .am-list>li>a>i.icon{
@@ -175,6 +177,12 @@
 			  color: #333;
 			  font-size: 0.6rem;
 		}
+
+
+		.quick-menu .am-list>li{margin-top:0.2rem }
+
+		.childList{margin: 0;list-style: none;background:#FAF2F2; }
+		.childList li{list-style: none;margin: 0; }
 	</style>
 	<script type="text/javascript">
 		var i=0;
@@ -189,7 +197,7 @@
 						if(data.info!=null){
 							for(var k=0;k<data.info.length;k++){
 							$('.childList').append(
-							"<li class='am-cf' style='width: 88%;margin-left:10%;margin-top:2px;padding:0.1rem'>"+
+							"<li class='am-cf' style='width: 100%;margin-top:2px;'>"+
 							"<img  src='"+
 							data.info[k]['avatar']+"' style='width:2rem;height:2rem;border-radius:50%'/>"
 							+"<span style='margin-left: 5rem;'>"+data.info[k]['nickname']+"</span>"+"</li>");
@@ -251,26 +259,14 @@
 	
 	<div class="quick-menu">
 		<ul class="am-list goto-order">
-		  <li class="am-cf"><a href="{:U('Shop/User/order')}"><i class="icon am-icon-reorder"></i>我的订单<i class="am-fr am-icon-chevron-right"></i></a> </li>
+		  <li class="am-cf"><a href="{:U('Shop/User/order')}"><i class="icon am-icon-reorder" style="color: palevioletred;width:0.6rem"></i>我的订单<i class="am-fr am-icon-chevron-right"></i></a> </li>
+			<li class="am-cf"><a href="javascript:void(0)" onclick="toWatchChild()"><i class="icon am-icon-group" style="color:lightblue;width:0.6rem"></i>我推荐的人<i id="i_myChild" class="am-fr am-icon-chevron-right"></i></a> </li>
+			<li style="border: none"><ul class="childList" style="">
+			</ul></li>
+			<li class="am-cf"><a href="{:U('Shop/User/withdraw')}"><i class="icon am-icon-cny" style="color:yellow;width:0.6rem"></i>提现<i class="am-fr am-icon-chevron-right"></i></a> </li>
+			<li class="am-cf"><a href="{:U('Shop/Suggest/add')}"><i class="icon am-icon-question-circle" style="color:green;width:0.6rem"></i>帮助与反馈<i class="am-fr am-icon-chevron-right"></i></a> </li>
 		</ul>
-		
-		<ul class="am-list goto-order" style="margin-bottom: 0;">
-		  <li class="am-cf"><a href="javascript:void(0)" onclick="toWatchChild()"><i class="icon am-icon-group"></i>我推荐的人<i id="i_myChild" class="am-fr am-icon-chevron-right"></i></a> </li>
-		</ul>
-		
-		<ul class="childList" style="margin-top: 0;list-style: none;background:#EEEEEE;">
-		
-		</ul>
-		
-		<ul class="am-list goto-order">
-		  <li class="am-cf"><a href="{:U('Shop/User/withdraw')}"><i class="icon am-icon-cny"></i>提现<i class="am-fr am-icon-chevron-right"></i></a> </li>
-		</ul>
-		
-		
-		
-		<ul class="am-list suggest">
-		  <li class="am-cf"><a href="{:U('Shop/Suggest/add')}"><i class="icon am-icon-question-circle"></i>帮助与反馈<i class="am-fr am-icon-chevron-right"></i></a> </li>
-		</ul>
+
 	</div>
 	
 	
