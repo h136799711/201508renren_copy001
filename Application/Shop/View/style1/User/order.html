@@ -43,6 +43,7 @@
 		.myorder .am-nav-tabs>li>a{
 			font-size: 1.2rem;
 			margin: 0px;
+			color: #666;
 		}
 		.myorder .am-nav-tabs>li.am-active>a{
 			border: 0px;
@@ -115,6 +116,12 @@
 			border-bottom: 1px solid #E2E2E1;
 			margin-bottom: 10px;
 		}
+
+		.a_btn:visited{color:#666;font-size:0.2rem;border-radius:2px;padding: 5px 10px }
+		.a_btn:hover{color:#666;font-size:0.2rem; border-radius:2px;padding: 5px 10px}
+		.a_btn:active{color:#666;font-size:0.2rem; border-radius:2px;padding: 5px 10px}
+		.a_btn:link{color:#666;font-size:0.2rem; border-radius:2px;padding: 5px 10px}
+
 	</style>
 
 	
@@ -145,7 +152,7 @@
 			    		<div><i class="am-link-muted am-icon-list-alt am-icon-lg"></i></div>
 			    		<div class="am-text-sm am-padding-sm">您还没有相关订单</div>
 			    		<div class="am-text-xs am-link-muted  am-padding-sm">可以去看看有哪些想买的</div>
-			    		<div><a href="{:U('Shop/Index/index')}" class="am-btn am-btn-xs am-btn-primary">随便逛逛</a></div>
+			    		<div><a href="{:U('Shop/Index/index')}" class="a_btn" style="border: 1px solid peachpuff;">随便逛逛</a></div>
 		    		</div>
 		    </div>
 		    <div class="am-tab-panel am-fade <eq name='datatype' value='1' >am-in am-active</eq> " id="tab2">
@@ -154,7 +161,7 @@
 			    		<div><i class="am-link-muted am-icon-list-alt am-icon-lg"></i></div>
 			    		<div class="am-text-sm am-padding-sm">您还没有相关订单</div>
 			    		<div class="am-text-xs am-link-muted  am-padding-sm">可以去看看有哪些想买的</div>
-			    		<div><a href="{:U('Shop/Index/index')}" class="am-btn am-btn-xs am-btn-primary">随便逛逛</a></div>
+			    		<div><a href="{:U('Shop/Index/index')}" class="a_btn" style="border: 1px solid peachpuff;">随便逛逛</a></div>
 		    		</div>
 		    	
 		    </div>
@@ -164,7 +171,7 @@
 			    		<div><i class="am-link-muted am-icon-list-alt am-icon-lg"></i></div>
 			    		<div class="am-text-sm am-padding-sm">您还没有相关订单</div>
 			    		<div class="am-text-xs am-link-muted  am-padding-sm">可以去看看有哪些想买的</div>
-			    		<div><a href="{:U('Shop/Index/index')}" class="am-btn am-btn-xs am-btn-primary">随便逛逛</a></div>
+			    		<div><a href="{:U('Shop/Index/index')}" class="a_btn" style="border: 1px solid peachpuff;">随便逛逛</a></div>
 		    		</div>
 		    	
 		    </div>
@@ -174,7 +181,7 @@
 			    		<div><i class="am-link-muted am-icon-list-alt am-icon-lg"></i></div>
 			    		<div class="am-text-sm am-padding-sm">您还没有相关订单</div>
 			    		<div class="am-text-xs am-link-muted  am-padding-sm">可以去看看有哪些想买的</div>
-			    		<div><a href="{:U('Shop/Index/index')}" class="am-btn am-btn-xs am-btn-primary">随便逛逛</a></div>
+			    		<div><a href="{:U('Shop/Index/index')}" class="a_btn" style="border: 1px solid peachpuff;">随便逛逛</a></div>
 		    		</div>
 		    	
 		    </div>
@@ -184,7 +191,7 @@
 			    		<div><i class="am-link-muted am-icon-list-alt am-icon-lg"></i></div>
 			    		<div class="am-text-sm am-padding-sm">您还没有相关订单</div>
 			    		<div class="am-text-xs am-link-muted  am-padding-sm">可以去看看有哪些想买的</div>
-			    		<div><a href="{:U('Shop/Index/index')}" class="am-btn am-btn-xs am-btn-primary">随便逛逛</a></div>
+			    		<div><a href="{:U('Shop/Index/index')}" class="a_btn" style="border: 1px solid peachpuff;">随便逛逛</a></div>
 		    		</div>
 		    </div>
 		  </div>
@@ -239,8 +246,8 @@
               	5. 全部 － 删除订单［］
               -->
               {{#eq pay_status 0}}
-              <a href="{:U('Shop/Pay/pay')}?id={{orderid}}" class="am-btn-xs am-btn am-btn-primary">立即支付</a>
-              <a href="{:U('Shop/Orders/cancelOrder')}?id={{orderid}}" data-tip="确定取消订单?操作无法恢复!" class="ajax-get confirm am-btn-xs am-btn am-btn-default">取消订单</a>              
+              <a href="{:U('Shop/Pay/pay')}?id={{orderid}}" class="a_btn" style="border: 1px solid red;">立即支付</a>
+              <a href="{:U('Shop/Orders/cancelOrder')}?id={{orderid}}" data-tip="确定取消订单?操作无法恢复!" class="ajax-get confirm a_btn" style="border: 1px solid #ccc; border-radius:2px;padding: 5px 10px">取消订单</a>
 	  		 {{/eq}}
 
             {{#eq pay_status 1}}
@@ -254,20 +261,20 @@
               {{/eq}}
               
               {{#eq order_status 3}}
-              <span class="am-text-xs">店铺微信号: {{_store.wxno}},联系电话: <a href="tel:{{_store.service_phone}}">{{_store.service_phone}}</a></span>
+             <!-- <span class="am-text-xs">店铺微信号: {{_store.wxno}},联系电话: <a href="tel:{{_store.service_phone}}">{{_store.service_phone}}</a></span>-->
               <!--<a class="am-btn-xs am-btn am-btn-default">提醒发货</a>-->
               {{/eq}}
               <!--<a class="am-btn-xs am-btn am-btn-default">立即评价</a>-->
               
               {{#eq order_status 4}}
-              <a href="{:U('Shop/Orders/confirmReceive')}?id={{orderid}}" data-tip="确定收到货了?" class="ajax-get confirm am-btn-xs am-btn am-btn-primary">确认收货</a>
+              <a href="{:U('Shop/Orders/confirmReceive')}?id={{orderid}}" data-tip="确定收到货了?" class="ajax-get confirm a_btn" style="border: 1px solid green;">确认收货</a>
               {{/eq}}
               
               
                
               {{#eqs order_status 5 comment_status 0}}
                
-              	<a href="{:U('Shop/Orders/evaluation')}?id={{orderid}}" class="am-btn-xs am-btn am-btn-secondary">订单评价</a>
+              	<a href="{:U('Shop/Orders/evaluation')}?id={{orderid}}" class="a_btn" style="border: 1px solid peachpuff;">订单评价</a>
               
               {{/eqs}}
               

@@ -44,9 +44,32 @@ class ProductGroupApi extends  Api{
      */
     const GET_INFO = "Shop/ProductGroup/getInfo";
 
+
+
+    /**
+     * 关联product和product_group查询
+     */
+    const GROUP_WITH_PRODUCT = "Shop/ProductGroup/groupWithProduct";
+
 	protected function _init(){
 		$this->model = new ProductGroupModel();
 	}
+
+
+
+
+    /**
+     * 关联product和product_group查询
+     */
+    public function groupWithProduct($map){
+        $query=$this->model;
+        $result=$query->where($map)->alias('a')->join('LEFT JOIN __PRODUCT__ b ON a.p_id = b.id')->select();
+        if ($result === false) {
+            $error = $this -> model -> getDbError();
+            return $this -> apiReturnErr($error);
+        }
+        return $this -> apiReturnSuc($result);
+    }
 	
 }
 

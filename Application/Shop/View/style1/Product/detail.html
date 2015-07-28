@@ -41,6 +41,12 @@
 			background: white;
 			text-align: center;
 		}
+
+
+		/*.p-content .am-tabs-nav li.am-active{border-top: 2px solid pink;}*/
+		.p-content  .am-tabs{width: 100%;margin-left: 0}
+		.p-content .am-tabs-default ul li a{background: #F1F1F1;border: 1px solid #ccc;}
+		.p-content .am-tabs-default ul li.am-active a{background:white;border-bottom:none;color:#FF8040;border-top:3px solid #FF8040 }
 	</style>
 </block>
 
@@ -188,17 +194,17 @@
 		<div class="p-content">
 			<div data-am-widget="tabs"  class="am-tabs am-tabs-default">
 				<ul class="am-tabs-nav am-cf" id="detail-tabs">
-					<li class="am-active" style="">
-						<a href="[data-tab-panel-0]" style="font-size: 1.2rem;">图文详情</a>
+					<li class="am-active" style=" ">
+						<a href="[data-tab-panel-0]" style="font-size: 1.2rem;border-left:none">图文详情</a>
 					</li>
 					<li class="">
 						<a href="[data-tab-panel-1]" style="font-size: 1.2rem;">产品参数</a>
 					</li>
 					<li class="">
-						<a href="[data-tab-panel-2]" data-item="evaluation" style="font-size: 1.2rem;">累计评价</a>
+						<a href="[data-tab-panel-2]" data-item="evaluation" style="font-size: 1.2rem;border-right:none">累计评价</a>
 					</li>
 				</ul>
-				<div class="am-tabs-bd">
+				<div class="am-tabs-bd" >
 					<div data-tab-panel-0 class="am-tab-panel am-active">
 						<!--
                         	作者：hebiduhebi@126.com
@@ -247,8 +253,11 @@
 		      </a>
 		      
 		    -->
+				<!--
 		      <span  style="background:#FF8000;padding: 0.4rem 3.5rem;font-size: 1rem;color: white;font-family: '微软雅黑'; border-radius: 0.2rem;" onclick='return buyProduct()'><font class="am-icon-dollar"></font>&nbsp;立即购买</span>
-		      <span  style="background: white;margin-left:0.2rem;padding: 0.4rem 3.5rem;font-size:1rem;font-family: '微软雅黑';border-radius: 0.2rem" onclick="addToCart()" ><font class="am-icon-shopping-cart"></font>&nbsp;放入购物车</span>
+		      <span  style="background: white;margin-left:0.2rem;padding: 0.4rem 3.5rem;font-size:1rem;font-family: '微软雅黑';border-radius: 0.2rem" onclick="addToCart()" ><font class="am-icon-shopping-cart"></font>&nbsp;放入购物车</span>-->
+			<div style="float: left;padding-top:0.3rem;padding-bottom:0.3rem; width: 48%;font-size: 1rem;border-radius: 0.2rem;background:#FF8000;margin-left:1.5%;color: white;" onclick="return buyProduct()"><font class="am-icon-dollar"></font>&nbsp;立即购买</div>
+			<div style="float: left;padding-top:0.3rem;padding-bottom:0.3rem; width: 48%;font-size: 1rem;border-radius: 0.2rem;background: white;margin-left:2%;" onclick="addToCart()"><font class="am-icon-shopping-cart"></font>&nbsp;放入购物车</div>
 		</div>
 		<eq name="product['has_sku']" value="1">
 		

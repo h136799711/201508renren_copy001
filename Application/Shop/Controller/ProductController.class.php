@@ -18,6 +18,7 @@ use Shop\Api\SkuApi;
 use Shop\Api\SkuvalueApi;
 use Shop\Api\StoreApi;
 use Shop\Model\ProductModel;
+use Shop\Api\ProductGroupApi;
 
 class ProductController extends ShopController {
 
@@ -70,6 +71,7 @@ class ProductController extends ShopController {
 		$sort = I('sort', 's');
 		$type = I('type', '1');
 		$layout = I('get.layout', 'list');
+		$g_id=I('g_id','');
 		
 		$map = array();
 		$q = I('q','');
@@ -84,14 +86,29 @@ class ProductController extends ShopController {
 		if ($sort == 'pd') {
 			$order = " price asc";
 		}
-		
-		
-		$params = false;
-		$result = apiCall(ProductApi::QUERY_WITH_STORE, array($q,$type, $page, $order, $params));
+
+
+		if($g_id!=""){
+			$map=array(
+				'g_id'=>$g_id,
+			);
+			$map['onshelf']=1;
+			$result=apiCall(ProductGroupApi::GROUP_WITH_PRODUCT,array($map));
+		}else{
+			$params = false;
+			$result = apiCall(ProductApi::QUERY_WITH_STORE, array($q,$type, $page, $order, $params));
+		}
+
+
+
 		if (!$result['status']) {
 			$this -> error($result['info']);
 		}
-		$list = $result['info']['list'];
+		if($g_id!=""){
+			$list = $result['info'];
+		}else{
+			$list = $result['info']['list'];
+		}
 		if(!is_null($list)){
 			$list = $this -> queryMonthlySales($list);
 //			dump($list);

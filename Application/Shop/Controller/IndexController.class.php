@@ -79,6 +79,7 @@ class IndexController extends ShopController{
 	/**
 	 * 首页
 	 */
+	/*
 	public function index(){
 		//dump($this->);
 		
@@ -145,11 +146,15 @@ class IndexController extends ShopController{
 		$result = $this->getFourGrid();
         $this->assign("meta_title",$this->getStoreName());
 
+		$this->assign('g_id_new',getDatatree("WXPRODUCTGROUP_NEW"));
+		$this->assign('g_id_hot',getDatatree("WXPRODUCTGROUP_HOT"));
+		$this->assign('g_id_recommend',getDatatree("WXPRODUCTGROUP_RECOMMEND"));
+
 		$this->assign("fourgrid",$result['info']['list']);
         $this->assign("isDistributor",$this->isDistributor());
 		$this->theme($this->themeType)->display();
 	}
-
+*/
 
 
 
@@ -159,70 +164,89 @@ class IndexController extends ShopController{
 	/**
 	 * 我的小店
 	 */
-	public function myStore(){
-		//dump($this->);
-		
+	public function index(){
+		$isStore=I('isStore',0);
+		$this->assign('isStore',$isStore);
 		$map= array(
 			'uid'=>$this->wxaccount['uid'],
 			'storeid'=>-1,
 			'position'=>getDatatree("SHOP_INDEX_BANNERS")
 		);
-		
+
 		$page = array(
 			'curpage'=>0,
 			'size'=>8
 		);
 		$order = "createtime desc";
 		$params = false;
-		
+
 		$result = apiCall(BannersApi::QUERY,array($map,$page,$order,$params));
 //		dump($result);
 		if(!$result['status']){
 			$this->error($result['info']);
 		}
-		
+
 		$this->assign("banners",$result['info']['list']);
-		
+
 		$map= array('parentid'=>C("DATATREE.STORE_TYPE"));
 		$result = apiCall(DatatreeApi::QUERY,array($map,$page,$order,$params));
-		
+
 		if(!$result['status']){
 			$this->error($result['info']);
 		}
 
 		$this->assign("store_types",$result['info']['list']);
-		
+
 		// 获取推荐商品
 		$result = $this->getProducts();
 		if($result['status'] && is_array($result['info'])){
 			$this->assign("recommend_products",$result['info']['list']);
 		}
-		
+
+
+		// 获取最新商品
+		$result = $this->getNewProducts();
+		if($result['status'] && is_array($result['info'])){
+			$this->assign("new_products",$result['info']['list']);
+		}
+
+
+		// 获取热门商品
+		$result = $this->getHotProducts();
+		if($result['status'] && is_array($result['info'])){
+			$this->assign("hot_products",$result['info']['list']);
+		}
+
 		$ads  = $this->getAds();
-		
+
 		$this->assign("ads",$ads['info']['list']);
-		
+
 		//获取推荐店铺
 		$result = $this->getRecommendStore();
-		
+
 		$this->assign("rec_stores",$result['info']['list']);
-		
+
 		//获取首页4格活动
 		$result = $this->getFourGrid();
-        $this->assign("meta_title",$this->getStoreName());
+		$this->assign("meta_title",$this->getStoreName());
 
 		$this->assign("fourgrid",$result['info']['list']);
-        $this->assign("isDistributor",$this->isDistributor());
-		
+		$this->assign("isDistributor",$this->isDistributor());
 		//获取当前商品总数
 		$map=array(
 			'onshelf'=>1
 		);
 		$count=apiCall(ProductApi::COUNT,array($map));
-		
+
+
+		$this->assign('g_id_new',getDatatree("WXPRODUCTGROUP_NEW"));
+		$this->assign('g_id_hot',getDatatree("WXPRODUCTGROUP_HOT"));
+		$this->assign('g_id_recommend',getDatatree("WXPRODUCTGROUP_RECOMMEND"));
+
 		$this->assign('count',$count['info']);
-		
+
 		$this->theme($this->themeType)->display();
+		//获取当前商品总数
 	}
 
 
