@@ -65,8 +65,8 @@ class ShopController extends  Controller {
 		$this->userinfo = array(
 			'id'=>1,
             'uid'=>16,
-            'openid'=>'on1gxt-HCbKcX4r56QwXVrBvpFoA',
-//			'openid'=>'oxGH0sgeUkH4g8aowy0452xJnX1o',
+           // 'openid'=>'on1gxt-HCbKcX4r56QwXVrBvpFoA',
+			'openid'=>'oJz-Ks_aGw8iw_Y0nNHffVX_l7aE',
 			'nickname'=>'老胖子何必都',
 			'avatar'=>'http://wx.qlogo.cn/mmopen/An6TFzHNImPecEhl1R3UWd26LlC1mvVgyhdh2KGCOb0yjQ4JNQnOicG2ysaKojzusSO9R3RE55Exq0lYKpVr3RRArU0u7kgjR/0',
 			'score'=>0,
