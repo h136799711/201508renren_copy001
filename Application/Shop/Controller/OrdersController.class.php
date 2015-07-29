@@ -420,7 +420,7 @@ class OrdersController extends ShopController {
 				$i++;
 				//				dump($entity['items']['products']);
 				//				exit();
-				
+
 				//dump($entity);
 				$result = apiCall(OrdersApi::ADD_ORDER, array($entity));
 				//				addWeixinLog($result,'订单3333');

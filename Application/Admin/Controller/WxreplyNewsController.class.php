@@ -9,6 +9,7 @@
 namespace Admin\Controller;
 
 use Weixin\Api\WxreplyNewsApi;
+use Weixin\Api\WxreplyTextApi;
 
 class WxreplyNewsController extends  AdminController{
 	
@@ -22,10 +23,11 @@ class WxreplyNewsController extends  AdminController{
 		$keywords = array();
 		$textKeywords = apiCall(WxreplyTextApi::GET_KEYWORDS,array());
 		$newsKeywords = apiCall(WxreplyNewsApi::GET_KEYWORDS,array());
-		if($textKeywords['status']){
+		if($textKeywords['status'] && is_array($textKeywords['info'])){
 			$keywords = $textKeywords['info'];
 		}
-		if($newsKeywords['status']){
+
+		if($newsKeywords['status'] && is_array($newsKeywords['info'])){
 			$keywords = array_merge($keywords,$newsKeywords['info']);
 		}
 		return $keywords;
@@ -34,16 +36,19 @@ class WxreplyNewsController extends  AdminController{
 	public function index(){
 		$keywords = $this->getAllKeywords();
 		$map = array('wxaccount_id'=>getWxAccountID());
-		$page = array('curpage' => I('get.p', 0), 'size' => C('LIST_ROWS'));
+		$page = array('curpage' => I('get.p', 0), 'size' => 10);
 		$order = " updatetime desc ";
 		//
 		$result = apiCall(WxreplyNewsApi::QUERY,array($map,$page,$order));
+
 		if($result['status']){
 			$this->assign("keywords",$keywords);
 			$this->assign("show",$result['info']['show']);
 			$this->assign("list",$result['info']['list']);
 			$this->display();
-		}
+		}else{
+            $this->error($result['info']);
+        }
 	}
 	
 	/**
