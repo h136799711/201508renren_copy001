@@ -37,6 +37,8 @@
 	  		.am-form label{
 	  			font-size: 14px;
 	  		}
+
+			.div_payType{border:1px solid #ccc;padding:1rem;margin-top:0.2rem}
 		</style>
 
 	</head>
@@ -55,16 +57,18 @@
 					<span class="js_total_price" >{:number_format($total_fee/100.0,2)}元&nbsp;
 						<if condition="$total_express gt 0">含运费：{:number_format($total_express/100,2)}元</if></span></span>
 				</div>
-				<form class="am-text-left am-form">
-				    <div style="border:1px solid #ccc;padding:1rem;margin-top:0.2rem" >
-				        <input type="radio" name="payway" value="1" id="wxzf" checked="checked">
-				        <label for="wxzf">微信支付</label><img src="__IMG__/LorryGreen.png" style="width:3rem;margin-left:50px">
-
+				<form id="form_payType" class="am-text-left am-form">
+				    <div class="div_payType" >
+						<img src="__IMG__/weixin.jpg" style="width:3rem;" />
+				        <label for="wxzf" style="margin-left: 5px">微信支付</label>
+						<input type="radio" name="payway" style="margin-left: 60%" value="1" id="wxzf" checked="checked" />
 				    </div>
 				    
-					<div  style="border:1px solid #ccc; padding: 1rem;margin-top:0.2rem">
-				        <input type="radio" name="payway" value="2" id="hdfk">
-						<label for="hdfk"> 货到付款</label><img src="__IMG__/zhifubao.png" style="width: 3rem;margin-left:50px">
+					<div class="div_payType" >
+						<img src="__IMG__/LorryGreen.png" style="width: 3rem;" />
+						<label for="hdfk" style="margin-left: 5px"> 货到付款</label>
+
+						<input type="radio" name="payway" style="margin-left:60%" value="2" id="hdfk" />
 				    </div>
 					
 					<!--<ul class="am-list">
@@ -79,9 +83,19 @@
 		<script type="text/javascript" src="__CDN__/jquery/2.1.1/jquery.min.js"></script>
 		<script type="text/javascript" src="__CDN__/amazeui/2.3.0/js/amazeui.min.js"></script>
 		<script type="text/javascript" src="__CDN__/common/mobile.js"></script>
+
+
 		
 		<script type="text/javascript">
-			
+
+			$(function(){
+				$(".div_payType").click(function(){
+					//alertMsg($(this).find("input").val());
+					$(this).find("input[name='payway']").prop('checked','checked');
+				})
+			})
+
+
 			function choose(){
 				var ele = document.querySelector("input:checked");
 //				alert(ele.value);
@@ -97,7 +111,6 @@
 						//datyType:'json',
 						data:{id:ids},
 					}).done(function(data){
-						alertMsg(data);
 						if(data.status){
 							alertMsg(data.info);
 							window.location.href = "{:U('Shop/User/order')}";
@@ -105,19 +118,19 @@
 							alertMsg(data.info);
 						}
 					}).error(function(XMLHttpRequest, textStatus, errorThrown){
-						 alert(XMLHttpRequest.status);
-                        alert(XMLHttpRequest.readyState);
-                        alert(textStatus);
+						// alert(XMLHttpRequest.status);
+                       // alert(XMLHttpRequest.readyState);
+                        alert("发生错误了，请重试");
 					})
 					;
-					
+
 					/*$.ajax({
 						url:url,
 						type:'post',
 						data:{id:ids},
 						success:function(data){
 							console.info(data);
-							//alert(data.info) 
+							//alert(data.info)
 							if(data.status==1){
 								alert(data.info);
 								//window.location.href = "{:U('Shop/User/order')}";

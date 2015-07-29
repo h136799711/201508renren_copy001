@@ -37,9 +37,11 @@
 		
 		
 		.countStyle{
-			border: 1px solid #ccc;
 			background: white;
+			border: 1px solid #ccc;
 			text-align: center;
+			height: 25px;
+
 		}
 
 
@@ -82,9 +84,8 @@
 			<div class="p-price" >
 				<p class="" style="">价格:<font color="orangered" size="+1">¥{:number_format($product['price']/100,2)}</font>
 					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;数量:
-					<input type="button" class="countStyle" onclick="subtract()" value="-" style="width:20px;border-radius: 50%;"/>
-					<input type="text" name="sku_count" size="5" value="1" class="countStyle" onchange="checkNum()"/>
-					<input type="button" class="countStyle"  onclick="add()" value="+" style="border-radius: 50%;width:20px;"/>
+				<input type="button" class="countStyle" onclick="subtract()" value="-" style="width: 25px;" /><input type="text" name="sku_count" size="5" value="1" class="countStyle" onchange="checkNum()"/><input type="button" class="countStyle"  onclick="add()" value="＋" style="width: 25px" />
+
 				</p>
 				<p class="lgray p-ori-price">原价:<del>¥{:number_format($product['ori_price']/100,2)}</del>
 					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
