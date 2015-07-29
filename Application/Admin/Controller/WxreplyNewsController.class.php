@@ -34,7 +34,7 @@ class WxreplyNewsController extends  AdminController{
 	}
 	
 	public function index(){
-//		$keywords = $this->getAllKeywords();
+		$keywords = $this->getAllKeywords();
 		$map = array('wxaccount_id'=>getWxAccountID());
 		$page = array('curpage' => I('get.p', 0), 'size' => 10);
 		$order = " updatetime desc ";
