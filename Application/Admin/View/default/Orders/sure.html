@@ -202,7 +202,10 @@
 	<script src="__CDN__/select2/4.0.0/js/i18n/zh-CN.js"></script>
 	<script type="text/javascript">
 		$(function(){
-			$('a.num').attr('href',$('a.num').attr('href')+"&payStatus={$payStatus}");
+			$('a.num').each(function(){
+				$(this).attr('href',$(this).attr('href')+"?payStatus={$payStatus}");
+			})
+
 		})
 
 
