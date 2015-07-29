@@ -437,7 +437,7 @@ class OrdersController extends ShopController {
 			session("confirm_order_info", null);
 
 			$this -> success("订单保存成功，前往支付！", C('SITE_URL') . "/index.php/Shop/Pay/pay/id/$ids?showwxpaytitle=1");
-			
+
 		} else {
 			LogRecord("禁止访问！", __FILE__ . __LINE__);
 			$this -> error("禁止访问！");

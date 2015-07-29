@@ -81,7 +81,7 @@ class OrdersModel extends Model{
 	 */
 	const ORDER_SYSTEM_EVALUATED = 2;
 	
-	
+
 	protected $_auto = array(
 		array('status',1,self::MODEL_INSERT),
 		array('pay_status',self::ORDER_TOBE_PAID,self::MODEL_INSERT),

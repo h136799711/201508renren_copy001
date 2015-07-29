@@ -43,8 +43,7 @@ function apiCall($url, $vars=array(), $layer = 'Api') {
     if(!$ret){
         return array('status'=>false,'info'=>'无法调用'.$url);
     }
-	//return $ret;
-	return R($url, $vars, $layer);
+	return $ret;
 }
 
 
