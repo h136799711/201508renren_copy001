@@ -49,7 +49,7 @@ class CommissionCountApi implements ICommissionCountInterface{
 			//获取下单用户ID
 			$wxuser_id=$result['info'][0]['wxuser_id'];
 			//获取订单价格
-			$price=$result['info'][0]['price'];
+			$profit=$result['info'][0]['profit'];
 			$map=array(
     			'id'=>$wxuser_id
     		);
@@ -98,7 +98,7 @@ class CommissionCountApi implements ICommissionCountInterface{
 					'wxuser_group_id'=>$wxuserInfo['info'][0]['groupid'],
 				);
 				$groupAccess=apiCall(GroupAccessApi::QUERY_NO_PAGING,array($map));
-				$commission=(float)$groupAccess['info'][0]['percent']*(float)$price; //佣金提成比例*价格=佣金
+				$commission=(float)$groupAccess['info'][0]['percent']*(float)$profit; //佣金提成比例*佣金
 				$map=array(
 					'uid'=>$u
 				);
@@ -119,7 +119,7 @@ class CommissionCountApi implements ICommissionCountInterface{
 				$result=apiCall(WalletHisApi::ADD,array($map));
 			}
 			
-			
+
     	}
         // TODO: 计算佣金，并记录到数据库中。
 		
