@@ -19,7 +19,6 @@ use Shop\Api\ProductApi;
 use Shop\Api\ProductSkuApi;
 use Shop\Api\StoreApi;
 use Shop\Model\OrdersModel;
-use Shop\Model\OrderStatusHistoryModel;
 use Think\Controller;
 use Tool\Api\AreaApi;
 use Tool\Api\CityApi;

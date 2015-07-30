@@ -21,6 +21,8 @@ use Weixin\Api\WxuserApi;
 
 class WxpayNotifyController extends Controller {
 
+    protected $wxapi;
+
 	protected function _initialize() {
 		header("X-AUTHOR:HEBIDU");
 	}
@@ -186,9 +188,18 @@ class WxpayNotifyController extends Controller {
 	 * TODO: 需要优化
 	 */
 	private function sendNotification($stores, $wxaccountid, $text) {
+        $result = apiCall(WxaccountApi::GET_INFO, array(array('id' => $wxaccountid)));
+        if ($result['status']) {
+            $this->wxapi = new WeixinApi($result['info']['appid'], $result['info']['appsecret']);
+
+        } else {
+            LogRecord($result['info'], __FILE__ . __LINE__ . "发送支付成功消息失败");
+            return ;
+        }
+
 		//TODO:
 		//1. 发送给店铺
-//		$this -> sendToStores($stores，$text);
+		$this -> sendToStores($stores,$text);
 		
 		//2. 发送给配置的微信粉丝
 		$this -> sendToWxaccount($wxaccountid, $text);
@@ -196,25 +207,36 @@ class WxpayNotifyController extends Controller {
 
 	//
 	private function sendToWxaccount($wxaccountid, $text) {
-		$result = apiCall(WxaccountApi::GET_INFO, array(array('id' => $wxaccountid)));
-		if ($result['status']) {
-			$wxapi = new WeixinApi($result['info']['appid'], $result['info']['appsecret']);
-			$map = array('name' => "WXPAY_OPENID");
-			$result = apiCall(ConfigApi::GET_INFO, array($map));
-			
-			addWeixinLog($result, "接收订单支付成功的OPENID");
-			if ($result['status']) {
-				$openidlist = explode(",", $result['info']['value']);
-				foreach ($openidlist as $openid) {
-					$wxapi -> sendTextToFans($openid, $text);
-				}
-			}
-		} else {
-			LogRecord($result['info'], __FILE__ . __LINE__ . "发送支付成功消息失败");
-		}
+
+
+        $map = array('name' => "WXPAY_OPENID");
+        $result = apiCall(ConfigApi::GET_INFO, array($map));
+
+        addWeixinLog($result, "接收订单支付成功的OPENID");
+        if ($result['status']) {
+            $openidlist = explode(",", $result['info']['value']);
+            foreach ($openidlist as $openid) {
+                $this->wxapi -> sendTextToFans($openid, $text);
+            }
+        }
+
 	}
 	
-	
+	private function sendToStores($stores,$text){
+
+        foreach ($stores as $vo) {
+            if(!empty($vo['weixin_number'])){
+
+                $users = json_decode($vo['weixin_number'],JSON_UNESCAPED_UNICODE);
+
+                foreach($users as $wxuser){
+
+                    $this->wxapi -> sendTextToFans($wxuser['openid'], $text);
+                }
+
+            }
+        }
+    }
 	
 	
 	/**
