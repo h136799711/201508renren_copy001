@@ -151,10 +151,16 @@ class WxuserController extends AdminController {
 	 *
 	 */
 	public function select() {
+        $q = I('q', '', 'trim');
+        if(!empty($q)){
+            $where['nickname'] = array('like', "%" . $q . "%",'or');
+            $where['id'] = I('q', -1);
+            $where['_logic'] = 'or';
+            $map['_complex'] = $where;
+        }
 
-		$map['nickname'] = array('like', "%" . I('q', '', 'trim') . "%");
-		$map['id'] = I('q', -1);
-		$map['_logic'] = 'OR';
+        $map['wxaccount_id'] = getWxAccountID();
+
 		$page = array('curpage' => 0, 'size' => 20);
 		$order = " subscribe_time desc ";
 
