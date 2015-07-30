@@ -34,11 +34,11 @@ class ShopController extends  Controller {
 				define("APP_VERSION", C('APP_VERSION'));
 			}
 		}
-		C('SHOW_PAGE_TRACE', false);//设置不显示trace
+//		C('SHOW_PAGE_TRACE', false);//设置不显示trace
 		$this -> refreshWxaccount();
 		$debug = true;
-		//$debug = false;
-		
+//		$debug = false;
+
 		if($debug){
 			$this->getDebugUser();
 		}else{
@@ -61,20 +61,19 @@ class ShopController extends  Controller {
 	//获取测试用户信息，用于PC端测试使用
 	private function getDebugUser(){
 		$this->userinfo = array(
-			'id'=>1,
-            'uid'=>16,
-           // 'openid'=>'on1gxt-HCbKcX4r56QwXVrBvpFoA',
-			'openid'=>'oJz-Ks_aGw8iw_Y0nNHffVX_l7aE',
+			'id'=>10,
+            'uid'=>236,
+			'openid'=>'oJz-Ks7mwh0CadiADLlAWfjE7vvw',
 			'nickname'=>'老胖子何必都',
 			'avatar'=>'http://wx.qlogo.cn/mmopen/An6TFzHNImPecEhl1R3UWd26LlC1mvVgyhdh2KGCOb0yjQ4JNQnOicG2ysaKojzusSO9R3RE55Exq0lYKpVr3RRArU0u7kgjR/0',
 			'score'=>0,
-			'wxaccount_id'=>1,
+			'wxaccount_id'=>5,
 			'exp'=>100,
             'groupid'=>11,
+            'subscribed'=>1,
 		);
-		
-//		$this->wxapi = new \Common\Api\WeixinApi('wx5f9ed360f5da5370','4a0e3e50c8e9137c4873689b8ee99124');
-		$this->openid = "on1gxt-HCbKcX4r56QwXVrBvpFoA";
+
+		$this->openid = "oJz-Ks7mwh0CadiADLlAWfjE7vvw";
 	}
 	
 	

@@ -308,6 +308,9 @@ function GUID() {
 }
 
 function addWeixinLog($data, $operator = '') {
+    if(is_null($data)){
+        $data = "";
+    }
 	$log['ctime'] = time();
 	$log['loginfo'] = is_array($data) ? serialize($data) : $data;
 	$log['operator'] = $operator;

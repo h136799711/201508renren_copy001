@@ -124,7 +124,7 @@ class StoreController extends AdminController{
 				'isopen'=>0,
 				'cate_id'=>$cate_id,
 				'notes'=>I('post.notes',''),
-				'weixin_number'=>json_encode($weixin),
+				'weixin_number'=>json_encode($weixin,JSON_UNESCAPED_UNICODE),
 				'service_phone'=>$service_phone,
 			);
 //			dump($entity);
@@ -198,7 +198,7 @@ class StoreController extends AdminController{
 				'banner'=>$banner,
 				'cate_id'=>$cate_id,
 				'notes'=>I('post.notes',''),
-				'weixin_number'=>json_encode($weixin),
+                'weixin_number'=>json_encode($weixin,JSON_UNESCAPED_UNICODE),
 				'service_phone'=>$service_phone,
 			);
 			
