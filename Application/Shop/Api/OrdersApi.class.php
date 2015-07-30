@@ -113,7 +113,7 @@ class OrdersApi extends Api
             'wxuser_id' => $entity['wxuser_id'],
             'price' => $entity['price'],
             'note' => $entity['note'],
-            'orderid' => $entity['orderid'],
+            'orderid'=> $entity['orderid'],
             'comment_status'=>0,
 //				'items'=>'',
             'items' => serialize($entity['items']),
@@ -126,6 +126,7 @@ class OrdersApi extends Api
 //		addWeixinLog($result,'add order 订单 2');
 
         $orderid = '';
+
         if ($result['status']) {
             $orderid = $result['info'];
             //2. 增加order_contactinfo记录

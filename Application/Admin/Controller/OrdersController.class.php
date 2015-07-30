@@ -149,7 +149,7 @@ class OrdersController extends AdminController {
 	public function sure() {
 		$orderid = I('orderid', '');
 		$payStatus = I('payStatus', OrdersModel::ORDER_PAID);
-		
+		//$payStatus = I('payStatus',0);
 		$userid = I('uid', 0);
 		$params = array();
 		$map = array();
@@ -173,8 +173,7 @@ class OrdersController extends AdminController {
 
 		//
 		$result = apiCall(OrdersInfoViewApi::QUERY, array($map, $page, $order, $params));
-
-		//
+		//dump($result['info']['show']);
 		if ($result['status']) {
 			$this -> assign('orderid', $orderid);
 			$this -> assign('payStatus', $payStatus);
@@ -214,7 +213,7 @@ class OrdersController extends AdminController {
 		//		$map['createtime'] = array( array('EGT', $startdatetime), array('elt', $enddatetime), 'and');
 		//$map['pay_status'] = OrdersModel::ORDER_PAID;
 		
-		$map['pay_status']=OrdersModel::ORDER_CASH_ON_DELIVERY;
+		$map['pay_status']=array('in',array(OrdersModel::ORDER_CASH_ON_DELIVERY,OrdersModel::ORDER_PAID));
 		$page = array('curpage' => I('get.p', 0), 'size' => C('LIST_ROWS'));
 		$order = " createtime desc ";
 
@@ -471,7 +470,7 @@ class OrdersController extends AdminController {
 			$appsecret =  $wxaccount['info']['appsecret'];				
 			$wxapi = new WeixinApi($appid,$appsecret);
 			$wxapi->sendTextToFans($openid, $text);
-			$wxapi->sendTextToFans($openid, $text);//发2次
+			//$wxapi->sendTextToFans($openid, $text);//发2次
 		}
 	}
 

@@ -557,12 +557,15 @@ class WxshopProductController extends AdminController {
 			$price = $price * 100.0;
 			$ori_price = I('ori_price',0,'floatval');
 			$ori_price = $ori_price * 100.0;
+			$profit=I('profit',0,'floatval');
+			$profit=$profit*100.0;
 			$entity = array(
 				'main_img'=>I('main_img',''),
 				'img'=> I('post.img', ''),
 				'name'=>I('product_name',''),
 				'price'=>$price,
 				'ori_price'=>$ori_price,
+				'profit'=>$profit,
 				'quantity'=>I('quantity',0,'intval'),
 				'buy_limit'=>$buylimit,
 				'attrext_ishasreceipt'=>I('ishasreceipt',0),
@@ -632,6 +635,7 @@ class WxshopProductController extends AdminController {
 					'onself' => '0', 
 					'status' => 1,
 					'properties'=> I('post.property', ''),
+					'profit'=>(float)I('post.profit',0)*100,
 					'sku_info'=>'',
 				);
 		if ($has_sku == 0) {
