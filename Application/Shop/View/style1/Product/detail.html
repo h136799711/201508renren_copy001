@@ -41,10 +41,14 @@
 			border: 1px solid #ccc;
 			text-align: center;
 			height: 25px;
-
+			border-radius: 0;
+			list-style: none;
+			padding:0px;
+			-webkit-appearance: none;
 		}
 
 
+		.am-link-muted{font-size: 12px;color: #ccc;text-align: right}
 		/*.p-content .am-tabs-nav li.am-active{border-top: 2px solid pink;}*/
 		.p-content  .am-tabs{width: 100%;margin-left: 0}
 		.p-content .am-tabs-default ul li a{background: #F1F1F1;border: 1px solid #ccc;}
@@ -84,7 +88,7 @@
 			<div class="p-price" >
 				<p class="" style="">价格:<font color="orangered" size="+1">¥{:number_format($product['price']/100,2)}</font>
 					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;数量:
-				<input type="button" class="countStyle" onclick="subtract()" value="-" style="width: 25px;" /><input type="text" name="sku_count" size="5" value="1" class="countStyle" onchange="checkNum()"/><input type="button" class="countStyle"  onclick="add()" value="＋" style="width: 25px" />
+				<input type="button" class="countStyle" onclick="subtract()" value="-" style="width: 25px;" /><input type="text" name="sku_count" size="5"  value="1" class="countStyle" onchange="checkNum()"/><input type="button" class="countStyle"  onclick="add()" value="＋" style="width: 25px" />
 
 				</p>
 				<p class="lgray p-ori-price">原价:<del>¥{:number_format($product['ori_price']/100,2)}</del>
@@ -111,19 +115,26 @@
 			<div class="up-decorate-left"></div>
 			<div class="up-decorate-right"></div>
 			<div class="wrapper am-g am-padding-sm am-text-left  ">
-				<div class="service-item am-margin-right-sm">
-					<i class="am-icon-check-circle-o  am-text-danger  am-margin-right-xs"></i>如实描述
-				</div>
+
+				<if condition="$product['attrext_ishasreceipt'] eq 1">
+					<div class="service-item am-margin-right-sm">
+						<i class="am-icon-check-circle-o  am-text-danger  am-margin-right-xs"></i>支持发票
+					</div>
+				</if>
 				<!--
 				<div class="service-item am-margin-right-sm">
 					<i class="am-icon-check-circle-o  am-text-danger  am-margin-right-xs"></i>1小时内送货上门
 				</div>-->
-				<div class="service-item am-margin-right-sm">
-					<i class="am-icon-check-circle-o  am-text-danger  am-margin-right-xs"></i>支持货到付款体验
-				</div>
-				<div class="service-item am-margin-right-sm">
-					<i class="am-icon-check-circle-o  am-text-danger  am-margin-right-xs"></i>支持在线预约体验
-				</div>
+				<if condition="$product['attrext_isunderguaranty'] eq 1">
+					<div class="service-item am-margin-right-sm">
+						<i class="am-icon-check-circle-o  am-text-danger  am-margin-right-xs"></i>支持保修
+					</div>
+				</if>
+				<if condition="$product['attrext_issupportreplace'] eq 1">
+					<div class="service-item am-margin-right-sm">
+						<i class="am-icon-check-circle-o  am-text-danger  am-margin-right-xs"></i>支持退换货
+					</div>
+				</if>
 			</div>
 			<div class="bottom-border"></div>
 		

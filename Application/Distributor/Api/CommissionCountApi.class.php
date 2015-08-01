@@ -15,6 +15,8 @@ use Shop\Api\WalletApi;
 use Shop\Api\WalletHisApi;
 use Weixin\Api\WxuserFamilyApi;
 use Admin\Api\GroupAccessApi;
+use Shop\Api\OrdersItemApi;
+use Shop\Api\ProductApi;
 
 
 /**
@@ -49,7 +51,10 @@ class CommissionCountApi implements ICommissionCountInterface{
 			//获取下单用户ID
 			$wxuser_id=$result['info'][0]['wxuser_id'];
 			//获取订单价格
-			$profit=$result['info'][0]['profit'];
+			$it=apiCall(OrdersItemApi::QUERY_NO_PAGING,array(array('orders_id'=>$result['info'][0]['id'])));
+			$map=array('id'=>$it['info'][0]['p_id']);
+			$p=apiCall(ProductApi::QUERY_NO_PAGING,array($map));
+			$profit=$p['info'][0]['profit'];
 			$map=array(
     			'id'=>$wxuser_id
     		);
@@ -67,7 +72,6 @@ class CommissionCountApi implements ICommissionCountInterface{
 			);*/
 			$uids=array();
 			for($i=0;$i<$referrerNum;$i++){
-				addWeixinLog($result['info'][0]['referrer'],"上级");
 				if($i==0){
 					
 					if($result['info'][0]['referrer']==0){ //不存在推荐人,跳出
@@ -85,8 +89,10 @@ class CommissionCountApi implements ICommissionCountInterface{
 					}
 					$uids[]=$resultx['info'][0]['referrer'];
 				}
+				if(count($uids)==3){  //最多三级
+					break;
+				}
 			}
-		
 			//获取所有分销商信息
 			foreach($uids as $u){
 				$map=array(
@@ -104,7 +110,6 @@ class CommissionCountApi implements ICommissionCountInterface{
 				);
 				$WalletInfo=apiCall(WalletApi::QUERY_NO_PAGING,array($map));
 				$result=apiCall(WalletApi::SETINC,array($map,'account_balance',$commission)); //添加佣金
-				
 				$percent=(float)$groupAccess['info'][0]['percent']*100;
 				$map=array(
 					'uid'=>$u,

@@ -29,7 +29,7 @@ return array(
 	
 	//订单时间配置
 	'INTERVAL_RECIEVED'=>24*3600*30,  //改成已收货
-	'INTERVAL_COMPLETED'=>24*3600*15, //将已收货改成已完成
+	'INTERVAL_COMPLETED'=>60, //将已收货改成已完成
 	'INTERVAL_CANCEL'=>3600*1,  //改成已取消
 	'INTERVAL_AUTO_EVALUATION'=>24*3600*15,  //自动评价
 );

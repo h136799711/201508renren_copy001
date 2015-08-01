@@ -666,12 +666,11 @@ class OrderStatusApi{
 		foreach($result['info'] as $order){
 			$ids[]=$order['id'];
 		}
-		addWeixinLog($ids,"ceshi");
+
 		//如果有超过时间的且状态为已收货，佣金发放
 		if(count($ids)>0){
 			apiCall(CommissionCountApi::ADD,array($ids));
 		}
-		
 		$saveEntity = array('order_status'=>OrdersModel::ORDER_COMPLETED);
 		$result = $this->model->create($saveEntity,2);
 		if($result === false){

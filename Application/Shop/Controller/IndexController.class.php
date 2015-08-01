@@ -199,8 +199,27 @@ class IndexController extends ShopController{
 
 		// 获取推荐商品
 		$result = $this->getProducts();
+
+
 		if($result['status'] && is_array($result['info'])){
 			$this->assign("recommend_products",$result['info']['list']);
+
+			if($result['info']['list']==NULL){
+				$this->assign("recommend_products",-1);
+			}else{
+				if(count($result['info']['list'])%2!=0){
+					if(count($result['info']['list'])==1){
+						$this->assign("recommend_products",-1);
+					}else{
+						array_pop($result['info']['list']);
+						$this->assign("recommend_products",$result['info']['list']);
+					}
+
+				}else{
+					$this->assign("recommend_products",$result['info']['list']);
+				}
+
+			}
 		}
 
 
@@ -208,13 +227,45 @@ class IndexController extends ShopController{
 		$result = $this->getNewProducts();
 		if($result['status'] && is_array($result['info'])){
 			$this->assign("new_products",$result['info']['list']);
-		}
+			if($result['info']['list']==NULL){
+				$this->assign("new_products",-1);
+			}else{
+				if(count($result['info']['list'])%2!=0){
+					if(count($result['info']['list'])==1){
+						$this->assign("new_products",-1);
+					}else{
+						array_pop($result['info']['list']);
+						$this->assign("new_products",$result['info']['list']);
+					}
 
+				}else{
+					$this->assign("new_products",$result['info']['list']);
+				}
+
+			}
+
+		}
 
 		// 获取热门商品
 		$result = $this->getHotProducts();
 		if($result['status'] && is_array($result['info'])){
 			$this->assign("hot_products",$result['info']['list']);
+			if($result['info']['list']==NULL){
+				$this->assign("hot_products",-1);
+			}else{
+				if(count($result['info']['list'])%2!=0){
+					if(count($result['info']['list'])==1){
+						$this->assign("hot_products",-1);
+					}else{
+						array_pop($result['info']['list']);
+						$this->assign("hot_products",$result['info']['list']);
+					}
+
+				}else{
+					$this->assign("hot_products",$result['info']['list']);
+				}
+
+			}
 		}
 
 		$ads  = $this->getAds();

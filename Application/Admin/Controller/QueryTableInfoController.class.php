@@ -1,5 +1,6 @@
 <?php 
 namespace Admin\Controller;
+use Shop\Api\OrdersItemApi;
 use Think\Controller;
 use Weixin\Api\WxuserApi;
 use Weixin\Api\WxuserFamilyApi;
@@ -13,6 +14,7 @@ use Ucenter\Api\UcenterMemberApi;
 use Shop\Api\WalletApi;
 use Shop\Api\WalletHisApi;
 use Shop\Api\WithdrawApi;
+use Distributor\Api\GroupAccessApi;
 
 
 class QueryTableInfoController extends Controller{
@@ -57,6 +59,9 @@ class QueryTableInfoController extends Controller{
 	public function login(){
 		$this->display();
 	}
+
+
+
 	
 	
 
