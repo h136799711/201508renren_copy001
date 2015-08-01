@@ -164,7 +164,7 @@ class WxshopProductController extends AdminController {
 			
 //			dump($entity);
 			
-			$result = apiCall("Admin/Product/save", array(array('product_id'=>$productid),$entity));
+			$result = apiCall("Shop/Product/save", array(array('product_id'=>$productid),$entity));
 			
 			if(!$result['status']){
 				$this->error($result['info']);
@@ -184,7 +184,7 @@ class WxshopProductController extends AdminController {
 		if(IS_GET){
 			$id = I('get.id',0);
 			
-			$result = apiCall("Admin/Product/getInfo", array(array('id'=>$id) ));
+			$result = apiCall("Shop/Product/getInfo", array(array('id'=>$id) ));
 			
 			if(!$result['status']){
 				$this->error($result['info']);
