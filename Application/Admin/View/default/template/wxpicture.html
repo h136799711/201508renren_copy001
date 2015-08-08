@@ -14,6 +14,8 @@
                     <input type="date" name="time" class="time form-control" placeholder="默认全部">
                     <input type="text" name="q"  class="form-control" placeholder="输入文件名查找" />
                     <button class="btn btn-sm btn-primary js_search" type="button" ><i class="fa fa-search"></i>查找</button>
+
+					<button class="btn btn-sm btn-primary" type="button" onclick="removeImg()"><i class=""></i>删除</button>
                 </div>
 				<!--<div class="col-lg-2 col-md-2">
 								
@@ -40,7 +42,28 @@
 </div>
 
 <script type="text/javascript">
+	var imgIds=new Array();
+	function getImg(d){
+		if(!$(d).hasClass("img-selected")){
+			imgIds.push($(d).find('img').attr('data-imageid'));
+		}else{
+			imgIds.splice($.inArray($(d).find('img').attr('data-imageid'),imgIds),1);
+			//imgIds.remove($(d).find('img').attr('data-imageid'));
+		}
+	}
 
+	function removeImg(){
+		alert(imgIds);
+		/*$.ajax({
+			url:"{:U('Admin/File/del')}",
+			data:{
+				'imgIds':imgIds,
+			},
+			success:function(data){
+
+			}
+		})*/
+	}
 	window.wxuploadimg = (function() {
 		var pager = {
 			index: 0,
@@ -48,6 +71,8 @@
 		};
 		var checked = 0;
 		var hadBind = false;
+
+
 		/**
 		 * 将数据组合成HTML
 		 */
@@ -59,7 +84,7 @@
 					if(!imgsrc){
 						imgsrc = '{:C("SITE_URL")}'+list[i].path;
 					}
-					$item = $("<div class='img-item '><img class='img-responsive  thumbnail js_img_click' src='" + imgsrc  + "'/><p class='img-desc'>"+list[i].ori_name+"</p></div>");
+					$item = $("<div class='img-item ' onclick='getImg(this)'><img class='img-responsive  thumbnail js_img_click' data-imageid='"+ list[i].id+"' src='" + imgsrc  + "'/><p class='img-desc'>"+list[i].ori_name+"</p></div>");
 					$cont.append($item);
 					
 				}
@@ -67,7 +92,8 @@
 				$("#wxuploadimg .imgs-list").html("");
 			}
 		}
-		
+
+
 	/**
 	 * 处理分页点击事件
 	 */

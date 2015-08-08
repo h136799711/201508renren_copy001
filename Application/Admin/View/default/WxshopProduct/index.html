@@ -88,8 +88,9 @@
 									<a href="{:U('Admin/WxshopProduct/shelf',array('id'=>$vo['id'],'on'=>0))}" class="ajax-get confirm btn btn-primary btn-sm"><i class="fa fa-arrow-down"></i>下架</a>
 									</if>
 									<a href="{:U('Admin/WxshopProduct/edit',array('id'=>$vo['id']))}" class="btn btn-primary btn-sm"><i class="fa fa-edit"></i>{:L('BTN_EDIT')}</a>
+									<a href="javascript:void(0)" class="btn btn-primary btn-sm" data-toggle="popover" data-placement="left" title="请复制如下地址：（再次点击隐藏）" data-content="http://renren.itboye.com/index.php/Shop/Product/detail?id={$vo.id}"><i class="fa fa-cog fa-fw"></i>复制链接</a>
 									<a href="{:U('Admin/WxshopProduct/delete',array('id'=>$vo['id']))}" class="btn btn-danger btn-sm ajax-get confirm"><i class="fa fa-trash-o"></i>{:L('BTN_DELETE')}</a>
-									
+
 								</td>
 							</tr>
 
@@ -112,5 +113,6 @@
 			$("#searchFormSubmit").click();
 		})
 	})
+
 	</script>
 </block>
