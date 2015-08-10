@@ -10,7 +10,7 @@
 
 if (version_compare(PHP_VERSION, '5.3.0', '<')) die('require PHP > 5.3.0 !');
 
-define("PROJECT_NAME","20150606renren");
+define("PROJECT_NAME","201508renren_copy");
 
 // 是否调试模式
 define('APP_DEBUG', TRUE);

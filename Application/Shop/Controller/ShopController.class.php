@@ -34,10 +34,10 @@ class ShopController extends  Controller {
 				define("APP_VERSION", C('APP_VERSION'));
 			}
 		}
-//		C('SHOW_PAGE_TRACE', false);//设置不显示trace
+		C('SHOW_PAGE_TRACE', false);//设置不显示trace
 		$this -> refreshWxaccount();
-		$debug = true;
-		//$debug = false;
+//		$debug = true;
+		$debug = false;
 
 		if($debug){
 			$this->getDebugUser();

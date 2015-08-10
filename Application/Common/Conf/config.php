@@ -5,6 +5,8 @@
  
 
 return array(
+    //网站根地址
+    'SITE_URL'=>'http://renren01.itboye.com',
     //开启数据库session
     'SESSION_TYPE'=>'Db',
     //指定session数据库表
@@ -42,7 +44,7 @@ return array(
     // 数据库配置
     'DB_TYPE'                   =>  'mysql',
     'DB_HOST'                   =>  '192.168.0.100',//rdsrrbifmrrbifm.mysql.rds.aliyuncs.com
-    'DB_NAME'                   =>  'itboye_20150606', //boye_ceping
+    'DB_NAME'                   =>  'renren_copy', //boye_ceping
     'DB_USER'                   =>  'root',//boye
     'DB_PWD'                    =>  '1',//bo-ye2015BO-YE
     'DB_PORT'                   =>  '3306',

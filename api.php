@@ -13,7 +13,7 @@ define('APP_MODE','api');
 //绑定Api模块
 define('BIND_MODULE','Api');
 
-define("PROJECT_NAME","20150606renren");
+define("PROJECT_NAME","201508renren_copy");
 
 // 是否调试模式
 define('APP_DEBUG', true);
